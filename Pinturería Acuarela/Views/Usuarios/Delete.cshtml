@@ -1,0 +1,55 @@
+﻿@model Pinturería_Acuarela.Usuario
+
+@{
+    ViewBag.Title = "Usuarios";
+}
+
+<h2>Eliminar usuario</h2>
+
+<h3>¿Estás seguro que deseas eliminar el usuario?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Ciudad
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Sucursal.city)
+        </dd>
+
+        <dt>
+            Email
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.email)
+        </dd>
+
+        <dt>
+            Contraseña
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.password)
+        </dd>
+
+        <dt>
+            Rol
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.rol)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-outline-dark" /> |
+            @Html.ActionLink("Volver al listado de usuarios", "Index")
+        </div>
+    }
+</div>

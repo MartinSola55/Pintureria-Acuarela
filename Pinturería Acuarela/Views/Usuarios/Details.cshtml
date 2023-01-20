@@ -1,0 +1,49 @@
+﻿@model Pinturería_Acuarela.Usuario
+
+@{
+    ViewBag.Title = "Usuarios";
+}
+
+<h2>Detalles</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Ciudad
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Sucursal.city)
+        </dd>
+
+        <dt>
+            Email
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.email)
+        </dd>
+
+        <dt>
+            Contraseña
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.password)
+        </dd>
+
+        <dt>
+            Rol
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.rol)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.id }, new { @class = "btn btn-outline-dark"})
+    @Html.ActionLink("Volver al listado de usuarios", "Index")
+</p>
