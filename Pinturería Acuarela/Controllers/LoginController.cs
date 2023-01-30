@@ -25,13 +25,13 @@ namespace Pinturería_Acuarela.Controllers
             try
             {
                 //Cifrar contraseña
-                EFModel bd = new EFModel();
+                AcuarelaEntities bd = new AcuarelaEntities();
                 SHA256Managed sha = new SHA256Managed();
                 byte[] passNoCifrada = Encoding.Default.GetBytes(password);
                 byte[] bytesCifrados = sha.ComputeHash(passNoCifrada);
                 string passCifrada = BitConverter.ToString(bytesCifrados).Replace("-", string.Empty);
 
-                Usuario user = bd.Usuario.Where(u => u.email.Equals(email) && u.password.Equals(passCifrada)).FirstOrDefault();
+                User user = bd.User.Where(u => u.email.Equals(email) && u.password.Equals(passCifrada)).FirstOrDefault();
 
                 if (user != null)
                 {

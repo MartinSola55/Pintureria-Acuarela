@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8f2c012057d048068897c9d491f5d632" Name="Diagram1">
+        <EntityTypeShape EntityType="AcuarelaModel.Brand" Width="1.5" PointX="0.75" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.Business" Width="1.5" PointX="1.5" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.Capacity" Width="1.5" PointX="0.75" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.Category" Width="1.5" PointX="0.75" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.Color" Width="1.5" PointX="0.75" PointY="11.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.Order" Width="1.5" PointX="3" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.Product" Width="1.5" PointX="3" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.Product_Business" Width="1.5" PointX="5.25" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.Product_Order" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.Rol" Width="1.5" PointX="1.5" PointY="24.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.Subcategory" Width="1.5" PointX="0.75" PointY="14.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.sysdiagrams" Width="1.5" PointX="5.75" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AcuarelaModel.User" Width="1.5" PointX="0.75" PointY="17.5" IsExpanded="true" />
+        <AssociationConnector Association="AcuarelaModel.FK_Product_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="AcuarelaModel.FK_Product_Business_Business" ManuallyRouted="false" />
+        <AssociationConnector Association="AcuarelaModel.FK_Usuario_Sucursal" ManuallyRouted="false" />
+        <AssociationConnector Association="AcuarelaModel.FK_Product_Capacity" ManuallyRouted="false" />
+        <AssociationConnector Association="AcuarelaModel.FK_Product_Category" ManuallyRouted="false" />
+        <AssociationConnector Association="AcuarelaModel.FK_Product_Color" ManuallyRouted="false" />
+        <AssociationConnector Association="AcuarelaModel.FK_Order_User" ManuallyRouted="false" />
+        <AssociationConnector Association="AcuarelaModel.FK_Product_Order_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="AcuarelaModel.FK_Product_Business_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="AcuarelaModel.FK_Product_Order_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="AcuarelaModel.FK_Product_Subcategory" ManuallyRouted="false" />
+        <AssociationConnector Association="AcuarelaModel.FK_Usuario_Rol" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
