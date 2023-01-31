@@ -12,7 +12,7 @@ namespace Pinturería_Acuarela.Controllers
 {
     public class OrdersController : Controller
     {
-        private AcuarelaEntities db = new AcuarelaEntities();
+        private EFModel db = new EFModel();
 
         // GET: Orders
         public ActionResult Index()

@@ -12,7 +12,7 @@ namespace Pinturería_Acuarela.Controllers
 {
     public class SubcategoriesController : Controller
     {
-        private AcuarelaEntities db = new AcuarelaEntities();
+        private EFModel db = new EFModel();
 
         // GET: Subcategories
         public ActionResult Index()

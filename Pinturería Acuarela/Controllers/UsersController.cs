@@ -14,7 +14,7 @@ namespace Pinturería_Acuarela.Controllers
 {
     public class UsersController : Controller
     {
-        private AcuarelaEntities db = new AcuarelaEntities();
+        private EFModel db = new EFModel();
 
         // GET: Users
         public ActionResult Index()
@@ -56,7 +56,7 @@ namespace Pinturería_Acuarela.Controllers
             if (ModelState.IsValid)
             {
                 //Cifrar contraseña
-                AcuarelaEntities bd = new AcuarelaEntities();
+                EFModel bd = new EFModel();
                 SHA256Managed sha = new SHA256Managed();
                 byte[] passNoCifrada = Encoding.Default.GetBytes(user.password);
                 byte[] bytesCifrados = sha.ComputeHash(passNoCifrada);
@@ -100,7 +100,7 @@ namespace Pinturería_Acuarela.Controllers
             if (ModelState.IsValid)
             {
                 //Cifrar contraseña
-                AcuarelaEntities bd = new AcuarelaEntities();
+                EFModel bd = new EFModel();
                 SHA256Managed sha = new SHA256Managed();
                 byte[] passNoCifrada = Encoding.Default.GetBytes(user.password);
                 byte[] bytesCifrados = sha.ComputeHash(passNoCifrada);

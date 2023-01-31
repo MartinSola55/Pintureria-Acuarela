@@ -25,7 +25,7 @@ namespace Pinturería_Acuarela.Controllers
             try
             {
                 //Cifrar contraseña
-                AcuarelaEntities bd = new AcuarelaEntities();
+                EFModel bd = new EFModel();
                 SHA256Managed sha = new SHA256Managed();
                 byte[] passNoCifrada = Encoding.Default.GetBytes(password);
                 byte[] bytesCifrados = sha.ComputeHash(passNoCifrada);

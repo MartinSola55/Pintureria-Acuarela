@@ -119,16 +119,6 @@
     <Content Include="Content\mis-estilos.css" />
     <Content Include="Content\navbar.css" />
     <Content Include="Content\Site.css" />
-    <Content Include="EFModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EFModel.edmx</DependentUpon>
-      <LastGenOutput>EFModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="EFModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EFModel.edmx</DependentUpon>
-      <LastGenOutput>EFModel.cs</LastGenOutput>
-    </Content>
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -136,13 +126,6 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="EFModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>EFModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="EFModel.edmx.diagram">
-      <DependentUpon>EFModel.edmx</DependentUpon>
-    </Content>
     <None Include="Scripts\jquery-3.6.3.intellisense.js" />
     <Content Include="Scripts\jquery-3.6.3.js" />
     <Content Include="Scripts\jquery-3.6.3.min.js" />
@@ -160,21 +143,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Brand.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Business.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Capacity.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Category.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Color.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Models\Brand.cs" />
+    <Compile Include="Models\Business.cs" />
+    <Compile Include="Models\Capacity.cs" />
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Color.cs" />
     <Compile Include="Controllers\BrandsController.cs" />
     <Compile Include="Controllers\CapacitiesController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
@@ -184,54 +157,22 @@
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\SubcategoriesController.cs" />
     <Compile Include="Controllers\BusinessesController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="EFModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EFModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EFModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EFModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EFModel.edmx</DependentUpon>
-    </Compile>
+    <Compile Include="Models\EFModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Order.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Product.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Product_Business.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Product_Order.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\Product_Business.cs" />
+    <Compile Include="Models\Product_Order.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rol.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Subcategory.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="sysdiagrams.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="User.cs">
-      <DependentUpon>EFModel.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Models\Rol.cs" />
+    <Compile Include="Models\Subcategory.cs" />
+    <Compile Include="Models\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -316,7 +257,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
