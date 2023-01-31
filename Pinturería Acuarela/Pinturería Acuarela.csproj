@@ -157,9 +157,7 @@
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\SubcategoriesController.cs" />
     <Compile Include="Controllers\BusinessesController.cs" />
-    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
-    <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Models\EFModel.cs" />
     <Compile Include="Global.asax.cs">
