@@ -11,7 +11,7 @@
     <link rel="icon" type="image/jpg" href="~/Content/Images/favicon.png" />
 </head>
 <body>
-    <header>
+    <header style="margin-bottom: 8rem">
         @*<nav class="navbar navbar-expand-custom navbar-mainbg py-3">
             <a class="navbar-brand navbar-logo" href="/Home">
                 <img src="~/Content/Images/logo-acuarela.png" alt="Logo" style="max-width: 300px; max-height: 40px">
@@ -72,27 +72,30 @@
                                 <a class="nav-link" href="/Home"><i class="bi bi-house"></i>Inicio</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/Productos"><i class="bi bi-archive"></i>Productos</a>
+                                <a class="nav-link" href="/Products"><i class="bi bi-archive"></i>Productos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/Sucursales"><i class="bi bi-basket"></i>Sucursales</a>
+                                <a class="nav-link" href="/Businesses"><i class="bi bi-basket"></i>Sucursales</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/Usuarios"><i class="bi bi-person"></i>Usuarios</a>
+                                <a class="nav-link" href="/Orders"><i class="bi bi-basket"></i>Ordenes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Users"><i class="bi bi-person"></i>Usuarios</a>
                             </li>
                             @{
-                                                                if (Session["idUsuario"] != null)
-                                                                {
+                            if (Session["idUsuario"] != null)
+                            {
                                 @:<li class="nav-item" id="logout">
-                                    @:<a class="nav-link" href="/Login/CerrarSesion">Cerrar sesión</a>
+                                    @:<a class="nav-link" href="/Login/Logout">Cerrar sesión</a>
                                 @:</li>
-                                                                }
-                                                                else
-                                                                {
+                            }
+                            else
+                            {
                                 @:<li class="nav-item" id="login">
                                     @:<a class="nav-link" href="/Login">Iniciar sesión</a>
                                 @:</li>
-                                                                }
+                            }
                             }
                         </ul>
                         <form class="d-flex mt-3" role="search">

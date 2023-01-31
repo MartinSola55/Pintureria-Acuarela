@@ -15,10 +15,10 @@ namespace Pinturería_Acuarela.Controllers
         {
             return View();
         }
-        public ActionResult CloseSession()
+        public ActionResult Logout()
         {
             Session["idUsuario"] = null;
-            return View("Index");
+            return RedirectToAction("Index", "Home");
         }
         public ActionResult Validate(string email, string password)
         {
@@ -36,7 +36,7 @@ namespace Pinturería_Acuarela.Controllers
                 if (user != null)
                 {
                     Session["idUsuario"] = user.id;
-                    return View("Index");
+                    return RedirectToAction("Index", "Home");
                 }
                 ViewBag.Error = 1;
                 ViewBag.Message = "Email y/o contraseña incorrectos";
