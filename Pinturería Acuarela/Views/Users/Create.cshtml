@@ -1,10 +1,10 @@
-﻿@model Pinturería_Acuarela.Usuario
+﻿@model Pinturería_Acuarela.User
 
 @{
     ViewBag.Title = "Usuarios";
 }
 
-<h2>Crear un nuevo usuario</h2>
+<h2>Agregar un usuario</h2>
 
 
 @using (Html.BeginForm()) 
@@ -12,11 +12,10 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Usuario</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            <label class="control-label col-md-2">Email</label>
+            <label class="form-label col-md-2">Email</label>
             <div class="col-md-10">
                 @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
@@ -24,7 +23,7 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2">Contraseña</label>
+            <label class="form-label col-md-2">Contraseña</label>
             <div class="col-md-10">
                 @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
@@ -32,32 +31,32 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2">Rol</label>
+            <label class="form-label col-md-2">Rol</label>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.rol, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.rol, "", new { @class = "text-danger" })
+                @Html.DropDownList("id_rol", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.id_rol, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2">Sucursal</label>
+            <label class="form-label col-md-2">Sucursal</label>
             <div class="col-md-10">
-                @Html.DropDownList("id_sucursal", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.id_sucursal, "", new { @class = "text-danger" })
+                @Html.DropDownList("id_business", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.id_business, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Crear" class="btn btn-outline-dark" />
+                <input type="submit" value="Crear" class="btn btn-dark" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Volver al listado de usuarios", "Index")
+    @Html.ActionLink("Volver al listado", "Index")
 </div>
 
 <script src="~/Scripts/jquery.validate.min.js"></script>
-<script src="~/Scripts/jquery.validate.u nobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

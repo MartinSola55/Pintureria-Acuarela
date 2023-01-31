@@ -11,7 +11,8 @@ namespace Pinturería_Acuarela
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Subcategory
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,6 +22,9 @@ namespace Pinturería_Acuarela
         }
     
         public int id { get; set; }
+
+        [Required(ErrorMessage = "Debes agregar una descripción")]
+        [StringLength(255, ErrorMessage = "Debes añadir una descripción de menos de 255 caracteres")]
         public string description { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

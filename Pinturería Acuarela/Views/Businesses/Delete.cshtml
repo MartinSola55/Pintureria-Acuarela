@@ -1,0 +1,31 @@
+﻿@model Pinturería_Acuarela.Business
+
+@{
+    ViewBag.Title = "Sucursales";
+}
+
+<h2>Eliminar sucursal</h2>
+
+<div>
+    <h5>¿Estás seguro que deseas eliminar esta sucursal?</h5>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Nombre
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.adress)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-dark" /> |
+            @Html.ActionLink("Volver al listado", "Index")
+        </div>
+    }
+</div>

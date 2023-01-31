@@ -11,7 +11,8 @@ namespace Pinturería_Acuarela
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class User
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,8 +22,17 @@ namespace Pinturería_Acuarela
         }
     
         public int id { get; set; }
+
+        [Required(ErrorMessage = "Debes agregar un email")]
+        [StringLength(50, ErrorMessage = "Debes añadir un email de menos de 50 caracteres")]
+        [EmailAddress(ErrorMessage = "Debes ingresar un formato de email válido")]
         public string email { get; set; }
+
+        [Required(ErrorMessage = "Debes ingresar una contraseña")]
+        [DataType(DataType.Password, ErrorMessage = "Ingrese una contraseña válida")]
         public string password { get; set; }
+
+        [Required(ErrorMessage = "Debes agregar un rol")]
         public short id_rol { get; set; }
         public Nullable<int> id_business { get; set; }
     

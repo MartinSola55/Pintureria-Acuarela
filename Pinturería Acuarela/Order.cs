@@ -11,7 +11,8 @@ namespace Pinturería_Acuarela
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Order
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,6 +22,8 @@ namespace Pinturería_Acuarela
         }
     
         public long id { get; set; }
+
+        [Required(ErrorMessage = "Debes agregar una fecha")]
         public System.DateTime date { get; set; }
         public int id_user { get; set; }
         public bool status { get; set; }

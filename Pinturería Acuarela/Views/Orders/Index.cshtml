@@ -1,27 +1,24 @@
-﻿@model IEnumerable<Pinturería_Acuarela.Usuario>
+﻿@model IEnumerable<Pinturería_Acuarela.Order>
 
 @{
-    ViewBag.Title = "Usuarios";
+    ViewBag.Title = "Ordenes";
 }
 
-<h2>Usuarios</h2>
+<h2>Ordenes</h2>
 
 <p>
-    @Html.ActionLink("Crear usuario", "Create")
+    @Html.ActionLink("Realizar pedido", "Create")
 </p>
 <table class="table">
     <tr>
         <th>
-            Ciudad
+            Sucursal
         </th>
         <th>
-            Email
+            Día
         </th>
         <th>
-            Contraseña
-        </th>
-        <th>
-            Rol
+            Estado
         </th>
         <th></th>
     </tr>
@@ -29,16 +26,13 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Sucursal.city)
+            @Html.DisplayFor(modelItem => item.User.Business.adress)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.email)
+            @Html.DisplayFor(modelItem => item.date)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.password)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.rol)
+            @Html.DisplayFor(modelItem => item.status ? "En espera" : "Confirmado")
         </td>
         <td>
             @Html.ActionLink("Editar", "Edit", new { id=item.id }) |

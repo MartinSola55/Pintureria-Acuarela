@@ -175,6 +175,7 @@
     <Compile Include="Color.cs">
       <DependentUpon>EFModel.tt</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Controllers\BrandsController.cs" />
     <Compile Include="Controllers\CapacitiesController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
@@ -183,6 +184,14 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\SubcategoriesController.cs" />
+=======
+    <Compile Include="Controllers\BusinessesController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\OrdersController.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
+>>>>>>> 9d29bf181d279b3fced3e6c079f774437ec73074
     <Compile Include="EFModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -258,6 +267,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\Categories\Create.cshtml" />
     <Content Include="Views\Categories\Delete.cshtml" />
     <Content Include="Views\Categories\Details.cshtml" />
@@ -283,6 +293,21 @@
     <Content Include="Views\Capacities\Details.cshtml" />
     <Content Include="Views\Capacities\Edit.cshtml" />
     <Content Include="Views\Capacities\Index.cshtml" />
+=======
+    <Content Include="Views\Orders\Create.cshtml" />
+    <Content Include="Views\Orders\Delete.cshtml" />
+    <Content Include="Views\Orders\Details.cshtml" />
+    <Content Include="Views\Orders\Edit.cshtml" />
+    <Content Include="Views\Orders\Index.cshtml" />
+    <Content Include="Views\Businesses\Create.cshtml" />
+    <Content Include="Views\Businesses\Delete.cshtml" />
+    <Content Include="Views\Businesses\Edit.cshtml" />
+    <Content Include="Views\Businesses\Index.cshtml" />
+    <Content Include="Views\Users\Create.cshtml" />
+    <Content Include="Views\Users\Delete.cshtml" />
+    <Content Include="Views\Users\Edit.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
+>>>>>>> 9d29bf181d279b3fced3e6c079f774437ec73074
     <Content Include="Views\Products\Create.cshtml" />
     <Content Include="Views\Products\Delete.cshtml" />
     <Content Include="Views\Products\Details.cshtml" />

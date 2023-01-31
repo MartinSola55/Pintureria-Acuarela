@@ -353,7 +353,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="capacity1" Type="Double" Nullable="false" />
+          <Property Name="capacity" Type="Double" Nullable="false" />
           <NavigationProperty Name="Product" Relationship="Self.FK_Product_Capacity" FromRole="Capacity" ToRole="Product" />
         </EntityType>
         <EntityType Name="Category">
@@ -396,7 +396,7 @@
           <Property Name="id_capacity" Type="Int32" />
           <Property Name="id_color" Type="Int32" />
           <Property Name="quantity" Type="Int32" Nullable="false" />
-          <Property Name="internal_code" Type="Int32" Nullable="false" />
+          <Property Name="internal_code" Type="Int32" Nullable="true" />
           <Property Name="created_at" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="deleted_at" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Brand" Relationship="Self.FK_Product_Brand" FromRole="Product" ToRole="Brand" />
@@ -702,7 +702,7 @@
             <EntityTypeMapping TypeName="AcuarelaModel.Capacity">
               <MappingFragment StoreEntitySet="Capacity">
                 <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="capacity1" ColumnName="capacity" />
+                <ScalarProperty Name="capacity" ColumnName="capacity" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
