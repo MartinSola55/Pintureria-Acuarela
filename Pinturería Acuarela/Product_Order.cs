@@ -11,11 +11,15 @@ namespace Pinturería_Acuarela
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Product_Order
     {
         public int id_product { get; set; }
         public long id_order { get; set; }
+
+        [Required(ErrorMessage = "Debes agregar una cantidad")]
+        [Range(1, 10000, ErrorMessage = "Debes seleccionar una cantidad entre 1 y  10.000")]
         public int quantity { get; set; }
         public bool status { get; set; }
     

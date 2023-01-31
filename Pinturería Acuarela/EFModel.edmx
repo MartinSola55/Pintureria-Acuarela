@@ -396,7 +396,7 @@
           <Property Name="id_capacity" Type="Int32" />
           <Property Name="id_color" Type="Int32" />
           <Property Name="quantity" Type="Int32" Nullable="false" />
-          <Property Name="internal_code" Type="Int32" Nullable="false" />
+          <Property Name="internal_code" Type="Int32" Nullable="true" />
           <Property Name="created_at" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="deleted_at" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Brand" Relationship="Self.FK_Product_Brand" FromRole="Product" ToRole="Brand" />

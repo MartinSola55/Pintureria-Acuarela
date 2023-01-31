@@ -11,7 +11,8 @@ namespace Pinturería_Acuarela
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Business
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -22,6 +23,10 @@ namespace Pinturería_Acuarela
         }
     
         public int id { get; set; }
+
+        [Required(ErrorMessage = "Debes agregar un nombre")]
+        [StringLength(255, ErrorMessage = "Debes añadir un nombre de menos de 255 caracteres")]
+        [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s0-9.]+$", ErrorMessage = "Debes agregar un nombre válido")]
         public string adress { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

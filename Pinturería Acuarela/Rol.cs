@@ -11,7 +11,8 @@ namespace Pinturería_Acuarela
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Rol
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,6 +22,9 @@ namespace Pinturería_Acuarela
         }
     
         public short id { get; set; }
+
+        [Required(ErrorMessage = "Debes agregar una descripción")]
+        [StringLength(50, ErrorMessage = "Debes añadir una descripción de menos de 50 caracteres")]
         public string description { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -11,7 +11,8 @@ namespace Pinturería_Acuarela
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Product
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -22,14 +23,24 @@ namespace Pinturería_Acuarela
         }
     
         public int id { get; set; }
+
+        [Required(ErrorMessage = "Debes agregar una descripción")]
+        [StringLength(255, ErrorMessage = "Debes añadir una descripción de menos de 255 caracteres")]
         public string description { get; set; }
+
+        [Required(ErrorMessage = "Debes agregar una marca")]
         public int id_brand { get; set; }
         public Nullable<int> id_category { get; set; }
         public Nullable<int> id_subcategory { get; set; }
         public Nullable<int> id_capacity { get; set; }
         public Nullable<int> id_color { get; set; }
+
+        [Required(ErrorMessage = "Debes agregar una cantidad")]
+        [Range(0, 10000, ErrorMessage = "Debes agregar una cantidad entre 0 y 10.000")]
         public int quantity { get; set; }
-        public int internal_code { get; set; }
+
+
+        public Nullable<int> internal_code { get; set; }
         public System.DateTime created_at { get; set; }
         public Nullable<System.DateTime> deleted_at { get; set; }
     

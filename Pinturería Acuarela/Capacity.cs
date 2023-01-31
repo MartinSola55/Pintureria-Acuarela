@@ -11,7 +11,8 @@ namespace Pinturería_Acuarela
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Capacity
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,7 +22,10 @@ namespace Pinturería_Acuarela
         }
     
         public int id { get; set; }
-        public double capacity { get; set; }
+
+        [Required(ErrorMessage = "Debes agregar una capacidad")]
+        [StringLength(50, ErrorMessage = "Debes añadir una capacidad de menos de 50 caracteres")]
+        public string capacity { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Product { get; set; }
