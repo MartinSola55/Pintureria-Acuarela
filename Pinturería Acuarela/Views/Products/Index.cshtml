@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Pinturería_Acuarela.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<br /> 
+<br />
+<br />
+<br />
+
+<h2>Productos</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Codigo Interno
+        </th>
+        <th>
+            Descripcion
+        </th>
+        <th>
+            Marca
+        </th>
+        <th>
+            Categoria
+        </th>
+        <th>
+            Subcategoria
+        </th>
+        <th>
+            Color
+        </th>
+        <th>
+            Capacidad
+        </th>
+        <th>
+            Cantidad
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.internal_code)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Brand.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Category.description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Subcategory.description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Color.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Capacity.capacity)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.quantity)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.id })
+        </td>
+    </tr>
+}
+
+</table>
