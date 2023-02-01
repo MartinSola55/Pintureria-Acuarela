@@ -118,6 +118,7 @@
     <Content Include="Content\login.css" />
     <Content Include="Content\mis-estilos.css" />
     <Content Include="Content\navbar.css" />
+    <Content Include="Content\orders.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -139,17 +140,18 @@
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\navbar.js" />
+    <Content Include="Scripts\orders.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\CapacitiesController.cs" />
     <Compile Include="Models\Brand.cs" />
     <Compile Include="Models\Business.cs" />
     <Compile Include="Models\Capacity.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Color.cs" />
     <Compile Include="Controllers\BrandsController.cs" />
-    <Compile Include="Controllers\CapacitiesController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\ColorsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -223,11 +225,6 @@
     <Content Include="Views\Colors\Details.cshtml" />
     <Content Include="Views\Colors\Edit.cshtml" />
     <Content Include="Views\Colors\Index.cshtml" />
-    <Content Include="Views\Capacities\Create.cshtml" />
-    <Content Include="Views\Capacities\Delete.cshtml" />
-    <Content Include="Views\Capacities\Details.cshtml" />
-    <Content Include="Views\Capacities\Edit.cshtml" />
-    <Content Include="Views\Capacities\Index.cshtml" />
     <Content Include="Views\Orders\Create.cshtml" />
     <Content Include="Views\Orders\Delete.cshtml" />
     <Content Include="Views\Orders\Details.cshtml" />
@@ -246,6 +243,11 @@
     <Content Include="Views\Products\Details.cshtml" />
     <Content Include="Views\Products\Edit.cshtml" />
     <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Capacities\Create.cshtml" />
+    <Content Include="Views\Capacities\Delete.cshtml" />
+    <Content Include="Views\Capacities\Details.cshtml" />
+    <Content Include="Views\Capacities\Edit.cshtml" />
+    <Content Include="Views\Capacities\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -42,20 +42,20 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         // POST: Capacities/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,capacity1")] Capacity capacity)
+        public ActionResult Create([Bind(Include = "id,capacity")] Capacity cap)
         {
             if (ModelState.IsValid)
             {
-                db.Capacity.Add(capacity);
+                db.Capacity.Add(cap);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(capacity);
+            return View(cap);
         }
 
         // GET: Capacities/Edit/5
@@ -74,19 +74,19 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         // POST: Capacities/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,capacity1")] Capacity capacity)
+        public ActionResult Edit([Bind(Include = "id,capacity")] Capacity cap)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(capacity).State = EntityState.Modified;
+                db.Entry(cap).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(capacity);
+            return View(cap);
         }
 
         // GET: Capacities/Delete/5

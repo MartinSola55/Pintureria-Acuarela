@@ -4,23 +4,58 @@
     ViewBag.Title = "Ordenes";
 }
 
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
+<link href="~/Content/orders.css" rel="stylesheet" />
     
-    <div class="form-horizontal">
-        <h4>Orden</h4>
-        <hr />
+<div class="form-horizontal">
+    <h4>Orden</h4>
+    <hr />
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Ordenar" class="btn btn-dark" />
+    <div class="container d-flex flex-row align-self-center">
+        <div>
+            <label class="control-label col-md-2">Marca</label>
+            <div class="col-md-10">
+                @Html.DropDownList("id_brand", null, "Seleccionar una marca", htmlAttributes: new { @class = "form-control", @id = "id_brand" })
             </div>
         </div>
+        <div>
+            <label class="control-label col-md-2">Categoría</label>
+            <div class="col-md-10">
+                @Html.DropDownList("id_category", null, "Seleccionar una categoría", htmlAttributes: new { @class = "form-control", @id = "id_category" })
+            </div>
+        </div>
+        <div>
+            <label class="control-label col-md-2">Subcategoría</label>
+            <div class="col-md-10">
+                @Html.DropDownList("id_subcategory", null, "Seleccionar una subcategoría", htmlAttributes: new { @class = "form-control", @id = "id_subcategory" })
+            </div>
+        </div>
+        <div>
+            <label class="control-label col-md-2">Color</label>
+            <div class="col-md-10">
+                @Html.DropDownList("id_color", null, "Seleccionar una color", htmlAttributes: new { @class = "form-control", @id = "id_color" })
+            </div>
+        </div>
+        <div>
+            <label class="control-label col-md-2">Capacidad</label>
+            <div class="col-md-10">
+                @Html.DropDownList("id_capacity", null, "Seleccionar una capacidad", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })
+            </div>
+        </div>
+
     </div>
-}
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="button" value="Filtrar" class="btn btn-dark" id="btnFilter" />
+        </div>
+    </div>
+</div>
+
+<div id="contentTable" class="container mt-4">
+
+</div>
 
 <div>
     @Html.ActionLink("Volver al listado", "Index")
 </div>
+
+<script src="~/Scripts/orders.js"></script>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
@@ -39,7 +40,11 @@ namespace Pinturería_Acuarela.Controllers
         // GET: Orders/Create
         public ActionResult Create()
         {
-            ViewBag.id_user = new SelectList(db.User, "id", "email");
+            ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
+            ViewBag.id_category = new SelectList(db.Category, "id", "description");
+            ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
+            ViewBag.id_color = new SelectList(db.Color, "id", "name");
+            ViewBag.id_capacity = new SelectList(db.Capacity, "id", "capacity");
             return View();
         }
 
@@ -127,6 +132,41 @@ namespace Pinturería_Acuarela.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        [HttpGet]
+        public JsonResult FilterProducts(string id_brand, string id_category, string id_subcategory, string id_color, string id_capacity)
+        {
+            try
+            {
+                if (id_brand == "" && id_category == "" && id_subcategory == "" && id_color == "" && id_capacity == "")
+                {
+                    return Json(null, JsonRequestBehavior.AllowGet);
+                }
+                var products = db.Product
+                    .Where(p => 
+                    p.id_brand.ToString().Contains(id_brand) &&
+                    p.id_category.ToString().Contains(id_category) &&
+                    p.id_subcategory.ToString().Contains(id_subcategory) &&
+                    p.id_color.ToString().Contains(id_color) &&
+                    p.id_capacity.ToString().Contains(id_capacity))
+                    .Select(p => new
+                    {
+                        product_id = p.id,
+                        product = p.description,
+                        brand = p.Brand.name,
+                        category = p.Category.description,
+                        subcategory = p.Subcategory.description,
+                        color = p.Color.name,
+                        hex_color = p.Color.rgb_hex_code,
+                        p.Capacity.capacity
+                    });
+                return Json(products, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json (JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Pinturería_Acuarela
         [Column("capacity")]
         [Required]
         [StringLength(50)]
-        public string capacity1 { get; set; }
+        public string capacity { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Product { get; set; }

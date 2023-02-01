@@ -35,9 +35,10 @@
             @Html.DisplayFor(modelItem => item.status ? "En espera" : "Confirmado")
         </td>
         <td>
-            @Html.ActionLink("Editar", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Detalles", "Details", new { id=item.id }) |
-            @Html.ActionLink("Eliminar", "Delete", new { id=item.id })
+            <div class="d-flex flex-row justify-content-center">
+                <a class='btn btn-success me-4' href="Orders/Edit/@item.id"><i class='bi bi-pencil-square'></i></a>
+                <a class='btn btn-danger ms-4' href="Orders/Delete/@item.id"><i class='bi bi-trash3'></i></a>
+            </div>
         </td>
     </tr>
 }

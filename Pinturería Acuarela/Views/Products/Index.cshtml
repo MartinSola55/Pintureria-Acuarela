@@ -1,18 +1,13 @@
 ﻿@model IEnumerable<Pinturería_Acuarela.Product>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Productos";
 }
-
-<br /> 
-<br />
-<br />
-<br />
 
 <h2>Productos</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Cargar un producto", "Create")
 </p>
 <table class="table">
     <tr>
@@ -70,9 +65,10 @@
             @Html.DisplayFor(modelItem => item.quantity)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
-            @Html.ActionLink("Details", "Details", new { id = item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.id })
+            <div class="d-flex flex-row justify-content-center">
+                <a class='btn btn-success me-4' href="Products/Edit/@item.id"><i class='bi bi-pencil-square'></i></a>
+                <a class='btn btn-danger ms-4' href="Products/Delete/@item.id"><i class='bi bi-trash3'></i></a>
+            </div>
         </td>
     </tr>
 }
