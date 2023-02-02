@@ -55,6 +55,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -248,6 +249,8 @@
     <Content Include="Views\Capacities\Details.cshtml" />
     <Content Include="Views\Capacities\Edit.cshtml" />
     <Content Include="Views\Capacities\Index.cshtml" />
+    <Content Include="Views\Businesses\Details.cshtml" />
+    <Content Include="Views\Orders\Basket.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -4,39 +4,77 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h2>Detalles de la orden</h2>
 
 <div>
-    <h4>Order</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.date)
-        </dt>
+    <table class="table">
+        <tr>
+            <th>
+                Descripción
+            </th>
+            <th>
+                Marca
+            </th>
+            <th>
+                Categoría
+            </th>
+            <th>
+                Subcategoría
+            </th>
+            <th>
+                Código interno
+            </th>
+            <th>
+                Cantidad en stock
+            </th>
+            <th>
+                Cantidad pedida
+            </th>
+            <th>
+                Confirmar
+            </th>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.date)
-        </dd>
+        @foreach (var item in Model.Product_Order)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Brand.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Category.description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Subcategory.description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.internal_code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.quantity)
+                </td>
+                <td>
+                    @if (item.status == false)
+                    {
+                        @Html.ActionLink("Confirmar producto", "ConfirmProduct", new { id_product = item.id_product, id_order = item.id_order, quant = item.quantity })
+                    } else
+                    {
+                        @:<p>Confirmado</p>
+                    }
+                </td>
+            </tr>
+        }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.status)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.status)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User.email)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User.email)
-        </dd>
-
-    </dl>
+    </table>
 </div>
 <p>
+    @*@Html.ActionLink("Confirmar orden", "ConfirmOrder", new { id = Model.id }) |*@
     @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

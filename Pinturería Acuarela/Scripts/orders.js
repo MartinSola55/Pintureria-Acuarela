@@ -1,18 +1,5 @@
-﻿const header = ["Producto", "Marca", "Categoría", "Subcategoría", "Color", "Capacidad", "Cantidad", "Añadir"]
-
-function createTable(data) {
+﻿function createTable(data) {
     let contenido = "";
-    contenido += "<table id='tabla-generic' class='container table table-light table-striped table-bordered table-hover'>";
-    contenido += "<thead class='table-dark'>";
-    contenido += "<tr class='fw-bold'>";
-    for (let i = 0; i < header.length; i++) {
-        contenido += "<td class='text-center'>";
-        contenido += header[i];
-        contenido += "</td>";
-    }
-    contenido += "</tr>";
-    contenido += "</thead>";
-    contenido += "<tbody>";
     for (let i = 0; i < data.length; i++) {
         contenido += "<tr>";
         contenido += "<td>" + data[i].product ?? "" + "</td>";
@@ -33,9 +20,9 @@ function createTable(data) {
         contenido += "<td>" + capacity + "</td>";
         contenido += "<td>";
         contenido += "<div class='d-flex flex-row justify-content-center'>";
-        contenido += "<div class='value-button' id='decrease' onclick='decreaseValue()' value='Decrease Value'>-</div>";
-        contenido += "<input type='number' id='number' value='0' />";
-        contenido += "<div class='value-button' id='increase' onclick='increaseValue()' value='Increase Value'>+</div>";
+        contenido += "<div class='value-button' id='decrease' onclick='decreaseValue(" + data[i].product_id + ")' value='Decrease Value'>-</div>";
+        contenido += "<input type='number' id='number" + data[i].product_id + "' class='number' value='0' />";
+        contenido += "<div class='value-button' id='increase' onclick='increaseValue(" + data[i].product_id + ")' value='Increase Value'>+</div>";
         contenido += "</div>";
         contenido += "</td>";
         contenido += "<td>";
@@ -45,24 +32,28 @@ function createTable(data) {
         contenido += "</td>";
         contenido += "</tr>";
     }
-    contenido += "</tbody>";
-    contenido += "</table>";
     $("#contentTable").html(contenido);
 }
 
-function increaseValue() {
-    let value = parseInt(document.getElementById('number').value, 10);
+function increaseValue(id) {
+    let value = parseInt(document.getElementById('number' + id).value, 10);
     value = isNaN(value) ? 0 : value;
     value++;
-    document.getElementById('number').value = value;
+    document.getElementById('number' + id).value = value;
 }
 
-function decreaseValue() {
-    let value = parseInt(document.getElementById('number').value, 10);
+function decreaseValue(id) {
+    let value = parseInt(document.getElementById('number' + id).value, 10);
     value = isNaN(value) ? 0 : value;
     value < 1 ? value = 1 : '';
     value--;
-    document.getElementById('number').value = value;
+    document.getElementById('number' + id).value = value;
+}
+
+function addToCart(id) {
+    $.get("AddToCart/?id=" + id + "&cant=" + $("#number" + id).val(), function (data) {
+        $("#basketCount").html(data);
+    });
 }
 
 $('#btnFilter').on('click', function (ev) {
