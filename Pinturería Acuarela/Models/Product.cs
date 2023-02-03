@@ -32,8 +32,6 @@ namespace Pinturería_Acuarela
 
         public int? id_color { get; set; }
 
-        public int quantity { get; set; }
-
         public int? internal_code { get; set; }
 
         public DateTime created_at { get; set; }

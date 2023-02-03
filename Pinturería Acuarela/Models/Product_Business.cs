@@ -20,6 +20,8 @@ namespace Pinturería_Acuarela
 
         public int? minimum_stock { get; set; }
 
+        public int stock { get; set; }
+
         public virtual Business Business { get; set; }
 
         public virtual Product Product { get; set; }
