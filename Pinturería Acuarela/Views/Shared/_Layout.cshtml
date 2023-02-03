@@ -17,9 +17,16 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <a class="navbar-brand navbar-logo" href="/Home">
-                    <img src="~/Content/Images/logo-acuarela.png" alt="Logo" style="max-width: 300px; max-height: 40px">
-                </a>
+                @{
+                    if (Session["idUsuario"] != null)
+                    {
+                        @:<a class="text-light text-decoration-none" href="/Login/Logout">Cerrar sesión</a>
+                    }
+                    else
+                    {
+                        @:<a class="text-light text-decoration-none" href="/Login">Iniciar sesión</a>
+                    }
+                }
                 <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
                     <div class="offcanvas-header">
                         <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Menú</h5>
@@ -57,20 +64,6 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/Users"><i class="bi bi-person"></i>Usuarios</a>
                             </li>
-                            @{
-                            if (Session["idUsuario"] != null)
-                            {
-                                @:<li class="nav-item" id="logout">
-                                    @:<a class="nav-link" href="/Login/Logout">Cerrar sesión</a>
-                                @:</li>
-                            }
-                            else
-                            {
-                                @:<li class="nav-item" id="login">
-                                    @:<a class="nav-link" href="/Login">Iniciar sesión</a>
-                                @:</li>
-                            }
-                            }
                         </ul>
                         <form class="d-flex mt-3" role="search">
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">

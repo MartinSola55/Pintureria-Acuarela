@@ -8,6 +8,19 @@
     
 <div class="form-horizontal">
     <h4>Orden</h4>
+    <p>
+        Has agregado
+        @if (Session["BasketCount"] != null)
+        {
+            <span id="basketCount">@Session["BasketCount"].ToString()</span>
+        }
+        else
+        {
+            <span id="basketCount">0</span>
+        }
+        elementos a tu orden
+    </p>
+    <a href="../Orders/Basket"><input type="button" value="Ver productos en orden" class="btn btn-dark" id="btnBasket" /></a>
     <hr />
 
     <div class="container d-flex flex-row align-self-center">
@@ -50,7 +63,24 @@
     </div>
 </div>
 
-<div id="contentTable" class="container mt-4">
+<div class="container mt-4">
+    <table id='tabla-generic' class='container table table-light table-striped table-bordered table-hover'>
+        <thead class='table-dark'>
+            <tr class='fw-bold'>
+                <td class='text-center'>Producto</td>
+                <td class='text-center'>Marca</td>
+                <td class='text-center'>Categoría</td>
+                <td class='text-center'>Subcategoría</td>
+                <td class='text-center'>Color</td>
+                <td class='text-center'>Capacidad</td>
+                <td class='text-center'>Cantidad</td>
+                <td class='text-center'>Añadir</td>
+            </tr>
+        </thead>
+        <tbody id="contentTable">
+
+        </tbody>
+    </table>
 
 </div>
 

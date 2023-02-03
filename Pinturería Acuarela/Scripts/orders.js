@@ -1,68 +1,62 @@
-﻿const header = ["Producto", "Marca", "Categoría", "Subcategoría", "Color", "Capacidad", "Cantidad", "Añadir"]
-
-function createTable(data) {
-    let content = "";
-    content += "<table id='tabla-generic' class='container table table-light table-striped table-bordered table-hover'>";
-    content += "<thead class='table-dark'>";
-    content += "<tr class='fw-bold'>";
-    for (let i = 0; i < header.length; i++) {
-        content += "<td class='text-center'>";
-        content += header[i];
-        content += "</td>";
-    }
-    content += "</tr>";
-    content += "</thead>";
-    content += "<tbody>";
+﻿function createTable(data) {
+    let contenido = "";
     for (let i = 0; i < data.length; i++) {
-        content += "<tr>";
-        content += "<td>" + data[i].product ?? "" + "</td>";
-        content += "<td>" + data[i].brand + "</td>";
+        contenido += "<tr>";
+        contenido += "<td>" + data[i].product ?? "" + "</td>";
+        contenido += "<td>" + data[i].brand + "</td>";
         let category = data[i].category != null ? data[i].category : "";
-        content += "<td>" + category + "</td>";
+        contenido += "<td>" + category + "</td>";
         let subcategory = data[i].subcategory != null ? data[i].subcategory : "";
-        content += "<td>" + subcategory + "</td>";
+        contenido += "<td>" + subcategory + "</td>";
         if (data[i].color != null) {
-            content += "<td>";
-            content += "<div class='d-flex flex-row justify-content-between align-items-center' >";
-            content += data[i].color;
-            content += "<span class='dot' style='background-color: " + data[i].hex_color + "'></span>";
-            content += "</div>";
-            content += "</td>";
+            contenido += "<td>";
+            contenido += "<div class='d-flex flex-row justify-content-between align-items-center' >";
+            contenido += data[i].color;
+            contenido += "<span class='dot' style='background-color: " + data[i].hex_color + "'></span>";
+            contenido += "</div>";
+            contenido += "</td>";
+        } else {
+            contenido += "<td>";
+            contenido += "</td>";
         }
         let capacity = data[i].capacity != null ? data[i].capacity : "";
-        content += "<td>" + capacity + "</td>";
-        content += "<td>";
-        content += "<div class='d-flex flex-row justify-content-center'>";
-        content += "<div class='value-button' id='decrease' onclick='decreaseValue()' value='Decrease Value'>-</div>";
-        content += "<input type='number' id='number' value='0' />";
-        content += "<div class='value-button' id='increase' onclick='increaseValue()' value='Increase Value'>+</div>";
-        content += "</div>";
-        content += "</td>";
-        content += "<td>";
-        content += "<div class='d-flex justify-content-center'>";
-        content += "<button class='btn btn-success' onclick='addToCart(" + data[i].product_id + ")'><i class='bi bi-plus-circle'></i></button>";
-        content += "</div>";
-        content += "</td>";
-        content += "</tr>";
+        contenido += "<td>" + capacity + "</td>";
+        contenido += "<td>";
+        contenido += "<div class='d-flex flex-row justify-content-center'>";
+        contenido += "<div class='value-button' id='decrease' onclick='decreaseValue(" + data[i].product_id + ")' value='Decrease Value'>-</div>";
+        contenido += "<input type='number' id='number" + data[i].product_id + "' class='number' value='0' />";
+        contenido += "<div class='value-button' id='increase' onclick='increaseValue(" + data[i].product_id + ")' value='Increase Value'>+</div>";
+        contenido += "</div>";
+        contenido += "</td>";
+        contenido += "<td>";
+        contenido += "<div class='d-flex justify-content-center'>";
+        contenido += "<button class='btn btn-success' onclick='addToCart(" + data[i].product_id + ")'><i class='bi bi-plus-circle'></i></button>";
+        contenido += "</div>";
+        contenido += "</td>";
+        contenido += "</tr>";
     }
-    content += "</tbody>";
-    content += "</table>";
-    $("#contentTable").html(content);
+    $("#contentTable").html(contenido);
 }
 
-function increaseValue() {
-    let value = parseInt(document.getElementById('number').value, 10);
+function increaseValue(id) {
+    let value = parseInt(document.getElementById('number' + id).value, 10);
     value = isNaN(value) ? 0 : value;
     value++;
-    document.getElementById('number').value = value;
+    document.getElementById('number' + id).value = value;
 }
 
-function decreaseValue() {
-    let value = parseInt(document.getElementById('number').value, 10);
+function decreaseValue(id) {
+    let value = parseInt(document.getElementById('number' + id).value, 10);
     value = isNaN(value) ? 0 : value;
     value < 1 ? value = 1 : '';
     value--;
-    document.getElementById('number').value = value;
+    document.getElementById('number' + id).value = value;
+}
+
+function addToCart(id) {
+    $.get("AddToCart/?id=" + id + "&cant=" + $("#number" + id).val(), function (data) {
+        $("#basketCount").html(data);
+    });
 }
 
 $('#btnFilter').on('click', function (ev) {

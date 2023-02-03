@@ -82,6 +82,7 @@
 
 .data-card:hover h4 {
     color: #ffffff;
+    border-bottom-color: #a754c4;
 }
 
 .data-card:hover p {

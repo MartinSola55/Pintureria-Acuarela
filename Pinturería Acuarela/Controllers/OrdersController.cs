@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Transactions;
 using Pinturería_Acuarela;
 
 namespace Pinturería_Acuarela.Controllers
@@ -16,10 +17,15 @@ namespace Pinturería_Acuarela.Controllers
         private EFModel db = new EFModel();
 
         // GET: Orders
-        public ActionResult Index()
+        public ActionResult Index(int? id)
         {
+            if (id != null)
+            {
+                var orders = db.Order.Where(o => o.User.Business.id.Equals(id.Value));
+                return View(orders.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
+            }
             var order = db.Order.Include(o => o.User);
-            return View(order.ToList());
+            return View(order.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
         }
 
         // GET: Orders/Details/5
@@ -120,8 +126,17 @@ namespace Pinturería_Acuarela.Controllers
         public ActionResult DeleteConfirmed(long id)
         {
             Order order = db.Order.Find(id);
-            db.Order.Remove(order);
-            db.SaveChanges();
+            var prod_orders = db.Product_Order.Where(po => po.id_order.Equals(id)).ToList();
+            using (var transaccion = new TransactionScope())
+            {
+                foreach (Product_Order item in prod_orders)
+                {
+                    db.Product_Order.Remove(item);
+                }
+                db.Order.Remove(order);
+                db.SaveChanges();
+                transaccion.Complete();
+            }
             return RedirectToAction("Index");
         }
 
@@ -167,6 +182,125 @@ namespace Pinturería_Acuarela.Controllers
             {
                 return Json (JsonRequestBehavior.AllowGet);
             }
+        }
+        [HttpGet]
+        public int AddToCart(int? id, int? cant)
+        {
+            List<int[]> products = new List<int[]>();
+            if (id != null && cant != null)
+            {
+                if (cant == 0)
+                {
+                    ViewBag.Error = "Debes seleecionar una cantidad mayor a 1";
+                    return 0;
+                }
+                if (Session["Basket"] != null)
+                {
+                    products = Session["Basket"] as List<int[]>;
+                }
+                int[] aux = new int[2];
+                aux[0] = id.Value;
+                aux[1] = cant.Value;
+                products.Add(aux);
+                Session["Basket"] = products;
+            }
+            Session["BasketCount"] = products.Count;
+            return products.Count;
+        }
+        public ActionResult Basket()
+        {
+            if (Session["Basket"] != null)
+            {
+                List<int[]> basket = Session["Basket"] as List<int[]>;
+                List<Product_Order> products = new List<Product_Order>();
+                foreach (int[] item in basket)
+                {
+                    int aux = item[0];
+                    Product prod = db.Product.Where(p => p.id.Equals(aux)).FirstOrDefault();
+                    Product_Order po = new Product_Order();
+                    po.Product = prod;
+                    po.quantity = item[1];
+                    products.Add(po);
+                }
+                return View(products);
+            } else
+            {
+                return RedirectToAction("Create");
+            }
+        }
+        public ActionResult CreateOrder()
+        {
+            if (Session["Basket"] != null)
+            {
+                List<int[]> basket = Session["Basket"] as List<int[]>;
+                List<Product_Order> products = new List<Product_Order>();
+                foreach (int[] item in basket)
+                {
+                    int aux = item[0];
+                    Product prod = db.Product.Where(p => p.id.Equals(aux)).FirstOrDefault();
+                    Product_Order po = new Product_Order();
+                    po.Product = prod;
+                    po.quantity = item[1];
+                    products.Add(po);
+                }
+                Order order = new Order
+                {
+                    date = DateTime.Now,
+                    id_user = int.Parse(Session["idUsuario"].ToString()),
+                    status = false
+                };
+                using (var transaccion = new TransactionScope())
+                {
+                    db.Order.Add(order);
+                    db.SaveChanges();
+                    foreach (Product_Order item in products)
+                    {
+                        item.id_order = order.id;
+                        db.Product_Order.Add(item);
+                    }
+                    db.SaveChanges();
+                    transaccion.Complete();
+                }
+                Session["Basket"] = null;
+            }
+            return RedirectToAction("Index");
+        }
+        public ActionResult ConfirmProduct(int? id_product, int? id_order, int? quant)
+        {
+            if (id_product != null && id_order != null && quant != null)
+            {
+                Product_Order prod_order = db.Product_Order.Where(p => p.id_product.Equals(id_product.Value) && p.id_order.Equals(id_order.Value)).First();
+                if (prod_order != null)
+                {
+                    if (prod_order.quantity == quant)
+                    {
+                        prod_order.status = true;
+                    } else
+                    {
+                        prod_order.quantity = prod_order.quantity - quant.Value;
+                    }
+                    db.Entry(prod_order).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("/Details/" + id_order);
+                }
+            }
+            return View("Index");
+        }
+        public ActionResult ConfirmOrder(int? id)
+        {
+            if (id != null)
+            {
+                var order = db.Order.Where(o => o.id.Equals(id.Value)).First();
+                order.status = true;
+                foreach (Product_Order item in order.Product_Order)
+                {
+                    item.status = true;
+                }
+                db.Entry(order).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            var orders = db.Order.Include(o => o.User);
+            return RedirectToAction("Index");
         }
     }
 }

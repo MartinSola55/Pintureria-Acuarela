@@ -3,32 +3,27 @@
 @{
     ViewBag.Title = "Sucursales";
 }
+<link href="~/Content/cards.css" rel="stylesheet" type="text/css" />
+
 
 <h2>Sucursales</h2>
 
 <p>
     @Html.ActionLink("Añadir una nueva sucursal", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            Nombre
-        </th>
-        <th></th>
-    </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.adress)
-        </td>
-        <td>
-            <div class="d-flex flex-row justify-content-center">
-                <a class='btn btn-success me-4' href="Businesses/Edit/@item.id"><i class='bi bi-pencil-square'></i></a>
-                <a class='btn btn-danger ms-4' href="Businesses/Delete/@item.id"><i class='bi bi-trash3'></i></a>
-            </div>
-        </td>
-    </tr>
+<div class="container-fluid d-flex flex-row">
+    @foreach (var item in Model)
+    {
+
+        <a href="../Businesses/Details/@item.id" class="data-card">
+            <h3>@item.adress</h3>
+            <span class="link-text">
+                Ver detalles de la sucursal
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" fill="#753BBD" />
+                </svg>
+            </span>
+        </a>
 }
-
-</table>
+</div>

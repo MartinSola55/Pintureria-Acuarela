@@ -2,6 +2,7 @@
     height: 15px;
     width: 15px;
     border-radius: 50%;
+    border: solid 1px black;
 }
 
 
@@ -42,7 +43,7 @@
     padding: 0px;
 }
 
-input#number {
+input.number {
   text-align: center;
   border: none;
   border-top: 1px solid #ddd;
@@ -57,3 +58,5 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* Carrito de compras */
