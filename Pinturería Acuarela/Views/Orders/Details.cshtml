@@ -74,7 +74,9 @@
     </table>
 </div>
 <p>
-    @*@Html.ActionLink("Confirmar orden", "ConfirmOrder", new { id = Model.id }) |*@
+    @if (Model.status == false) {
+        @Html.ActionLink("Confirmar orden", "ConfirmOrder", new { id = Model.id }); @: | 
+    }
     @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

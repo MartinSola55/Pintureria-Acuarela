@@ -214,7 +214,7 @@ namespace Pinturería_Acuarela.Controllers
                 return RedirectToAction("Create");
             }
         }
-        public ActionResult ConfirmOrder()
+        public ActionResult CreateOrder()
         {
             if (Session["Basket"] != null)
             {
@@ -270,6 +270,22 @@ namespace Pinturería_Acuarela.Controllers
                 }
             }
             return View("Index");
+        }
+        public ActionResult ConfirmOrder(int? id)
+        {
+            if (id != null)
+            {
+                var order = db.Order.Where(o => o.id.Equals(id.Value)).First();
+                order.status = true;
+                foreach (Product_Order item in order.Product_Order)
+                {
+                    item.status = true;
+                }
+                db.Entry(order).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            var orders = db.Order.Include(o => o.User);
+            return RedirectToAction("Index");
         }
     }
 }
