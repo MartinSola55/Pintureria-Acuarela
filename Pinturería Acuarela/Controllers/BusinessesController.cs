@@ -32,6 +32,8 @@ namespace Pinturería_Acuarela.Controllers
             {
                 return HttpNotFound();
             }
+            int uncorfirmedOrders = db.Order.Where(o => o.User.Business.id.Equals(id.Value) && o.status.Equals(false)).Count();
+            ViewBag.UnconfirmedOrders = uncorfirmedOrders;
             return View(business);
         }
 
@@ -122,6 +124,14 @@ namespace Pinturería_Acuarela.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+        public ActionResult BusinessOrders(int? id)
+        {
+            if (id != null)
+            {   
+                return RedirectToAction("Index", "Orders", new { id });
+            }
+            return RedirectToAction("Index");
         }
     }
 }

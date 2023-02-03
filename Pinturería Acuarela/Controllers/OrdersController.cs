@@ -17,10 +17,15 @@ namespace Pinturería_Acuarela.Controllers
         private EFModel db = new EFModel();
 
         // GET: Orders
-        public ActionResult Index()
+        public ActionResult Index(int? id)
         {
+            if (id != null)
+            {
+                var orders = db.Order.Where(o => o.User.Business.id.Equals(id.Value));
+                return View(orders.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
+            }
             var order = db.Order.Include(o => o.User);
-            return View(order.ToList());
+            return View(order.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
         }
 
         // GET: Orders/Details/5
@@ -121,8 +126,17 @@ namespace Pinturería_Acuarela.Controllers
         public ActionResult DeleteConfirmed(long id)
         {
             Order order = db.Order.Find(id);
-            db.Order.Remove(order);
-            db.SaveChanges();
+            var prod_orders = db.Product_Order.Where(po => po.id_order.Equals(id)).ToList();
+            using (var transaccion = new TransactionScope())
+            {
+                foreach (Product_Order item in prod_orders)
+                {
+                    db.Product_Order.Remove(item);
+                }
+                db.Order.Remove(order);
+                db.SaveChanges();
+                transaccion.Complete();
+            }
             return RedirectToAction("Index");
         }
 
@@ -247,6 +261,7 @@ namespace Pinturería_Acuarela.Controllers
                     db.SaveChanges();
                     transaccion.Complete();
                 }
+                Session["Basket"] = null;
             }
             return RedirectToAction("Index");
         }

@@ -15,6 +15,9 @@
             contenido += "<span class='dot' style='background-color: " + data[i].hex_color + "'></span>";
             contenido += "</div>";
             contenido += "</td>";
+        } else {
+            contenido += "<td>";
+            contenido += "</td>";
         }
         let capacity = data[i].capacity != null ? data[i].capacity : "";
         contenido += "<td>" + capacity + "</td>";
