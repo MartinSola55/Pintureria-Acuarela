@@ -17,6 +17,11 @@ namespace Pinturería_Acuarela.Controllers
         // GET: Products
         public ActionResult Index()
         {
+            ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
+            ViewBag.id_capacity = new SelectList(db.Capacity, "id", "capacity");
+            ViewBag.id_category = new SelectList(db.Category, "id", "description");
+            ViewBag.id_color = new SelectList(db.Color, "id", "name");
+            ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
             var product = db.Product.Include(p => p.Brand).Include(p => p.Capacity).Include(p => p.Category).Include(p => p.Color).Include(p => p.Subcategory);
             return View(product.ToList());
         }
@@ -59,7 +64,9 @@ namespace Pinturería_Acuarela.Controllers
                 product.created_at= DateTime.Now;
                 db.Product.Add(product);
                 db.SaveChanges();
+                TempData["SuccessMessage"] = "El producto fue creado";
                 return RedirectToAction("Index");
+                //return RedirectToAction("Index", "Products", new { ac = "success" });
             }
 
             ViewBag.id_brand = new SelectList(db.Brand, "id", "name", product.id_brand);
@@ -134,6 +141,7 @@ namespace Pinturería_Acuarela.Controllers
             Product product = db.Product.Find(id);
             db.Product.Remove(product);
             db.SaveChanges();
+            TempData["DeleteMessage"] = "El producto fue eliminado";
             return RedirectToAction("Index");
         }
 
@@ -144,6 +152,71 @@ namespace Pinturería_Acuarela.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        [HttpGet]
+        public JsonResult FilterSearch(string nom)
+        {
+            try
+            {
+                var list = db.Product.Where(p=>p.description.Contains(nom) || p.internal_code.ToString().Contains(nom))
+                    .Select(p => new
+                    {
+                        p.id,
+                        p.internal_code,
+                        p.description,
+                        brand = p.Brand.name,
+                        category = p.Category.description,
+                        subcategory = p.Subcategory.description,
+                        p.Capacity.capacity,
+                        p.quantity,
+                        color = p.Color.name,
+                        p.Color.rgb_hex_code
+                    }).ToList();
+                return Json(list, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(JsonRequestBehavior.AllowGet);
+            }
+            
+        }
+
+        [HttpGet]
+        public JsonResult FilterProducts(string id_brand, string id_category, string id_subcategory, string id_color, string id_capacity)
+        {
+            try
+            {
+                if (id_brand == "" && id_category == "" && id_subcategory == "" && id_color == "" && id_capacity == "")
+                {
+                    return Json(null, JsonRequestBehavior.AllowGet);
+                }
+                var products = db.Product
+                    .Where(p =>
+                    p.id_brand.ToString().Contains(id_brand) &&
+                    p.id_category.ToString().Contains(id_category) &&
+                    p.id_subcategory.ToString().Contains(id_subcategory) &&
+                    p.id_color.ToString().Contains(id_color) &&
+                    p.id_capacity.ToString().Contains(id_capacity))
+                    .Select(p => new
+                    {
+                        p.id,
+                        p.internal_code,
+                        p.description,
+                        brand = p.Brand.name,
+                        p.quantity,
+                        category = p.Category.description,
+                        subcategory = p.Subcategory.description,
+                        color = p.Color.name,
+                        p.Color.rgb_hex_code,
+                        p.Capacity.capacity
+                    });
+                return Json(products, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

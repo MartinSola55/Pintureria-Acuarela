@@ -1,53 +1,53 @@
 ﻿const header = ["Producto", "Marca", "Categoría", "Subcategoría", "Color", "Capacidad", "Cantidad", "Añadir"]
 
 function createTable(data) {
-    let contenido = "";
-    contenido += "<table id='tabla-generic' class='container table table-light table-striped table-bordered table-hover'>";
-    contenido += "<thead class='table-dark'>";
-    contenido += "<tr class='fw-bold'>";
+    let content = "";
+    content += "<table id='tabla-generic' class='container table table-light table-striped table-bordered table-hover'>";
+    content += "<thead class='table-dark'>";
+    content += "<tr class='fw-bold'>";
     for (let i = 0; i < header.length; i++) {
-        contenido += "<td class='text-center'>";
-        contenido += header[i];
-        contenido += "</td>";
+        content += "<td class='text-center'>";
+        content += header[i];
+        content += "</td>";
     }
-    contenido += "</tr>";
-    contenido += "</thead>";
-    contenido += "<tbody>";
+    content += "</tr>";
+    content += "</thead>";
+    content += "<tbody>";
     for (let i = 0; i < data.length; i++) {
-        contenido += "<tr>";
-        contenido += "<td>" + data[i].product ?? "" + "</td>";
-        contenido += "<td>" + data[i].brand + "</td>";
+        content += "<tr>";
+        content += "<td>" + data[i].product ?? "" + "</td>";
+        content += "<td>" + data[i].brand + "</td>";
         let category = data[i].category != null ? data[i].category : "";
-        contenido += "<td>" + category + "</td>";
+        content += "<td>" + category + "</td>";
         let subcategory = data[i].subcategory != null ? data[i].subcategory : "";
-        contenido += "<td>" + subcategory + "</td>";
+        content += "<td>" + subcategory + "</td>";
         if (data[i].color != null) {
-            contenido += "<td>";
-            contenido += "<div class='d-flex flex-row justify-content-between align-items-center' >";
-            contenido += data[i].color;
-            contenido += "<span class='dot' style='background-color: " + data[i].hex_color + "'></span>";
-            contenido += "</div>";
-            contenido += "</td>";
+            content += "<td>";
+            content += "<div class='d-flex flex-row justify-content-between align-items-center' >";
+            content += data[i].color;
+            content += "<span class='dot' style='background-color: " + data[i].hex_color + "'></span>";
+            content += "</div>";
+            content += "</td>";
         }
         let capacity = data[i].capacity != null ? data[i].capacity : "";
-        contenido += "<td>" + capacity + "</td>";
-        contenido += "<td>";
-        contenido += "<div class='d-flex flex-row justify-content-center'>";
-        contenido += "<div class='value-button' id='decrease' onclick='decreaseValue()' value='Decrease Value'>-</div>";
-        contenido += "<input type='number' id='number' value='0' />";
-        contenido += "<div class='value-button' id='increase' onclick='increaseValue()' value='Increase Value'>+</div>";
-        contenido += "</div>";
-        contenido += "</td>";
-        contenido += "<td>";
-        contenido += "<div class='d-flex justify-content-center'>";
-        contenido += "<button class='btn btn-success' onclick='addToCart(" + data[i].product_id + ")'><i class='bi bi-plus-circle'></i></button>";
-        contenido += "</div>";
-        contenido += "</td>";
-        contenido += "</tr>";
+        content += "<td>" + capacity + "</td>";
+        content += "<td>";
+        content += "<div class='d-flex flex-row justify-content-center'>";
+        content += "<div class='value-button' id='decrease' onclick='decreaseValue()' value='Decrease Value'>-</div>";
+        content += "<input type='number' id='number' value='0' />";
+        content += "<div class='value-button' id='increase' onclick='increaseValue()' value='Increase Value'>+</div>";
+        content += "</div>";
+        content += "</td>";
+        content += "<td>";
+        content += "<div class='d-flex justify-content-center'>";
+        content += "<button class='btn btn-success' onclick='addToCart(" + data[i].product_id + ")'><i class='bi bi-plus-circle'></i></button>";
+        content += "</div>";
+        content += "</td>";
+        content += "</tr>";
     }
-    contenido += "</tbody>";
-    contenido += "</table>";
-    $("#contentTable").html(contenido);
+    content += "</tbody>";
+    content += "</table>";
+    $("#contentTable").html(content);
 }
 
 function increaseValue() {

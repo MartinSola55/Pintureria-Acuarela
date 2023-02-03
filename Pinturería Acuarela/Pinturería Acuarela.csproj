@@ -141,6 +141,7 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\navbar.js" />
     <Content Include="Scripts\orders.js" />
+    <Content Include="Scripts\products.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
