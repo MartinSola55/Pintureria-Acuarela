@@ -53,6 +53,10 @@ namespace Pinturería_Acuarela
                 .HasForeignKey(e => e.id_business);
 
             modelBuilder.Entity<Capacity>()
+                .Property(e => e.description)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Capacity>()
                 .HasMany(e => e.Product)
                 .WithOptional(e => e.Capacity)
                 .HasForeignKey(e => e.id_capacity);
