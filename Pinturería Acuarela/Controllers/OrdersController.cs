@@ -40,6 +40,15 @@ namespace Pinturería_Acuarela.Controllers
             {
                 return HttpNotFound();
             }
+            if (TempData.Count == 1)
+            {
+                ViewBag.Message = TempData["Message"].ToString();
+            }
+            else if (TempData.Count == 2)
+            {
+                ViewBag.Message = TempData["Message"].ToString();
+                ViewBag.Error = TempData["Error"];
+            }
             return View(order);
         }
 
@@ -69,54 +78,6 @@ namespace Pinturería_Acuarela.Controllers
             }
 
             ViewBag.id_user = new SelectList(db.User, "id", "email", order.id_user);
-            return View(order);
-        }
-
-        // GET: Orders/Edit/5
-        public ActionResult Edit(long? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Order order = db.Order.Find(id);
-            if (order == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.id_user = new SelectList(db.User, "id", "email", order.id_user);
-            return View(order);
-        }
-
-        // POST: Orders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,date,id_user,status")] Order order)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(order).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.id_user = new SelectList(db.User, "id", "email", order.id_user);
-            return View(order);
-        }
-
-        // GET: Orders/Delete/5
-        public ActionResult Delete(long? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Order order = db.Order.Find(id);
-            if (order == null)
-            {
-                return HttpNotFound();
-            }
             return View(order);
         }
 
@@ -265,41 +226,153 @@ namespace Pinturería_Acuarela.Controllers
             }
             return RedirectToAction("Index");
         }
+        // POST: Orders/ConfirmProduct
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ConfirmProduct(int? id_product, int? id_order, int? quant)
         {
-            if (id_product != null && id_order != null && quant != null)
+            try
             {
-                Product_Order prod_order = db.Product_Order.Where(p => p.id_product.Equals(id_product.Value) && p.id_order.Equals(id_order.Value)).First();
-                if (prod_order != null)
+                if (id_product != null && id_order != null && quant != null)
                 {
-                    if (prod_order.quantity == quant)
+                    Product_Order prod_order = db.Product_Order.Where(p => p.id_product.Equals(id_product.Value) && p.id_order.Equals(id_order.Value)).First();
+                    if (prod_order != null)
                     {
-                        prod_order.status = true;
-                    } else
-                    {
-                        prod_order.quantity = prod_order.quantity - quant.Value;
+                        if (prod_order.quantity_send + quant.Value > prod_order.quantity)
+                        {
+                            TempData["Error"] = 1;
+                            throw new Exception("La cantidad seleccionada es mayor a la disponible");
+                        } else if (quant.Value < 0 )
+                        {
+                            TempData["Error"] = 1;
+                            throw new Exception("Debes seleccionar una cantidad mayor o igual a 0");
+                        }
+                        if (prod_order.quantity == quant.Value)
+                        {
+                            prod_order.quantity_send = quant.Value;
+                            prod_order.status = true;
+                        } else
+                        {
+                            prod_order.quantity_send += quant.Value;
+                            prod_order.status = true;
+                        }
+                        db.Entry(prod_order).State = EntityState.Modified;
+                        db.SaveChanges();
+                        TempData["Message"] = "Producto confirmado correctamente";
+                        return RedirectToAction("/Details", new { id = id_order});
                     }
-                    db.Entry(prod_order).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("/Details/" + id_order);
                 }
             }
-            return View("Index");
+            catch (Exception ex)
+            {
+                TempData["Message"] = ex.Message;
+                if (TempData["Error"].ToString() != "1")
+                {
+                    TempData["Error"] = 2;
+                }
+                return RedirectToAction("/Details", new { id = id_order });
+            }
+            return RedirectToAction("Index");
         }
+
+        // POST: Orders/UnconfirmProduct
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UnconfirmProduct(int? id_product, int? id_order)
+        {
+            try
+            {
+                if (id_product != null && id_order != null)
+                {
+                    Product_Order prod_order = db.Product_Order.Where(p => p.id_product.Equals(id_product.Value) && p.id_order.Equals(id_order.Value)).First();
+                    if (prod_order != null)
+                    {
+                        prod_order.quantity_send = 0;
+                        prod_order.status = false;
+                        prod_order.Order.status = false;
+                        db.Entry(prod_order).State = EntityState.Modified;
+                        db.SaveChanges();
+                        TempData["Message"] = "Se ha cancelado la confirmación";
+                        return RedirectToAction("/Details", new { id = id_order });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = ex.Message;
+                if (TempData["Error"].ToString() != "1")
+                {
+                    TempData["Error"] = 2;
+                }
+                return RedirectToAction("/Details", new { id = id_order });
+            }
+            return RedirectToAction("Index");
+        }
+
+        // POST: Orders/ConfirmOrder
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ConfirmOrder(int? id)
         {
-            if (id != null)
+            try
             {
-                var order = db.Order.Where(o => o.id.Equals(id.Value)).First();
-                order.status = true;
-                foreach (Product_Order item in order.Product_Order)
+                if (id != null)
                 {
-                    item.status = true;
+                    var order = db.Order.Where(o => o.id.Equals(id.Value)).First();
+                    order.status = true;
+                    foreach (Product_Order item in order.Product_Order)
+                    {
+                        item.status = true;
+                    }
+                    db.Entry(order).State = EntityState.Modified;
+                    db.SaveChanges();
+                    TempData["Message"] = "Se ha confirmado la orden";
+                    return RedirectToAction("/Details", new { id });
                 }
-                db.Entry(order).State = EntityState.Modified;
-                db.SaveChanges();
             }
-            var orders = db.Order.Include(o => o.User);
+            catch (Exception ex)
+            {
+                TempData["Message"] = ex.Message;
+                if (TempData["Error"].ToString() != "1")
+                {
+                    TempData["Error"] = 2;
+                }
+                return RedirectToAction("/Details", new { id });
+            }
+            return RedirectToAction("Index");
+        }
+
+        // POST: Orders/UnconfirmOrder
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UnconfirmOrder(int? id)
+        {
+            try
+            {
+                if (id != null)
+                {
+                    var order = db.Order.Where(o => o.id.Equals(id.Value)).First();
+                    order.status = false;
+                    foreach (Product_Order item in order.Product_Order)
+                    {
+                        item.quantity_send = 0;
+                        item.status = false;
+                    }
+                    db.Entry(order).State = EntityState.Modified;
+                    db.SaveChanges();
+                    TempData["Message"] = "Se ha cancelado la confirmación";
+                    return RedirectToAction("/Details", new { id });
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = ex.Message;
+                if (TempData["Error"].ToString() != "1")
+                {
+                    TempData["Error"] = 2;
+                }
+                return RedirectToAction("/Details", new { id });
+            }
             return RedirectToAction("Index");
         }
     }
