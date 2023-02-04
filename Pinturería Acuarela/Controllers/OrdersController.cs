@@ -19,12 +19,21 @@ namespace Pinturería_Acuarela.Controllers
         // GET: Orders
         public ActionResult Index(int? id)
         {
+            if (TempData.Count == 1)
+            {
+                ViewBag.Message = TempData["Message"].ToString();
+            }
+            else if (TempData.Count == 2)
+            {
+                ViewBag.Message = TempData["Message"].ToString();
+                ViewBag.Error = TempData["Error"];
+            }
             if (id != null)
             {
-                var orders = db.Order.Where(o => o.User.Business.id.Equals(id.Value));
+                var orders = db.Order.Where(o => o.User.Business.id.Equals(id.Value) && o.deleted_at.Equals(null));
                 return View(orders.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
             }
-            var order = db.Order.Include(o => o.User);
+            var order = db.Order.Include(o => o.User).Where(o => o.deleted_at.Equals(null));
             return View(order.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
         }
 
@@ -86,17 +95,18 @@ namespace Pinturería_Acuarela.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(long id)
         {
-            Order order = db.Order.Find(id);
-            var prod_orders = db.Product_Order.Where(po => po.id_order.Equals(id)).ToList();
-            using (var transaccion = new TransactionScope())
+            try
             {
-                foreach (Product_Order item in prod_orders)
-                {
-                    db.Product_Order.Remove(item);
-                }
-                db.Order.Remove(order);
+                Order order = db.Order.Find(id);
+                order.deleted_at = DateTime.Now;
+                
                 db.SaveChanges();
-                transaccion.Complete();
+                TempData["Message"] = "La orden se eliminó correctamente";
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = ex.Message;
+                TempData["Error"] = 2;
             }
             return RedirectToAction("Index");
         }

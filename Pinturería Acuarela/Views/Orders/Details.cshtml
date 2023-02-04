@@ -88,13 +88,13 @@
                     @Html.DisplayFor(modelItem => item.Product.Brand.name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.Category.description)
+                    @(item.Product.id_category != null ? item.Product.Category.description : "-")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.Subcategory.description)
+                    @(item.Product.id_subcategory != null ? item.Product.Subcategory.description : "-")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.internal_code)
+                    @(item.Product.internal_code != null ? item.Product.internal_code.ToString() : "-")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.quantity)
@@ -134,27 +134,35 @@
 
     </table>
 </div>
-<p>
-    @if (!Model.status)
-    {
-        using (@Html.BeginForm("ConfirmOrder", "Orders", FormMethod.Post))
+<div class="mx-5 mt-5">
+    <div class="d-flex flex-row justify-content-between mb-4">
+        @if (!Model.status)
+        {
+            using (@Html.BeginForm("ConfirmOrder", "Orders", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("id", Model.id)
+                <button class="btn btn-success" type="submit">Confirmar orden</button>
+            }
+        }
+        else
+        {
+            using (@Html.BeginForm("UnconfirmOrder", "Orders", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("id", Model.id)
+                <button class="btn btn-warning" type="submit">Cancelar orden</button>
+            }
+        }
+        @using (@Html.BeginForm("Delete", "Orders", FormMethod.Post))
         {
             @Html.AntiForgeryToken()
             @Html.Hidden("id", Model.id)
-            <button class="btn btn-success" type="submit">Confirmar orden</button>
+            <button class="btn btn-danger" type="submit">Eliminar orden</button>
         }
-    }
-    else
-    {
-        using (@Html.BeginForm("UnconfirmOrder", "Orders", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
-            @Html.Hidden("id", Model.id)
-            <button class="btn btn-warning" type="submit">Cancelar orden</button>
-        }
-    }
+    </div>
     @Html.ActionLink("Volver al listado", "Index")
-</p>
+</div>
 
 
 <script>
