@@ -24,6 +24,10 @@ namespace Pinturería_Acuarela
 
         public int quantity_send { get; set; }
 
+        public int? id_business_sender { get; set; }
+
+        public virtual Business Business { get; set; }
+
         public virtual Order Order { get; set; }
 
         public virtual Product Product { get; set; }

@@ -169,7 +169,6 @@ namespace Pinturería_Acuarela.Controllers
                         category = p.Category.description,
                         subcategory = p.Subcategory.description,
                         p.Capacity.capacity,
-                        p.quantity,
                         color = p.Color.name,
                         p.Color.rgb_hex_code
                     }).ToList();
@@ -204,7 +203,6 @@ namespace Pinturería_Acuarela.Controllers
                         p.internal_code,
                         p.description,
                         brand = p.Brand.name,
-                        p.quantity,
                         category = p.Category.description,
                         subcategory = p.Subcategory.description,
                         color = p.Color.name,

@@ -7,8 +7,8 @@
 
 @{ if (ViewBag.Message != null)
     {
-        <!-- Modal -->
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <!-- Modal notificación -->
+        <div class="modal fade" id="modalNotification" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 @{ if (ViewBag.Error == 1)
                     {
@@ -33,9 +33,34 @@
                     }}
             </div>
         </div>
-        <button id="btnModal" style="display: none" data-bs-toggle='modal' data-bs-target='#staticBackdrop'></button>
+        <button id="btnModal" style="display: none" data-bs-toggle='modal' data-bs-target='#modalNotification'></button>
     }
 }
+
+<!-- Modal order confirmation -->
+<div class="modal fade" id="orderConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Seleccionar sucursal</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label class="control-label col-md-2">Sucursal</label>
+                <div class="col-md-10">
+                    <select id="businessDropdown" class="form-select">
+
+                    </select>
+                </div>
+                <input id="modal_id_product" type="hidden"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="sendConfirmation()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <h2>Detalles de la orden</h2>
 
@@ -80,7 +105,8 @@
                     @Html.Hidden("id_product", item.id_product)
                     @Html.Hidden("id_order", item.id_order)
                     @Html.Hidden("quant", null, new { @product = "product_" + item.id_product })
-                }
+                    @Html.Hidden("id_business", null, new { @business = "business_for_" + item.id_product })
+                    }
                 <td>
                     @Html.DisplayFor(modelItem => item.Product.description)
                 </td>
@@ -126,7 +152,7 @@
                     }
                     else
                     {
-                        <button class="btn btn-success" onclick="ConfirmProduct(id_product = @item.id_product)">Confirmar</button>
+                        <button class="btn btn-success" onclick="ConfirmProduct(id_product = @item.id_product, id_business = @item.Order.User.Business.id)" data-bs-toggle="modal" data-bs-target="#orderConfirmation">Confirmar</button>
                     }
                 </td>
             </tr>
@@ -182,10 +208,35 @@
         document.getElementById('number_' + id).value = value;
     }
 
-    function ConfirmProduct(id_product) {
+    function ConfirmProduct(id_product, id_business) {
         let quant = $("#number_" + id_product).val();
         $("input[product = 'product_" + id_product + "']").val(quant);
-        $("#form_" + id_product).submit();
+        if (quant == "0") {
+            $("#form_" + id_product).submit();
+        }
+        $.get("/Orders/CheckStock/?id_product=" + id_product + "&id_business=" + id_business + "&quant=" + quant, function (data) {
+            let content = "";
+            content += "<option value=''>Seleccionar sucursal</option>";
+            for (let i = 0; i < data.length; i++) {
+                content += "<option value='" + data[i].id_business + "'>";
+                content += data[i].adress;
+                content += " - ";
+                content += data[i].stock;
+                content += " restantes";
+                content += "</option>";
+            }
+            $("#businessDropdown").html(content);
+        });
+        $("#modal_id_product").val(id_product);
+    }
+
+    function sendConfirmation() {
+        let id_product = $("#modal_id_product").val();
+        if ($("#businessDropdown").val() != "") {
+            let business_selected = $("#businessDropdown").val();
+            $("input[business = 'business_for_" + id_product + "']").val(business_selected);
+            $("#form_" + id_product).submit();
+        }
     }
 
     function UnconfirmProduct(id_product) {

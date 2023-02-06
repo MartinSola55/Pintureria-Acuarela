@@ -239,7 +239,7 @@ namespace Pinturería_Acuarela.Controllers
         // POST: Orders/ConfirmProduct
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ConfirmProduct(int? id_product, int? id_order, int? quant)
+        public ActionResult ConfirmProduct(int? id_product, int? id_order, int? quant, int? id_business)
         {
             try
             {
@@ -260,13 +260,24 @@ namespace Pinturería_Acuarela.Controllers
                         if (prod_order.quantity == quant.Value)
                         {
                             prod_order.quantity_send = quant.Value;
-                            prod_order.status = true;
                         } else
                         {
                             prod_order.quantity_send += quant.Value;
-                            prod_order.status = true;
                         }
-                        db.Entry(prod_order).State = EntityState.Modified;
+
+                        // id_business == null cuando quant = 0 (mandado desde el front)
+                        if (id_business != null)
+                        {
+                            Product_Business prod_b_sender = db.Product_Business.Where(p => p.id_product == id_product.Value && p.id_business == id_business).First();
+                            prod_b_sender.stock -= quant.Value;
+
+                            Product_Business prod_b_receiver = db.Product_Business.Where(p => p.id_product == id_product.Value && p.id_business == prod_order.Order.User.Business.id).First();
+                            prod_b_receiver.stock += quant.Value;
+                        }
+
+                        prod_order.status = true;
+                        prod_order.id_business_sender = id_business;
+
                         db.SaveChanges();
                         TempData["Message"] = "Producto confirmado correctamente";
                         return RedirectToAction("/Details", new { id = id_order});
@@ -276,9 +287,12 @@ namespace Pinturería_Acuarela.Controllers
             catch (Exception ex)
             {
                 TempData["Message"] = ex.Message;
-                if (TempData["Error"].ToString() != "1")
+                if (TempData["Error"] != null)
                 {
-                    TempData["Error"] = 2;
+                    if (TempData["Error"].ToString() != "1")
+                    {
+                        TempData["Error"] = 2;
+                    }
                 }
                 return RedirectToAction("/Details", new { id = id_order });
             }
@@ -297,10 +311,20 @@ namespace Pinturería_Acuarela.Controllers
                     Product_Order prod_order = db.Product_Order.Where(p => p.id_product.Equals(id_product.Value) && p.id_order.Equals(id_order.Value)).First();
                     if (prod_order != null)
                     {
+                        if (prod_order.id_business_sender != null)
+                        {
+                            Product_Business prod_b_sender = db.Product_Business.Where(p => p.id_product == id_product.Value && p.id_business == prod_order.id_business_sender).First();
+                            prod_b_sender.stock += prod_order.quantity_send;
+
+                            Product_Business prod_b_receiver = db.Product_Business.Where(p => p.id_product == id_product.Value && p.id_business == prod_order.Order.User.Business.id).First();
+                            prod_b_receiver.stock -= prod_order.quantity_send;
+                        } 
+
                         prod_order.quantity_send = 0;
+                        prod_order.id_business_sender = null;
                         prod_order.status = false;
                         prod_order.Order.status = false;
-                        db.Entry(prod_order).State = EntityState.Modified;
+
                         db.SaveChanges();
                         TempData["Message"] = "Se ha cancelado la confirmación";
                         return RedirectToAction("/Details", new { id = id_order });
@@ -310,10 +334,7 @@ namespace Pinturería_Acuarela.Controllers
             catch (Exception ex)
             {
                 TempData["Message"] = ex.Message;
-                if (TempData["Error"].ToString() != "1")
-                {
-                    TempData["Error"] = 2;
-                }
+                TempData["Error"] = 2;
                 return RedirectToAction("/Details", new { id = id_order });
             }
             return RedirectToAction("Index");
@@ -343,9 +364,12 @@ namespace Pinturería_Acuarela.Controllers
             catch (Exception ex)
             {
                 TempData["Message"] = ex.Message;
-                if (TempData["Error"].ToString() != "1")
+                if (TempData["Error"] != null)
                 {
-                    TempData["Error"] = 2;
+                    if (TempData["Error"].ToString() != "1")
+                    {
+                        TempData["Error"] = 2;
+                    }
                 }
                 return RedirectToAction("/Details", new { id });
             }
@@ -365,7 +389,17 @@ namespace Pinturería_Acuarela.Controllers
                     order.status = false;
                     foreach (Product_Order item in order.Product_Order)
                     {
+                        if (item.id_business_sender != null)
+                        {
+                            Product_Business prod_b_sender = db.Product_Business.Where(p => p.id_product == item.id_product && p.id_business == item.id_business_sender).First();
+                            prod_b_sender.stock += item.quantity_send;
+
+                            Product_Business prod_b_receiver = db.Product_Business.Where(p => p.id_product == item.id_product && p.id_business == item.Order.User.Business.id).First();
+                            prod_b_receiver.stock -= item.quantity_send;
+                        }
+
                         item.quantity_send = 0;
+                        item.id_business_sender = null;
                         item.status = false;
                     }
                     db.Entry(order).State = EntityState.Modified;
@@ -377,13 +411,39 @@ namespace Pinturería_Acuarela.Controllers
             catch (Exception ex)
             {
                 TempData["Message"] = ex.Message;
-                if (TempData["Error"].ToString() != "1")
+                if (TempData["Error"] != null)
                 {
-                    TempData["Error"] = 2;
+                    if (TempData["Error"].ToString() != "1")
+                    {
+                        TempData["Error"] = 2;
+                    }
                 }
                 return RedirectToAction("/Details", new { id });
             }
             return RedirectToAction("Index");
+        }
+
+        // GET: Stock in business
+        [HttpGet]
+        public JsonResult CheckStock(int id_product, int id_business, int quant)
+        {
+            try
+            {
+                var query = db.Product_Business
+                    .Where(p => p.id_product.Equals(id_product) && p.id_business != id_business && p.stock >= quant)
+                    .Select( p => new
+                    {
+                        p.id_business,
+                        p.Business.adress,
+                        p.stock
+                    })
+                    .ToList();
+                return Json(query,JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json("", JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }
