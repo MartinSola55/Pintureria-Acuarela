@@ -18,6 +18,7 @@ namespace Pinturería_Acuarela.Controllers
         public ActionResult Logout()
         {
             Session["User"] = null;
+            Session["Basket"] = null;
             return RedirectToAction("Index", "Home");
         }
         public ActionResult Validate(string email, string password)

@@ -4,6 +4,11 @@
     {
         user = @Session["User"] as User;
     }
+    List<Product_Order> basket = null;
+    if (Session["Basket"] != null)
+    {
+        basket = Session["Basket"] as List<Product_Order>;
+    }
 }
 
 <!DOCTYPE html>
@@ -49,8 +54,26 @@
                                 <a class="nav-link" href="/Businesses"><i class="bi bi-shop-window"></i> Sucursales</a>
                             </li>
                         }
-                    }
-                    @{
+                        if (basket != null)
+                        {
+                            <li class="nav-item" id="basket">
+                                <a class="nav-link d-flex flex-row" href="../Orders/Basket">
+                                    <i class="bi bi-cart2"></i>
+                                    <div id="basketCircle"></div>
+                                    <span id="basketCount">@basket.Count</span>
+                                </a>
+                            </li>
+                        }
+                        else if (user != null)
+                        {
+                            <li class="nav-item" id="basket">
+                                <a class="nav-link d-flex flex-row" href="../Orders/Basket">
+                                    <i class="bi bi-cart2"></i>
+                                    <div id="basketCircle"></div>
+                                    <span id="basketCount">0</span>
+                                </a>
+                            </li>
+                        }
                         if (user != null)
                         {
                             <li class="nav-item">
@@ -113,5 +136,26 @@
     }
     #navbarLinks li {
         margin: 1rem 0;
+        max-width: fit-content;
+    }
+    #basketCircle {
+        background-color: crimson;
+        position: absolute;
+        top: 5px;
+        right: -4.5px;
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+    }
+    #basketCount {
+        position: absolute;
+        top: 1px;
+        right: 2px;
+        font-weight: 600;
+        color: white;
+        font-size: 1.3rem;
+    }
+    #basket {
+        font-size: 2rem
     }
 </style>
