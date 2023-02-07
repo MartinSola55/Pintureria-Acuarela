@@ -1,14 +1,10 @@
 ﻿@{ 
-    User user = null;
-    if (@Session["User"] != null)
-    {
-        user = @Session["User"] as User;
-    }
     List<Product_Order> basket = null;
     if (Session["Basket"] != null)
     {
         basket = Session["Basket"] as List<Product_Order>;
     }
+    User user = @Session["User"] as User;
 }
 
 <!DOCTYPE html>
@@ -33,25 +29,26 @@
             <div class="d-flex flex-row flex-grow-1 ps-4 pt-5 pb-3" style="width: 100%" id="navbarContainer">
                 <ul class="navbar-nav justify-content-start pe-3" id="navbarLinks">
                     <li class="nav-item">
-                        <a class="nav-link" href="/Home"><i class="bi bi-house"></i> Inicio</a>
+                        <a class="nav-link" id="HomeLink" href="/Home"><i class="bi bi-house"></i> Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="ProductsLink" href="/Products"><i class="bi bi-archive"></i> Productos</a>
                     </li>
                     @{
-                        if (user != null)
+                        if (user.Rol.id != 1)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Products"><i class="bi bi-archive"></i> Productos</a>
+                            <li class="nav-item @(user.Rol.id != 1 ? "flex-grow-1" : "")">
+                                <a class="nav-link" id="OrdersLink" href="/Orders"><i class="bi bi-basket"></i> Ordenes</a>
                             </li>
                         }
-                    }
-                    @{
-                        if (user != null && user.Rol.id == 1)
+                        if (user.Rol.id == 1)
                         {
 
                             <li class="nav-item">
-                                <a class="nav-link" href="/Orders"><i class="bi bi-basket"></i> Ordenes</a>
+                                <a class="nav-link" id="OrdersLink" href="/Orders"><i class="bi bi-basket"></i> Ordenes</a>
                             </li>
                             <li class="nav-item flex-grow-1">
-                                <a class="nav-link" href="/Businesses"><i class="bi bi-shop-window"></i> Sucursales</a>
+                                <a class="nav-link" id="BusinessesLink" href="/Businesses"><i class="bi bi-shop-window"></i> Sucursales</a>
                             </li>
                         }
                         if (basket != null)
@@ -64,7 +61,7 @@
                                 </a>
                             </li>
                         }
-                        else if (user != null)
+                        else
                         {
                             <li class="nav-item" id="basket">
                                 <a class="nav-link d-flex flex-row" href="../Orders/Basket">
@@ -74,24 +71,17 @@
                                 </a>
                             </li>
                         }
-                        if (user != null)
-                        {
-                            <li class="nav-item">
-                                <p style="color: rgba(255, 255, 255, 0.55)">
-                                    <i class="bi bi-person"></i>
-                                    @user.email
-                                </p>
-                                <a class="nav-link" href="/Login/Logout">
-                                    <i class="bi bi-box-arrow-left"></i>
-                                    &nbsp;&nbsp;Cerrar sesión
-                                </a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item"><a class="nav-link" href="/Login"><i class="bi bi-box-arrow-in-right"></i> Iniciar sesión</a></li>
-                        }
                     }
+                    <li class="nav-item">
+                        <p style="color: rgba(255, 255, 255, 0.55)">
+                            <i class="bi bi-person"></i>
+                            @user.email
+                        </p>
+                        <a class="nav-link" href="/Login/Logout">
+                            <i class="bi bi-box-arrow-left"></i>
+                            &nbsp;&nbsp;Cerrar sesión
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>

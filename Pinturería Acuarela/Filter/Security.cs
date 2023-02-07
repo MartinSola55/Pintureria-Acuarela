@@ -16,13 +16,13 @@ namespace Pinturería_Acuarela.Filter
                 var user = HttpContext.Current.Session["User"];
                 if (user == null)
                 {
-                    filterContext.Result = new RedirectResult("~/Home");
+                    filterContext.Result = new RedirectResult("~/Login");
                 }
                 base.OnActionExecuting(filterContext);
             }
             catch (Exception)
             {
-                filterContext.Result = new RedirectResult("~/Home");
+                filterContext.Result = new RedirectResult("~/Login");
             }
         }
     }
@@ -38,17 +38,17 @@ namespace Pinturería_Acuarela.Filter
                     Rol rol = user.Rol;
                     if (rol.id != 1)
                     {
-                        filterContext.Result = new RedirectResult("~/Home");
+                        filterContext.Result = new RedirectResult("~/Home/Index");
                     }
                 } else
                 {
-                    filterContext.Result = new RedirectResult("~/Home");
+                    filterContext.Result = new RedirectResult("~/Login");
                 }
                 base.OnActionExecuting(filterContext);
             }
             catch (Exception)
             {
-                filterContext.Result = new RedirectResult("~/Home");
+                filterContext.Result = new RedirectResult("~/Login");
             }
         }
     }
@@ -64,17 +64,17 @@ namespace Pinturería_Acuarela.Filter
                     Rol rol = user.Rol;
                     if (rol.id != 2)
                     {
-                        filterContext.Result = new RedirectResult("~/Home");
+                        filterContext.Result = new RedirectResult("~/Home/Index");
                     }
                 } else
                 {
-                    filterContext.Result = new RedirectResult("~/Home");
+                    filterContext.Result = new RedirectResult("~/Login");
                 }
                 base.OnActionExecuting(filterContext);
             }
             catch (Exception)
             {
-                filterContext.Result = new RedirectResult("~/Home");
+                filterContext.Result = new RedirectResult("~/Login");
             }
         }
     }

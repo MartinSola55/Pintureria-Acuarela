@@ -38,11 +38,9 @@
     }
 }
 
-<h2>Ordenes</h2>
+<h1 class="text-center">Ordenes</h1>
+<hr class="pb-4"/>
 
-<p>
-    @Html.ActionLink("Realizar pedido", "Create")
-</p>
 <table class="table table-striped table-bordered table-hover">
     <thead class='table-dark'>
         <tr class="fw-bold text-center">
@@ -76,6 +74,8 @@
     }
 
 </table>
+
+<a class="btn btn-dark" href="../Orders/Create">Realizar pedido</a>
 
 <script>
     $(".clickable-row").click(function () {

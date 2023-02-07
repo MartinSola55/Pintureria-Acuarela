@@ -3,7 +3,8 @@
     List<Product_Order> products = Session["Basket"] as List<Product_Order>;
 }
 
-<h2>Orden</h2>
+<h1 class="text-center">Productos añadidos a la orden</h1>
+<hr class="pb-3"/>
 
 <table class="table">
     <tr>
@@ -64,11 +65,11 @@
 
 </table>
 
-<div class="d-flex flex-row">
-    <a href="../Orders/Create" class="btn btn-dark me-5">Volver</a>
+<div class="d-flex flex-row justify-content-between pe-3 pt-4">
+    <a href="../Orders/Create" class="btn btn-dark">Volver</a>
     @using (Html.BeginForm("CreateOrder", "Orders", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
-        <button class="btn btn-dark" type="submit">Crear orden</button>
+        <button class="btn btn-success" type="submit">Crear orden</button>
     }
 </div>

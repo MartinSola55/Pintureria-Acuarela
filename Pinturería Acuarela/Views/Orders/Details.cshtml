@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Ordenes";
+    User user = Session["User"] as User;
 }
 <link href="~/Content/orders.css" rel="stylesheet" />
 
@@ -62,7 +63,8 @@
     </div>
 </div>
 
-<h2>Detalles de la orden</h2>
+<h1 class="text-center">Detalles de la orden</h1>
+<hr class="pb-4"/>
 
 <div>
     <table class="table">
@@ -88,12 +90,17 @@
             <th>
                 Cantidad enviada
             </th>
-            <th>
-                Cantidad a enviar
-            </th>
-            <th>
-                Confirmar
-            </th>
+            @{
+                if (user.Rol.id == 1)
+                {
+                    <th>
+                        Cantidad a enviar
+                    </th>
+                    <th>
+                        Confirmar
+                    </th>
+                }
+            }
         </tr>
 
         @foreach (var item in Model.Product_Order)
@@ -106,7 +113,7 @@
                     @Html.Hidden("id_order", item.id_order)
                     @Html.Hidden("quant", null, new { @product = "product_" + item.id_product })
                     @Html.Hidden("id_business", null, new { @business = "business_for_" + item.id_product })
-                    }
+                }
                 <td>
                     @Html.DisplayFor(modelItem => item.Product.description)
                 </td>
@@ -128,67 +135,85 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.quantity_send)
                 </td>
-                <td>
-                    @{
-                        if (item.status)
-                        {
-
-                        }
-                        else
-                        {
-
-                            <div class='d-flex flex-row justify-content-center'>
-                                <div class='value-button' id='decrease' onclick='decreaseValue(@item.id_product)' value='Decrease Value'>-</div>
-                                <input type='number' id='number_@item.id_product' class='number' value='0' />
-                                <div class='value-button' id='increase' onclick='increaseValue(@item.id_product, @(item.quantity - item.quantity_send))' value='Increase Value'>+</div>
-                            </div>
-                        }
-                    }
-                </td>
-                <td>
-                    @if (item.status)
+                @{
+                    if (user.Rol.id == 1)
                     {
-                        <button class="btn btn-warning" onclick="UnconfirmProduct(id_product = @item.id_product)">Cancelar confirmación</button>
+                        <td>
+                            @{
+                                if (!item.status)
+                                {
+                                    <div class='d-flex flex-row justify-content-center'>
+                                        <div class='value-button' id='decrease' onclick='decreaseValue(@item.id_product)' value='Decrease Value'>-</div>
+                                        <input type='number' id='number_@item.id_product' class='number' value='0' />
+                                        <div class='value-button' id='increase' onclick='increaseValue(@item.id_product, @(item.quantity - item.quantity_send))' value='Increase Value'>+</div>
+                                    </div>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @if (item.status)
+                            {
+                                <button class="btn btn-warning" onclick="UnconfirmProduct(id_product = @item.id_product)">Cancelar confirmación</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-success" onclick="ConfirmProduct(id_product = @item.id_product, id_business = @item.Order.User.Business.id)" data-bs-toggle="modal" data-bs-target="#orderConfirmation">Confirmar</button>
+                                <button class="btn btn-success" onclick="ConfirmProductDefault(id_product = @item.id_product)">SCC</button>
+                            }s
+                        </td>
                     }
-                    else
-                    {
-                        <button class="btn btn-success" onclick="ConfirmProduct(id_product = @item.id_product, id_business = @item.Order.User.Business.id)" data-bs-toggle="modal" data-bs-target="#orderConfirmation">Confirmar</button>
-                        <button class="btn btn-success" onclick="ConfirmProductDefault(id_product = @item.id_product)" >SCC</button>
-                    }
-                </td>
+                }
             </tr>
         }
 
     </table>
 </div>
-<div class="mx-5 mt-5">
+<div class="mx-2 mt-3">
     <div class="d-flex flex-row justify-content-between mb-4">
-        @if (!Model.status)
+        <a class="btn btn-dark" href="../">Volver al listado</a>
+
+        @if (user.Rol.id == 1)
         {
-            using (@Html.BeginForm("ConfirmOrder", "Orders", FormMethod.Post))
+            if (!Model.status)
             {
-                @Html.AntiForgeryToken()
-                @Html.Hidden("id", Model.id)
-                <button class="btn btn-success" type="submit">Confirmar orden</button>
+                using (@Html.BeginForm("ConfirmOrder", "Orders", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.id)
+                    <button class="btn btn-success" type="submit">Confirmar orden</button>
+                }
+            }
+            else
+            {
+                using (@Html.BeginForm("UnconfirmOrder", "Orders", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.id)
+                    <button class="btn btn-warning" type="submit">Cancelar orden</button>
+                }
             }
         }
-        else
-        {
-            using (@Html.BeginForm("UnconfirmOrder", "Orders", FormMethod.Post))
+        @{
+            if (user.Rol.id != 1 && !Model.status)
             {
-                @Html.AntiForgeryToken()
-                @Html.Hidden("id", Model.id)
-                <button class="btn btn-warning" type="submit">Cancelar orden</button>
+                using (@Html.BeginForm("Delete", "Orders", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.id)
+                    <button class="btn btn-danger" type="submit">Eliminar orden</button>
+                }
             }
-        }
-        @using (@Html.BeginForm("Delete", "Orders", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
-            @Html.Hidden("id", Model.id)
-            <button class="btn btn-danger" type="submit">Eliminar orden</button>
+            else if (user.Rol.id == 1)
+            {
+                using (@Html.BeginForm("Delete", "Orders", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.id)
+                    <button class="btn btn-danger" type="submit">Eliminar orden</button>
+                }
+            }
         }
     </div>
-    @Html.ActionLink("Volver al listado", "Index")
 </div>
 
 

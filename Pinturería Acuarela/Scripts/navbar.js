@@ -8,7 +8,7 @@ jQuery(document).ready(function ($) {
 		path[1] = 'Home';
 	}
 
-	var target = $('#navbarContainer ul li a[href="/' + path[1] + '"]');
+	var target = $('#' + path[1] + 'Link');
 	// Add active class to target link
 	target.parent().addClass('active');
 });

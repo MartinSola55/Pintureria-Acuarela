@@ -206,7 +206,6 @@
     <Content Include="Scripts\jquery-3.6.3.min.map" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Categories\Create.cshtml" />
     <Content Include="Views\Categories\Delete.cshtml" />
@@ -251,6 +250,8 @@
     <Content Include="Views\Capacities\Index.cshtml" />
     <Content Include="Views\Businesses\Details.cshtml" />
     <Content Include="Views\Orders\Basket.cshtml" />
+    <Content Include="Views\Home\AdminIndex.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

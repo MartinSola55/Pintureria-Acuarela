@@ -19,7 +19,6 @@ namespace Pinturería_Acuarela.Controllers
         private EFModel db = new EFModel();
 
         // GET: Orders
-        [Admin]
         public ActionResult Index(int? id)
         {
             if (TempData.Count == 1)
@@ -31,6 +30,8 @@ namespace Pinturería_Acuarela.Controllers
                 ViewBag.Message = TempData["Message"].ToString();
                 ViewBag.Error = TempData["Error"];
             }
+            User user = Session["User"] as User;
+            id = user.Rol.id != 1 ? user.id_business : id;
             if (id != null)
             {
                 var orders = db.Order.Where(o => o.User.Business.id.Equals(id.Value) && o.deleted_at.Equals(null));
@@ -41,7 +42,6 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         // GET: Orders/Details/5
-        [Admin]
         public ActionResult Details(long? id)
         {
             if (id == null)
@@ -95,7 +95,6 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         // POST: Orders/Delete/5
-        [Admin]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(long id)

@@ -2,13 +2,13 @@
 
 @{
     ViewBag.Title = "Ordenes";
+    User user = Session["User"] as User;
 }
 
 <link href="~/Content/orders.css" rel="stylesheet" />
 
-<h1 class="text-center">Orden</h1>
-
-<hr />
+<h1 class="text-center">Buscar productos</h1>
+<hr class="pb-4"/>
 
 <div class="container mt-4">
     <table id='tabla-generic' class='container table table-light table-striped table-bordered table-hover'>
@@ -40,7 +40,12 @@
 </div>
 
 <div>
-    @Html.ActionLink("Volver al listado", "Index")
+    @{
+        if (user.Rol.id == 1)
+        {
+            @Html.ActionLink("Volver al listado", "Index")
+        }
+    }
 </div>
 
 <script src="~/Scripts/orders.js"></script>
