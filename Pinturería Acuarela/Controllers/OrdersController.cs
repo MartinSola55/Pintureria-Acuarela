@@ -204,7 +204,6 @@ namespace Pinturería_Acuarela.Controllers
                             }
                         }
                     }
-
                     Session["Basket"] = basket;
                 }
             }
@@ -268,8 +267,17 @@ namespace Pinturería_Acuarela.Controllers
                         db.SaveChanges();
                         foreach (Product_Order item in basket)
                         {
-                            item.id_order = order.id;
-                            db.Product_Order.Add(item);
+                            Product_Order prod_order = new Product_Order
+                            {
+                                id_product = item.Product.id,
+                                id_order = order.id,
+                                id_business_sender = null,
+                                quantity = item.quantity,
+                                quantity_send = 0,
+                                status = false
+                            };
+
+                            db.Product_Order.Add(prod_order);
                         }
                         db.SaveChanges();
                         transaccion.Complete();

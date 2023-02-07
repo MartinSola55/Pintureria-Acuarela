@@ -4,6 +4,7 @@
     ViewBag.Title = "Ordenes";
 }
 
+<link href="~/Content/datatables.css" rel="stylesheet" />
 <link href="~/Content/orders.css" rel="stylesheet" />
 
 @{ if (ViewBag.Message != null)
@@ -39,9 +40,9 @@
 }
 
 <h1 class="text-center">Ordenes</h1>
-<hr class="pb-4"/>
+<hr class="pb-4" />
 
-<table class="table table-striped table-bordered table-hover">
+<table id="dataTable" class="table table-striped table-bordered table-hover pt-4">
     <thead class='table-dark'>
         <tr class="fw-bold text-center">
             <td>
@@ -77,6 +78,7 @@
 
 <a class="btn btn-dark" href="../Orders/Create">Realizar pedido</a>
 
+<script src="~/Scripts/datatables.js"></script>
 <script>
     $(".clickable-row").click(function () {
         window.location = $(this).data("href");
@@ -90,6 +92,29 @@
             }, 3000)
         }
     });
+
+    $('#dataTable').DataTable(
+        {
+            searching: false,
+            "language": {
+                paginate: {
+                    "first": "Primera",
+                    "last": "Última",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                },
+                emptyTable: "No existen ordenes que coincidan con la búsqueda",
+                info: "Mostrando _END_ de _TOTAL_ ordenes",
+                infoEmpty: "Mostrando 0 ordenes",
+                lengthMenu: "Mostrar _MENU_ ordenes",
+            },
+            columnDefs: [{
+                orderable: false,
+                targets: "no-sort"
+            }]
+        }
+    )
+    
 </script>
 
 <style>

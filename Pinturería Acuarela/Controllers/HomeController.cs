@@ -40,7 +40,6 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
-                
                 User user = Session["User"] as User;
                 int stocklessProducts = db.Product_Business.Where(p => p.id_business.Equals(user.id_business.Value) && p.stock == 0 && p.deleted_at.Equals(null)).Count();
                 int stockAlertProducts = db.Product_Business.Where(p => p.id_business.Equals(user.id_business.Value) && p.stock < p.minimum_stock && p.deleted_at.Equals(null)).Count();

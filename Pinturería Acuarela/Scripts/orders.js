@@ -69,4 +69,4 @@ $('#btnFilter').on('click', function (ev) {
     $.get("FilterProducts/?id_brand=" + id_brand + "&id_category=" + id_category + "&id_subcategory=" + id_subcategory + "&id_color=" + id_color + "&id_capacity=" + id_capacity, function (data) {
         createTable(data);
     });
-});   
+});

@@ -8,11 +8,21 @@
 <link href="~/Content/orders.css" rel="stylesheet" />
 
 <h1 class="text-center">Buscar productos</h1>
-<hr class="pb-4"/>
+<hr class="pb-4" />
 
 <div class="container mt-4">
-    <table id='tabla-generic' class='container table table-light table-striped table-bordered table-hover'>
+    <table id='dataTable' class='container table table-light table-striped table-bordered table-hover pt-4'>
         <thead class='table-dark'>
+            <tr>
+                <td class='text-center'><input class="form-control" placeholder="Cód. interno | Nombre" /></td>
+                <td class='text-center'>@Html.DropDownList("id_brand", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_brand" })</td>
+                <td class='text-center'>@Html.DropDownList("id_category", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_category" })</td>
+                <td class='text-center'>@Html.DropDownList("id_subcategory", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_subcategory" })</td>
+                <td class='text-center'>@Html.DropDownList("id_color", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_color" })</td>
+                <td class='text-center'>@Html.DropDownList("id_capacity", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })</td>
+                <td class='text-center'><input type="button" value="Filtrar" class="btn btn-outline-light" id="btnFilter" /></td>
+                <td class='text-center'></td>
+            </tr>
             <tr class='fw-bold'>
                 <td class='text-center'>Producto</td>
                 <td class='text-center'>Marca</td>
@@ -22,16 +32,6 @@
                 <td class='text-center'>Capacidad</td>
                 <td class='text-center'>Cantidad</td>
                 <td class='text-center'>Añadir</td>
-            </tr>
-            <tr>
-                <td class='text-center'></td>
-                <td class='text-center'>@Html.DropDownList("id_brand", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_brand" })</td>
-                <td class='text-center'>@Html.DropDownList("id_category", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_category" })</td>
-                <td class='text-center'>@Html.DropDownList("id_subcategory", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_subcategory" })</td>
-                <td class='text-center'>@Html.DropDownList("id_color", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_color" })</td>
-                <td class='text-center'>@Html.DropDownList("id_capacity", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })</td>
-                <td class='text-center'><input type="button" value="Filtrar" class="btn btn-outline-light" id="btnFilter" /></td>
-                <td class='text-center'></td>
             </tr>
         </thead>
         <tbody id="contentTable">
@@ -43,7 +43,7 @@
     @{
         if (user.Rol.id == 1)
         {
-            @Html.ActionLink("Volver al listado", "Index")
+            <a class="btn btn-dark" href="/Orders">Volver al listado</a>
         }
     }
 </div>

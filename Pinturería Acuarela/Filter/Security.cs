@@ -8,13 +8,11 @@ namespace Pinturería_Acuarela.Filter
 {
     public class Security : ActionFilterAttribute
     {
-
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             try
             {
-                var user = HttpContext.Current.Session["User"];
-                if (user == null)
+                if (!(HttpContext.Current.Session["User"] is User user))
                 {
                     filterContext.Result = new RedirectResult("~/Login");
                 }
@@ -32,15 +30,14 @@ namespace Pinturería_Acuarela.Filter
         {
             try
             {
-                User user = HttpContext.Current.Session["User"] as User;
-                if (user != null)
+                if (HttpContext.Current.Session["User"] is User user)
                 {
-                    Rol rol = user.Rol;
-                    if (rol.id != 1)
+                    if (user.Rol.id != 1)
                     {
-                        filterContext.Result = new RedirectResult("~/Home/Index");
+                        filterContext.Result = new RedirectResult("~/Home");
                     }
-                } else
+                }
+                else
                 {
                     filterContext.Result = new RedirectResult("~/Login");
                 }
@@ -58,15 +55,14 @@ namespace Pinturería_Acuarela.Filter
         {
             try
             {
-                User user = HttpContext.Current.Session["User"] as User;
-                if (user != null)
+                if (HttpContext.Current.Session["User"] is User user)
                 {
-                    Rol rol = user.Rol;
-                    if (rol.id != 2)
+                    if (user.Rol.id != 2)
                     {
-                        filterContext.Result = new RedirectResult("~/Home/Index");
+                        filterContext.Result = new RedirectResult("~/Home/AdminIndex");
                     }
-                } else
+                }
+                else
                 {
                     filterContext.Result = new RedirectResult("~/Login");
                 }
