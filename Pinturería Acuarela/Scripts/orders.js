@@ -54,7 +54,7 @@ function decreaseValue(id) {
 }
 
 function addToCart(id) {
-    $.get("AddToCart/?id=" + id + "&cant=" + $("#number" + id).val(), function (data) {
+    $.get("AddToCart/?id_prod=" + id + "&quant=" + $("#number" + id).val(), function (data) {
         $("#basketCount").html(data);
     });
 }

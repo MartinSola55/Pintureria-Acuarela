@@ -68,11 +68,11 @@ namespace Pinturería_Acuarela.Controllers
         // GET: Orders/Create
         public ActionResult Create()
         {
-            ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
-            ViewBag.id_category = new SelectList(db.Category, "id", "description");
-            ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
-            ViewBag.id_color = new SelectList(db.Color, "id", "name");
-            ViewBag.id_capacity = new SelectList(db.Capacity, "id", "capacity");
+            ViewBag.id_brand = new SelectList(db.Brand.OrderBy(b => b.name), "id", "name");
+            ViewBag.id_category = new SelectList(db.Category.OrderBy(c => c.description), "id", "description");
+            ViewBag.id_subcategory = new SelectList(db.Subcategory.OrderBy(s => s.description), "id", "description");
+            ViewBag.id_color = new SelectList(db.Color.OrderBy(c => c.name), "id", "name");
+            ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description");
             return View();
         }
 
@@ -137,6 +137,7 @@ namespace Pinturería_Acuarela.Controllers
                 }
                 var products = db.Product
                     .Where(p =>
+                    p.deleted_at.Equals(null) &&
                     p.id_brand.ToString().Contains(id_brand) &&
                     p.id_category.ToString().Contains(id_category) &&
                     p.id_subcategory.ToString().Contains(id_subcategory) &&
@@ -151,7 +152,7 @@ namespace Pinturería_Acuarela.Controllers
                         subcategory = p.Subcategory.description,
                         color = p.Color.name,
                         hex_color = p.Color.rgb_hex_code,
-                        capacity = p.id_capacity != null ? p.Capacity.capacity : (double?)null,
+                        capacity = p.Capacity.description,
                     });
                 return Json(products.ToList(), JsonRequestBehavior.AllowGet);
             }
@@ -163,28 +164,73 @@ namespace Pinturería_Acuarela.Controllers
 
         // GET: Add products to cart
         [HttpGet]
-        public int AddToCart(int? id, int? cant)
+        public int AddToCart(int? id_prod, int? quant)
         {
-            List<int[]> products = new List<int[]>();
-            if (id != null && cant != null)
+            List<Product_Order> basket = new List<Product_Order>();
+            if (id_prod != null && quant != null)
             {
-                if (cant == 0)
-                {
-                    ViewBag.Error = "Debes seleecionar una cantidad mayor a 1";
-                    return 0;
-                }
                 if (Session["Basket"] != null)
                 {
-                    products = Session["Basket"] as List<int[]>;
+                    basket = Session["Basket"] as List<Product_Order>;
                 }
-                int[] aux = new int[2];
-                aux[0] = id.Value;
-                aux[1] = cant.Value;
-                products.Add(aux);
-                Session["Basket"] = products;
+                if (quant > 0)
+                {
+                    //ViewBag.Error = "Debes seleecionar una cantidad mayor a 1";
+
+                    Product_Order prod = new Product_Order();
+                    prod.Product = db.Product
+                        .Where(p => p.id == id_prod)
+                        .Include(p => p.Brand)
+                        .Include(p => p.Category)
+                        .Include(p => p.Subcategory)
+                        .FirstOrDefault();
+
+                    if (basket.Count == 0)
+                    {
+                        prod.quantity = quant.Value;
+                        basket.Add(prod);
+                    } else
+                    {
+                        int count = basket.Count;
+                        for (int index = 0; index < count; index++)
+                        {
+                            if (basket[index].Product.id == prod.Product.id)
+                            {
+                                basket[index].quantity += quant.Value;
+                                break;
+                            } else if (index == basket.Count - 1)
+                            {
+                                prod.quantity = quant.Value;
+                                basket.Add(prod);
+                            }
+                        }
+                    }
+
+                    Session["Basket"] = basket;
+                }
             }
-            Session["BasketCount"] = products.Count;
-            return products.Count;
+            return basket.Count;
+        }
+
+        // POST: Remove product from basket
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RemoveProductBasket(int? id_prod)
+        {
+            if (id_prod != null && Session["Basket"] != null)
+            {
+                List<Product_Order> basket = Session["Basket"] as List<Product_Order>;
+                Product_Order prod_o = basket.Where(p => p.Product.id == id_prod.Value).FirstOrDefault();
+                basket.Remove(prod_o);
+                if (basket.Count > 0)
+                {
+                    Session["Basket"] = basket;
+                } else
+                {
+                    Session["Basket"] = null;
+                }
+            }
+            return RedirectToAction("Basket");
         }
 
         // GET: Basket
@@ -193,18 +239,7 @@ namespace Pinturería_Acuarela.Controllers
         {
             if (Session["Basket"] != null)
             {
-                List<int[]> basket = Session["Basket"] as List<int[]>;
-                List<Product_Order> products = new List<Product_Order>();
-                foreach (int[] item in basket)
-                {
-                    int aux = item[0];
-                    Product prod = db.Product.Where(p => p.id.Equals(aux)).FirstOrDefault();
-                    Product_Order po = new Product_Order();
-                    po.Product = prod;
-                    po.quantity = item[1];
-                    products.Add(po);
-                }
-                return View(products);
+               return View();
             } else
             {
                 return RedirectToAction("Create");
@@ -220,28 +255,19 @@ namespace Pinturería_Acuarela.Controllers
             {
                 if (Session["Basket"] != null)
                 {
-                    List<int[]> basket = Session["Basket"] as List<int[]>;
-                    List<Product_Order> products = new List<Product_Order>();
-                    foreach (int[] item in basket)
-                    {
-                        int aux = item[0];
-                        Product prod = db.Product.Where(p => p.id.Equals(aux)).FirstOrDefault();
-                        Product_Order po = new Product_Order();
-                        po.Product = prod;
-                        po.quantity = item[1];
-                        products.Add(po);
-                    }
+                    User user = Session["User"] as User;
+                    List<Product_Order> basket = Session["Basket"] as List<Product_Order>;
                     Order order = new Order
                     {
                         date = DateTime.Now,
-                        id_user = int.Parse(Session["idUsuario"].ToString()),
+                        id_user = user.id,
                         status = false
                     };
                     using (var transaccion = new TransactionScope())
                     {
                         db.Order.Add(order);
                         db.SaveChanges();
-                        foreach (Product_Order item in products)
+                        foreach (Product_Order item in basket)
                         {
                             item.id_order = order.id;
                             db.Product_Order.Add(item);
@@ -487,7 +513,11 @@ namespace Pinturería_Acuarela.Controllers
             try
             {
                 var query = db.Product_Business
-                    .Where(p => p.id_product.Equals(id_product) && p.id_business != id_business && p.stock >= quant)
+                    .Where(p =>
+                    p.deleted_at.Equals(null) &&
+                    p.Product.id.Equals(id_product) &&
+                    p.id_business != id_business &&
+                    p.stock >= quant)
                     .Select( p => new
                     {
                         p.id_business,
@@ -499,7 +529,7 @@ namespace Pinturería_Acuarela.Controllers
             }
             catch (Exception)
             {
-                return Json("", JsonRequestBehavior.AllowGet);
+                return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
     }

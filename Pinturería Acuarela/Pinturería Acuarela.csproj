@@ -147,12 +147,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Filter\Security.cs" />
     <Compile Include="Models\Brand.cs" />
     <Compile Include="Models\Business.cs" />
     <Compile Include="Models\Capacity.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Color.cs" />
+    <Compile Include="Models\EFModel.cs" />
+    <Compile Include="Filter\Security.cs" />
     <Compile Include="Controllers\CapacitiesController.cs" />
     <Compile Include="Controllers\BrandsController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
@@ -164,7 +165,6 @@
     <Compile Include="Controllers\BusinessesController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="Models\EFModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
