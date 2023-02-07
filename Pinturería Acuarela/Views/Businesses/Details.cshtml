@@ -20,7 +20,7 @@
         </span>
     </a>
     <a href="../../Businesses/Details/@Model.id" class="data-card">
-        <h3>17</h3>
+        <h3>@ViewBag.StocklessProducts</h3>
         <h4>Productos sin stock</h4>
         <span class="link-text">
             Ver los productos
@@ -30,8 +30,8 @@
         </span>
     </a>
     <a href="../../Businesses/Details/@Model.id" class="data-card">
-        <h3>22</h3>
-        <h4>Productos con bajo stcok</h4>
+        <h3>@ViewBag.StockAlertProducts</h3>
+        <h4>Productos con bajo stock</h4>
         <span class="link-text">
             Ver los productos
             <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -41,5 +41,5 @@
     </a>
 </div>
 <p>
-    @Html.ActionLink("Volver a las sucursales", "Index")
+    @Html.ActionLink("Volver a las sucursales", "../Businesses")
 </p>

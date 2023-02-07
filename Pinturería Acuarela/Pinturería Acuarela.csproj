@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Filter\Security.cs" />
     <Compile Include="Models\Brand.cs" />
     <Compile Include="Models\Business.cs" />
     <Compile Include="Models\Capacity.cs" />

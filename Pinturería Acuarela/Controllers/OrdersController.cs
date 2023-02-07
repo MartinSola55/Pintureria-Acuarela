@@ -9,14 +9,17 @@ using System.Web;
 using System.Web.Mvc;
 using System.Transactions;
 using Pinturería_Acuarela;
+using Pinturería_Acuarela.Filter;
 
 namespace Pinturería_Acuarela.Controllers
 {
+    [Security]
     public class OrdersController : Controller
     {
         private EFModel db = new EFModel();
 
         // GET: Orders
+        [Admin]
         public ActionResult Index(int? id)
         {
             if (TempData.Count == 1)
@@ -38,6 +41,7 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         // GET: Orders/Details/5
+        [Admin]
         public ActionResult Details(long? id)
         {
             if (id == null)
@@ -91,6 +95,7 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         // POST: Orders/Delete/5
+        [Admin]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(long id)
@@ -120,17 +125,18 @@ namespace Pinturería_Acuarela.Controllers
             base.Dispose(disposing);
         }
 
+        // GET: Products by filter
         [HttpGet]
         public JsonResult FilterProducts(string id_brand, string id_category, string id_subcategory, string id_color, string id_capacity)
         {
             try
-            {
+                {
                 if (id_brand == "" && id_category == "" && id_subcategory == "" && id_color == "" && id_capacity == "")
                 {
                     return Json(null, JsonRequestBehavior.AllowGet);
                 }
                 var products = db.Product
-                    .Where(p => 
+                    .Where(p =>
                     p.id_brand.ToString().Contains(id_brand) &&
                     p.id_category.ToString().Contains(id_category) &&
                     p.id_subcategory.ToString().Contains(id_subcategory) &&
@@ -145,15 +151,17 @@ namespace Pinturería_Acuarela.Controllers
                         subcategory = p.Subcategory.description,
                         color = p.Color.name,
                         hex_color = p.Color.rgb_hex_code,
-                        p.Capacity.capacity
+                        capacity = p.id_capacity != null ? p.Capacity.capacity : (double?)null,
                     });
-                return Json(products, JsonRequestBehavior.AllowGet);
+                return Json(products.ToList(), JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
                 return Json (JsonRequestBehavior.AllowGet);
             }
         }
+
+        // GET: Add products to cart
         [HttpGet]
         public int AddToCart(int? id, int? cant)
         {
@@ -178,6 +186,9 @@ namespace Pinturería_Acuarela.Controllers
             Session["BasketCount"] = products.Count;
             return products.Count;
         }
+
+        // GET: Basket
+        [HttpGet]
         public ActionResult Basket()
         {
             if (Session["Basket"] != null)
@@ -199,44 +210,57 @@ namespace Pinturería_Acuarela.Controllers
                 return RedirectToAction("Create");
             }
         }
+
+        // POST: Create order
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult CreateOrder()
         {
-            if (Session["Basket"] != null)
+            try
             {
-                List<int[]> basket = Session["Basket"] as List<int[]>;
-                List<Product_Order> products = new List<Product_Order>();
-                foreach (int[] item in basket)
+                if (Session["Basket"] != null)
                 {
-                    int aux = item[0];
-                    Product prod = db.Product.Where(p => p.id.Equals(aux)).FirstOrDefault();
-                    Product_Order po = new Product_Order();
-                    po.Product = prod;
-                    po.quantity = item[1];
-                    products.Add(po);
-                }
-                Order order = new Order
-                {
-                    date = DateTime.Now,
-                    id_user = int.Parse(Session["idUsuario"].ToString()),
-                    status = false
-                };
-                using (var transaccion = new TransactionScope())
-                {
-                    db.Order.Add(order);
-                    db.SaveChanges();
-                    foreach (Product_Order item in products)
+                    List<int[]> basket = Session["Basket"] as List<int[]>;
+                    List<Product_Order> products = new List<Product_Order>();
+                    foreach (int[] item in basket)
                     {
-                        item.id_order = order.id;
-                        db.Product_Order.Add(item);
+                        int aux = item[0];
+                        Product prod = db.Product.Where(p => p.id.Equals(aux)).FirstOrDefault();
+                        Product_Order po = new Product_Order();
+                        po.Product = prod;
+                        po.quantity = item[1];
+                        products.Add(po);
                     }
-                    db.SaveChanges();
-                    transaccion.Complete();
+                    Order order = new Order
+                    {
+                        date = DateTime.Now,
+                        id_user = int.Parse(Session["idUsuario"].ToString()),
+                        status = false
+                    };
+                    using (var transaccion = new TransactionScope())
+                    {
+                        db.Order.Add(order);
+                        db.SaveChanges();
+                        foreach (Product_Order item in products)
+                        {
+                            item.id_order = order.id;
+                            db.Product_Order.Add(item);
+                        }
+                        db.SaveChanges();
+                        transaccion.Complete();
+                    }
+                    Session["Basket"] = null;
                 }
-                Session["Basket"] = null;
+            }
+            catch (Exception)
+            {
+                throw;
             }
             return RedirectToAction("Index");
         }
-        // POST: Orders/ConfirmProduct
+
+        // POST: Confirm individual products
+        [Admin]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ConfirmProduct(int? id_product, int? id_order, int? quant, int? id_business)
@@ -265,13 +289,32 @@ namespace Pinturería_Acuarela.Controllers
                             prod_order.quantity_send += quant.Value;
                         }
 
+                        if (id_business == null && quant.Value > 0)
+                        {
+                            id_business = db.Business.Where(b => b.adress.Equals("San Carlos Centro")).Select(b => b.id).FirstOrDefault();
+                        }
+
                         // id_business == null cuando quant = 0 (mandado desde el front)
                         if (id_business != null)
                         {
-                            Product_Business prod_b_sender = db.Product_Business.Where(p => p.id_product == id_product.Value && p.id_business == id_business).First();
-                            prod_b_sender.stock -= quant.Value;
+                            Product_Business prod_b_sender = db.Product_Business.Where(p => p.id_product == id_product.Value && p.id_business == id_business).FirstOrDefault();
+                            if (prod_b_sender != null)
+                            {
+                                if (prod_b_sender.stock >= quant.Value)
+                                {
+                                    prod_b_sender.stock -= quant.Value;
+                                }
+                                else
+                                {
+                                    TempData["Error"] = 1;
+                                    throw new Exception("La sucursal no cuenta con suficiente stock");
+                                }
+                            } else
+                            {
+                                throw new Exception("La sucursal no tiene registrado el producto");
+                            }
 
-                            Product_Business prod_b_receiver = db.Product_Business.Where(p => p.id_product == id_product.Value && p.id_business == prod_order.Order.User.Business.id).First();
+                            Product_Business prod_b_receiver = db.Product_Business.Where(p => p.id_product == id_product.Value && p.id_business == prod_order.Order.User.Business.id).FirstOrDefault();
                             prod_b_receiver.stock += quant.Value;
                         }
 
@@ -293,13 +336,36 @@ namespace Pinturería_Acuarela.Controllers
                     {
                         TempData["Error"] = 2;
                     }
+                } else
+                {
+                    TempData["Error"] = 2;
                 }
                 return RedirectToAction("/Details", new { id = id_order });
             }
             return RedirectToAction("Index");
         }
 
-        // POST: Orders/UnconfirmProduct
+        // POST: Confirm individual product (default store)
+        [Admin]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ConfirmProductDefault(int? id_product, int? id_order, int? quant)
+        {
+            try
+            {
+                int id_business = db.Business.Where(b  => b.adress.Equals("San Carlos Centro")).Select(b => b.id).FirstOrDefault();
+                return RedirectToAction("/ConfirmProduct", new { id_product, id_order, quant, id_business });
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = ex.Message;
+                TempData["Error"] = 2;
+                return RedirectToAction("/Details", new { id = id_order });
+            }
+        }
+
+        // POST: Unconfirm individual products
+        [Admin]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult UnconfirmProduct(int? id_product, int? id_order)
@@ -340,7 +406,8 @@ namespace Pinturería_Acuarela.Controllers
             return RedirectToAction("Index");
         }
 
-        // POST: Orders/ConfirmOrder
+        // POST: Confirm whole order
+        [Admin]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ConfirmOrder(int? id)
@@ -364,19 +431,14 @@ namespace Pinturería_Acuarela.Controllers
             catch (Exception ex)
             {
                 TempData["Message"] = ex.Message;
-                if (TempData["Error"] != null)
-                {
-                    if (TempData["Error"].ToString() != "1")
-                    {
-                        TempData["Error"] = 2;
-                    }
-                }
+                TempData["Error"] = 2;
                 return RedirectToAction("/Details", new { id });
             }
             return RedirectToAction("Index");
         }
 
-        // POST: Orders/UnconfirmOrder
+        // POST: Unconfirm whole order
+        [Admin]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult UnconfirmOrder(int? id)
@@ -411,19 +473,14 @@ namespace Pinturería_Acuarela.Controllers
             catch (Exception ex)
             {
                 TempData["Message"] = ex.Message;
-                if (TempData["Error"] != null)
-                {
-                    if (TempData["Error"].ToString() != "1")
-                    {
-                        TempData["Error"] = 2;
-                    }
-                }
+                TempData["Error"] = 2;
                 return RedirectToAction("/Details", new { id });
             }
             return RedirectToAction("Index");
         }
 
         // GET: Stock in business
+        [Admin]
         [HttpGet]
         public JsonResult CheckStock(int id_product, int id_business, int quant)
         {

@@ -174,7 +174,7 @@ namespace Pinturería_Acuarela.Controllers
                     }).ToList();
                 return Json(list, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(JsonRequestBehavior.AllowGet);
             }

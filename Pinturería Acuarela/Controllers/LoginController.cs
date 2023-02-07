@@ -17,7 +17,7 @@ namespace Pinturería_Acuarela.Controllers
         }
         public ActionResult Logout()
         {
-            Session["idUsuario"] = null;
+            Session["User"] = null;
             return RedirectToAction("Index", "Home");
         }
         public ActionResult Validate(string email, string password)
@@ -35,7 +35,7 @@ namespace Pinturería_Acuarela.Controllers
 
                 if (user != null)
                 {
-                    Session["idUsuario"] = user.id;
+                    Session["User"] = user;
                     return RedirectToAction("Index", "Home");
                 }
                 ViewBag.Error = 1;
