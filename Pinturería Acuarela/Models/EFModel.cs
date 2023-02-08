@@ -48,9 +48,18 @@ namespace Pinturería_Acuarela
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Business>()
+                .HasMany(e => e.Product_Order)
+                .WithOptional(e => e.Business)
+                .HasForeignKey(e => e.id_business_sender);
+
+            modelBuilder.Entity<Business>()
                 .HasMany(e => e.User)
                 .WithOptional(e => e.Business)
                 .HasForeignKey(e => e.id_business);
+
+            modelBuilder.Entity<Capacity>()
+                .Property(e => e.description)
+                .IsUnicode(false);
 
             modelBuilder.Entity<Capacity>()
                 .HasMany(e => e.Product)

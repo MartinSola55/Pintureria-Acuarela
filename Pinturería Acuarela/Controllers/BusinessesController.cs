@@ -7,9 +7,12 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Pinturería_Acuarela;
+using Pinturería_Acuarela.Filter;
 
 namespace Pinturería_Acuarela.Controllers
 {
+    [Security]
+    [Admin]
     public class BusinessesController : Controller
     {
         private EFModel db = new EFModel();
@@ -32,8 +35,13 @@ namespace Pinturería_Acuarela.Controllers
             {
                 return HttpNotFound();
             }
-            int uncorfirmedOrders = db.Order.Where(o => o.User.Business.id.Equals(id.Value) && o.status.Equals(false)).Count();
-            ViewBag.UnconfirmedOrders = uncorfirmedOrders;
+            int stocklessProducts = db.Product_Business.Where(p => p.id_business.Equals(id.Value) && p.stock == 0 && p.deleted_at.Equals(null)).Count();
+            int stockAlertProducts = db.Product_Business.Where(p => p.id_business.Equals(id.Value) && p.stock < p.minimum_stock && p.deleted_at.Equals(null)).Count();
+            int pendingOrders = db.Order.Where(o => o.User.Business.id.Equals(id.Value) && o.status.Equals(false) && o.deleted_at.Equals(null)).Count();
+
+            ViewBag.PendingOrders = pendingOrders;
+            ViewBag.StocklessProducts = stocklessProducts;
+            ViewBag.StockAlertProducts = stockAlertProducts;
             return View(business);
         }
 

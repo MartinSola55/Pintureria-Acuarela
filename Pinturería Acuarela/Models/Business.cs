@@ -13,6 +13,7 @@ namespace Pinturería_Acuarela
         public Business()
         {
             Product_Business = new HashSet<Product_Business>();
+            Product_Order = new HashSet<Product_Order>();
             User = new HashSet<User>();
         }
 
@@ -24,6 +25,9 @@ namespace Pinturería_Acuarela
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product_Business> Product_Business { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Product_Order> Product_Order { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> User { get; set; }

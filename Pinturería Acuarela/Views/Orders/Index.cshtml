@@ -4,44 +4,122 @@
     ViewBag.Title = "Ordenes";
 }
 
-<h2>Ordenes</h2>
+<link href="~/Content/datatables.css" rel="stylesheet" />
+<link href="~/Content/orders.css" rel="stylesheet" />
 
-<p>
-    @Html.ActionLink("Realizar pedido", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            Sucursal
-        </th>
-        <th>
-            Día
-        </th>
-        <th>
-            Estado
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.User.Business.adress)
-        </td>
-        <td>
-            @(item.date.ToShortDateString() + " - " + item.date.ToShortTimeString())
-        </td>
-        <td>
-            @(item.status == false ? "En espera" : "Confirmado")
-        </td>
-        <td>
-            <div class="d-flex flex-row justify-content-center">
-                <a class='btn btn-success me-4' href="~/Orders/Details/@item.id">Ver orden</a>
-                <a class='btn btn-success me-4' href="~/Orders/Edit/@item.id"><i class='bi bi-pencil-square'></i></a>
-                <a class='btn btn-danger ms-4' href="~/Orders/Delete/@item.id"><i class='bi bi-trash3'></i></a>
+@{ if (ViewBag.Message != null)
+    {
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                @{ if (ViewBag.Error == 1)
+                    {
+                        <div class="modal-content d-flex flex-column" id="NotifContainer" style="background-color: khaki;">
+                            <button type="button" id="btnCerrar" class="btn-close mb-3 align-self-end justify-content-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h3 id="txtNotification" class="fw-bold text-center mb-3"><i class="bi bi-exclamation-triangle"></i>&nbsp;@ViewBag.Message<br /></h3>
+                        </div>
+                    }
+                    else if (ViewBag.Error == 2)
+                    {
+                        <div class="modal-content d-flex flex-column" id="NotifContainer" style="background-color: crimson;">
+                            <button type="button" id="btnCerrar" class="btn-close mb-3 align-self-end justify-content-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h3 id="txtNotification" class="fw-bold text-center text-white mb-3"><i class="bi bi-exclamation-diamond"></i>&nbsp;@ViewBag.Message<br /></h3>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="modal-content d-flex flex-column px-5" id="NotifContainer" style="background-color: yellowgreen;">
+                            <button type="button" id="btnCerrar" class="btn-close mb-3 align-self-end justify-content-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h3 id="txtNotification" style="color: black;" class="text-center fw-bold mb-3"><i class="bi bi-info-circle"></i>&nbsp;@ViewBag.Message</h3>
+                        </div>
+                    }}
             </div>
-        </td>
-    </tr>
+        </div>
+        <button id="btnModal" style="display: none" data-bs-toggle='modal' data-bs-target='#staticBackdrop'></button>
+    }
 }
 
+<h1 class="text-center">Ordenes</h1>
+<hr class="pb-4" />
+
+<table id="dataTable" class="table table-striped table-bordered table-hover pt-4">
+    <thead class='table-dark'>
+        <tr class="fw-bold text-center">
+            <td>
+                Sucursal
+            </td>
+            <td>
+                Pedido
+            </td>
+            <td>
+                Estado
+            </td>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model)
+    {
+        <tr class='clickable-row text-center' data-href='/Orders/Details/@item.id'>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Business.adress)
+            </td>
+            <td>
+                Día: @(item.date.ToShortDateString())
+                <br>
+                Hora: @(item.date.ToShortTimeString())
+            </td>
+            <td>
+                @(item.status == false ? "En espera" : "Confirmado")
+            </td>
+        </tr>
+    }
+
 </table>
+
+<a class="btn btn-dark" href="../Orders/Create">Realizar pedido</a>
+
+<script src="~/Scripts/datatables.js"></script>
+<script>
+    $(".clickable-row").click(function () {
+        window.location = $(this).data("href");
+    });
+
+    $(document).ready(function () {
+        if ($("#txtNotification").html() !== "") {
+            $("#btnModal").click();
+            setTimeout(function () {
+                $("#btnCerrar").click();
+            }, 3000)
+        }
+    });
+
+    $('#dataTable').DataTable(
+        {
+            searching: false,
+            "language": {
+                paginate: {
+                    "first": "Primera",
+                    "last": "Última",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                },
+                emptyTable: "No existen ordenes que coincidan con la búsqueda",
+                info: "Mostrando _END_ de _TOTAL_ ordenes",
+                infoEmpty: "Mostrando 0 ordenes",
+                lengthMenu: "Mostrar _MENU_ ordenes",
+            },
+            columnDefs: [{
+                orderable: false,
+                targets: "no-sort"
+            }]
+        }
+    )
+    
+</script>
+
+<style>
+    .clickable-row:hover {
+        cursor: pointer;
+        background-color: aliceblue;
+    }
+</style>

@@ -1,10 +1,70 @@
 ﻿@model Pinturería_Acuarela.Order
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Ordenes";
+    User user = Session["User"] as User;
+}
+<link href="~/Content/orders.css" rel="stylesheet" />
+
+@{ if (ViewBag.Message != null)
+    {
+        <!-- Modal notificación -->
+        <div class="modal fade" id="modalNotification" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                @{ if (ViewBag.Error == 1)
+                    {
+                        <div class="modal-content d-flex flex-column" id="NotifContainer" style="background-color: khaki;">
+                            <button type="button" id="btnCerrar" class="btn-close mb-3 align-self-end justify-content-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h3 id="txtNotification" class="fw-bold text-center mb-3"><i class="bi bi-exclamation-triangle"></i>&nbsp;@ViewBag.Message<br /></h3>
+                        </div>
+                    }
+                    else if (ViewBag.Error == 2)
+                    {
+                        <div class="modal-content d-flex flex-column" id="NotifContainer" style="background-color: crimson;">
+                            <button type="button" id="btnCerrar" class="btn-close mb-3 align-self-end justify-content-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h3 id="txtNotification" class="fw-bold text-center text-white mb-3"><i class="bi bi-exclamation-diamond"></i>&nbsp;@ViewBag.Message<br /></h3>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="modal-content d-flex flex-column px-5" id="NotifContainer" style="background-color: yellowgreen;">
+                            <button type="button" id="btnCerrar" class="btn-close mb-3 align-self-end justify-content-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h3 id="txtNotification" style="color: black;" class="text-center fw-bold mb-3"><i class="bi bi-info-circle"></i>&nbsp;@ViewBag.Message</h3>
+                        </div>
+                    }}
+            </div>
+        </div>
+        <button id="btnModal" style="display: none" data-bs-toggle='modal' data-bs-target='#modalNotification'></button>
+    }
 }
 
-<h2>Detalles de la orden</h2>
+<!-- Modal order confirmation -->
+<div class="modal fade" id="orderConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Seleccionar sucursal</h1>
+                <button id="btnCloseModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label class="control-label col-md-2">Sucursal</label>
+                <div class="col-md-10">
+                    <select id="businessDropdown" class="form-select">
+
+                    </select>
+                </div>
+                <input id="modal_id_product" type="hidden"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="sendConfirmation()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h1 class="text-center">Detalles de la orden</h1>
+<hr class="pb-4"/>
 
 <div>
     <table class="table">
@@ -25,19 +85,35 @@
                 Código interno
             </th>
             <th>
-                Cantidad en stock
-            </th>
-            <th>
                 Cantidad pedida
             </th>
             <th>
-                Confirmar
+                Cantidad enviada
             </th>
+            @{
+                if (user.Rol.id == 1)
+                {
+                    <th>
+                        Cantidad a enviar
+                    </th>
+                    <th>
+                        Confirmar
+                    </th>
+                }
+            }
         </tr>
 
         @foreach (var item in Model.Product_Order)
         {
             <tr>
+                @using (@Html.BeginForm("ConfirmProduct", "Orders", FormMethod.Post, new { @id = "form_" + item.id_product }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id_product", item.id_product)
+                    @Html.Hidden("id_order", item.id_order)
+                    @Html.Hidden("quant", null, new { @product = "product_" + item.id_product })
+                    @Html.Hidden("id_business", null, new { @business = "business_for_" + item.id_product })
+                }
                 <td>
                     @Html.DisplayFor(modelItem => item.Product.description)
                 </td>
@@ -45,38 +121,168 @@
                     @Html.DisplayFor(modelItem => item.Product.Brand.name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.Category.description)
+                    @(item.Product.id_category != null ? item.Product.Category.description : "-")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.Subcategory.description)
+                    @(item.Product.id_subcategory != null ? item.Product.Subcategory.description : "-")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.internal_code)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.quantity)
+                    @(item.Product.internal_code != null ? item.Product.internal_code.ToString() : "-")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.quantity)
                 </td>
                 <td>
-                    @if (item.status == false)
-                    {
-                        @Html.ActionLink("Confirmar producto", "ConfirmProduct", new { id_product = item.id_product, id_order = item.id_order, quant = item.quantity })
-                    } else
-                    {
-                        @:<p>Confirmado</p>
-                    }
+                    @Html.DisplayFor(modelItem => item.quantity_send)
                 </td>
+                @{
+                    if (user.Rol.id == 1)
+                    {
+                        <td>
+                            @{
+                                if (!item.status)
+                                {
+                                    <div class='d-flex flex-row justify-content-center'>
+                                        <div class='value-button' id='decrease' onclick='decreaseValue(@item.id_product)' value='Decrease Value'>-</div>
+                                        <input type='number' id='number_@item.id_product' class='number' value='0' />
+                                        <div class='value-button' id='increase' onclick='increaseValue(@item.id_product, @(item.quantity - item.quantity_send))' value='Increase Value'>+</div>
+                                    </div>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @if (item.status)
+                            {
+                                <button class="btn btn-warning" onclick="UnconfirmProduct(id_product = @item.id_product)">Cancelar confirmación</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-success" onclick="ConfirmProduct(id_product = @item.id_product, id_business = @item.Order.User.Business.id)" data-bs-toggle="modal" data-bs-target="#orderConfirmation">Confirmar</button>
+                                <button class="btn btn-success" onclick="ConfirmProductDefault(id_product = @item.id_product)">SCC</button>
+                            }
+                        </td>
+                    }
+                }
             </tr>
         }
 
     </table>
 </div>
-<p>
-    @if (Model.status == false) {
-        @Html.ActionLink("Confirmar orden", "ConfirmOrder", new { id = Model.id }); @: | 
+<div class="mx-2 mt-3">
+    <div class="d-flex flex-row justify-content-between mb-4">
+        <a class="btn btn-dark" href="../">Volver al listado</a>
+
+        @if (user.Rol.id == 1)
+        {
+            if (!Model.status)
+            {
+                using (@Html.BeginForm("ConfirmOrder", "Orders", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.id)
+                    <button class="btn btn-success" type="submit">Confirmar orden</button>
+                }
+            }
+            else
+            {
+                using (@Html.BeginForm("UnconfirmOrder", "Orders", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.id)
+                    <button class="btn btn-warning" type="submit">Cancelar orden</button>
+                }
+            }
+        }
+        @{
+            if (user.Rol.id != 1 && !Model.status)
+            {
+                using (@Html.BeginForm("Delete", "Orders", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.id)
+                    <button class="btn btn-danger" type="submit">Eliminar orden</button>
+                }
+            }
+            else if (user.Rol.id == 1)
+            {
+                using (@Html.BeginForm("Delete", "Orders", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.id)
+                    <button class="btn btn-danger" type="submit">Eliminar orden</button>
+                }
+            }
+        }
+    </div>
+</div>
+
+
+<script>
+    function increaseValue(id, quant) {
+        let value = parseInt(document.getElementById('number_' + id).value, 10);
+        value = isNaN(value) ? 0 : value;
+        value >= quant ? value = quant - 1 : '';
+        value++;
+        document.getElementById('number_' + id).value = value;
     }
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+    function decreaseValue(id) {
+        let value = parseInt(document.getElementById('number_' + id).value, 10);
+        value = isNaN(value) ? 0 : value;
+        value < 1 ? value = 1 : '';
+        value--;
+        document.getElementById('number_' + id).value = value;
+    }
+
+    function ConfirmProduct(id_product, id_business) {
+        let quant = $("#number_" + id_product).val();
+        $("input[product = 'product_" + id_product + "']").val(quant);
+        if (quant == "0") {
+            $("#btnCloseModal").click();
+            $("#form_" + id_product).submit();
+        }
+        $.get("/Orders/CheckStock/?id_product=" + id_product + "&id_business=" + id_business + "&quant=" + quant, function (data) {
+            let content = "";
+            content += "<option value=''>Seleccionar sucursal</option>";
+            for (let i = 0; i < data.length; i++) {
+                content += "<option value='" + data[i].id_business + "'>";
+                content += data[i].adress;
+                content += " - ";
+                content += data[i].stock;
+                content += " restantes";
+                content += "</option>";
+            }
+            $("#businessDropdown").html(content);
+        });
+        $("#modal_id_product").val(id_product);
+    }
+
+    function ConfirmProductDefault(id_product) {
+        let quant = $("#number_" + id_product).val();
+        $("input[product = 'product_" + id_product + "']").val(quant);
+        $("#form_" + id_product).submit();
+    }
+
+    function sendConfirmation() {
+        let id_product = $("#modal_id_product").val();
+        if ($("#businessDropdown").val() != "") {
+            let business_selected = $("#businessDropdown").val();
+            $("input[business = 'business_for_" + id_product + "']").val(business_selected);
+            $("#form_" + id_product).submit();
+        }
+    }
+
+    function UnconfirmProduct(id_product) {
+        $("#form_" + id_product).attr("action", "/Orders/UnconfirmProduct");
+        $("#form_" + id_product).submit();
+    }
+
+    $(document).ready(function () {
+        if ($("#txtNotification").html() !== "") {
+            $("#btnModal").click();
+            setTimeout(function () {
+                $("#btnCerrar").click();
+            }, 3000)
+        }
+    });
+</script>

@@ -22,6 +22,10 @@ namespace Pinturería_Acuarela
 
         public int stock { get; set; }
 
+        public DateTime created_at { get; set; }
+
+        public DateTime? deleted_at { get; set; }
+
         public virtual Business Business { get; set; }
 
         public virtual Product Product { get; set; }

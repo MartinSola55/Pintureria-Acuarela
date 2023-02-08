@@ -54,7 +54,7 @@ function decreaseValue(id) {
 }
 
 function addToCart(id) {
-    $.get("AddToCart/?id=" + id + "&cant=" + $("#number" + id).val(), function (data) {
+    $.get("AddToCart/?id_prod=" + id + "&quant=" + $("#number" + id).val(), function (data) {
         $("#basketCount").html(data);
     });
 }
@@ -69,4 +69,4 @@ $('#btnFilter').on('click', function (ev) {
     $.get("FilterProducts/?id_brand=" + id_brand + "&id_category=" + id_category + "&id_subcategory=" + id_subcategory + "&id_color=" + id_color + "&id_capacity=" + id_capacity, function (data) {
         createTable(data);
     });
-});   
+});
