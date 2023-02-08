@@ -1,0 +1,128 @@
+﻿@model Pinturería_Acuarela.Business
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Agregar producto</h2>
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Seleccionar</button>
+
+<!-- Modal -->
+<div class="modal modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row mb-8 justify-content-center ">
+                        <div class="col-md-6 col-12">
+                            <div class="mb-4 border-bottom pb-2">
+                                <h4 class="mb-0">Cantidad y Stock Minimo</h4>
+                                <div style="display:none" id="idProduct"></div>
+                            </div>
+                            <div class="row" id="contentBntIncrement">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <p class="text-dark">Cantidad</p>
+                                        </div>
+                                        <div class="input-group w-auto justify-content-end align-items-center">
+                                            <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 " data-field="quantity">
+                                            <input type="number" id="numCant" step="1" max="10" value="10" name="quantity" class="quantity-field border-0 text-center w-25">
+                                            <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm " data-field="quantity">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <p class="text-dark">Stock Minimo</p>
+                                        </div>
+                                        <div class="input-group w-auto justify-content-end align-items-center">
+                                            <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 " data-field="quantity">
+                                            <input type="number" id="numMinCant" step="1" max="10" value="1" name="quantity" class="quantity-field border-0 text-center w-25">
+                                            <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm lh-0" data-field="quantity">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!--VER COMO PASARLE LOS DATOS A AddProduc para agregar el producto a Porduct_business-->
+                <button type="button" onclick="addProduct()" class="btn btn-primary">Agregar2</button>
+
+                <button id="modalCerrar" type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container d-flex flex-row">
+    <div class="input-group" style="margin:auto">
+        <input type="search" placeholder="Codigo Interno / Descripcion" id="txtSearch" class="form-control" />
+        <button id="btSearch" type="button" class="btn btn-primary">
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
+    <div class="d-flex flex-row align-self-center">
+        <div>
+            <label class="control-label col-md-2">Marca</label>
+            <div class="col-md-10">
+                @Html.DropDownList("id_brand", null, "Seleccionar una marca", htmlAttributes: new { @class = "form-control", @id = "id_brand" })
+            </div>
+        </div>
+        <div>
+            <label class="control-label col-md-2">Categoría</label>
+            <div class="col-md-10">
+                @Html.DropDownList("id_category", null, "Seleccionar una categoría", htmlAttributes: new { @class = "form-control", @id = "id_category" })
+            </div>
+        </div>
+        <div>
+            <label class="control-label col-md-2">Subcategoría</label>
+            <div class="col-md-10">
+                @Html.DropDownList("id_subcategory", null, "Seleccionar una subcategoría", htmlAttributes: new { @class = "form-control", @id = "id_subcategory" })
+            </div>
+        </div>
+        <div>
+            <label class="control-label col-md-2">Color</label>
+            <div class="col-md-10">
+                @Html.DropDownList("id_color", null, "Seleccionar una color", htmlAttributes: new { @class = "form-control", @id = "id_color" })
+            </div>
+        </div>
+        <div>
+            <label class="control-label col-md-2">Capacidad</label>
+            <div class="col-md-10">
+                @Html.DropDownList("id_capacity", null, "Seleccionar una capacidad", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Filtrar" onclick="FilterProducts();" class="btn btn-dark" id="btnFilterCreate" />
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="contentTable" class="mt-4 container"></div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/product_business.js"></script>
+
+
+
+

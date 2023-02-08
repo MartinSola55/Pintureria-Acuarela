@@ -138,11 +138,18 @@ namespace Pinturería_Acuarela.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Product product = db.Product.Find(id);
-            db.Product.Remove(product);
-            db.SaveChanges();
-            TempData["DeleteMessage"] = "El producto fue eliminado";
-            return RedirectToAction("Index");
+            try
+            {
+                Product product = db.Product.Find(id);
+                product.deleted_at = DateTime.Now;
+                db.SaveChanges();
+                TempData["DeleteMessage"] = "El producto fue eliminado";
+                return RedirectToAction("Index");
+            }
+            catch(Exception e)
+            {
+               return RedirectToAction("Index");
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -159,7 +166,7 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
-                var list = db.Product.Where(p=>p.description.Contains(nom) || p.internal_code.ToString().Contains(nom))
+                var list = db.Product.Where(p=>p.description.Contains(nom) || p.internal_code.ToString().Contains(nom) && p.deleted_at.Equals(null))
                     .Select(p => new
                     {
                         p.id,
@@ -168,8 +175,7 @@ namespace Pinturería_Acuarela.Controllers
                         brand = p.Brand.name,
                         category = p.Category.description,
                         subcategory = p.Subcategory.description,
-                        p.Capacity.capacity,
-                        p.quantity,
+                        capacity = p.Capacity.capacity.ToString(),
                         color = p.Color.name,
                         p.Color.rgb_hex_code
                     }).ToList();
@@ -179,7 +185,6 @@ namespace Pinturería_Acuarela.Controllers
             {
                 return Json(JsonRequestBehavior.AllowGet);
             }
-            
         }
 
         [HttpGet]
@@ -197,14 +202,15 @@ namespace Pinturería_Acuarela.Controllers
                     p.id_category.ToString().Contains(id_category) &&
                     p.id_subcategory.ToString().Contains(id_subcategory) &&
                     p.id_color.ToString().Contains(id_color) &&
-                    p.id_capacity.ToString().Contains(id_capacity))
+                    p.id_capacity.ToString().Contains(id_capacity) && 
+                    p.deleted_at.Equals(null))
+
                     .Select(p => new
                     {
                         p.id,
                         p.internal_code,
                         p.description,
                         brand = p.Brand.name,
-                        p.quantity,
                         category = p.Category.description,
                         subcategory = p.Subcategory.description,
                         color = p.Color.name,

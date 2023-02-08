@@ -1,5 +1,5 @@
 ﻿let btBuscar = document.getElementById("btSearch");
-let header = ["Codigo Interno", "Descripcion", "Marca", "Categoria", "Subcategoria", "Color", "Capacidad","Cantidad","Operadores"];
+let header = ["Codigo Interno", "Descripcion", "Marca", "Categoria", "Subcategoria", "Color", "Capacidad","Operadores"];
 
 btBuscar.onclick = function () {
     let txtBuscar = document.getElementById("txtSearch").value;
@@ -53,9 +53,8 @@ function createTable(data, header) {
             content += "<span class='dot' style='background-color: " + data[i].rgb_hex_code + "'></span>";
             content += "</div>";
             content += "</td>";
-        }else {content += "<td></td>";}
-        content += "<td>" + (data[i].capacity != null ? data[i].capacity : "-") + "</td>";
-        content += "<td>" + (data[i].quantity != null ? data[i].quantity : "-") + "</td>";
+        }else {content += "<td> - </td>";}
+        content += "<td>" + (data[i].capacity != "" ? data[i].capacity : "-") + "</td>";
         content += "<td>";
         content += "<div class='d-flex flex-row justify-content-center'>";
         content += "<a class='btn btn-success me-4' href='Products/Edit/"+data[i].id+"'><i class='bi bi-pencil-square'></i></a>";

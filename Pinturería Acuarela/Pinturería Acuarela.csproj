@@ -143,10 +143,12 @@
     <Content Include="Scripts\navbar.js" />
     <Content Include="Scripts\orders.js" />
     <Content Include="Scripts\products.js" />
+    <Content Include="Scripts\product_business.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\Product_BusinessController.cs" />
     <Compile Include="Models\Brand.cs" />
     <Compile Include="Models\Business.cs" />
     <Compile Include="Models\Capacity.cs" />
@@ -252,6 +254,11 @@
     <Content Include="Views\Capacities\Index.cshtml" />
     <Content Include="Views\Businesses\Details.cshtml" />
     <Content Include="Views\Orders\Basket.cshtml" />
+    <Content Include="Views\Product_Business\Create.cshtml" />
+    <Content Include="Views\Product_Business\Delete.cshtml" />
+    <Content Include="Views\Product_Business\Details.cshtml" />
+    <Content Include="Views\Product_Business\Edit.cshtml" />
+    <Content Include="Views\Product_Business\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
