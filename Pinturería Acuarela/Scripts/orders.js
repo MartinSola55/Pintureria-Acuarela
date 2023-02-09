@@ -4,9 +4,9 @@
         contenido += "<tr>";
         contenido += "<td>" + data[i].product ?? "" + "</td>";
         contenido += "<td>" + data[i].brand + "</td>";
-        let category = data[i].category != null ? data[i].category : "";
+        let category = data[i].category != null ? data[i].category : " - ";
         contenido += "<td>" + category + "</td>";
-        let subcategory = data[i].subcategory != null ? data[i].subcategory : "";
+        let subcategory = data[i].subcategory != null ? data[i].subcategory : " - ";
         contenido += "<td>" + subcategory + "</td>";
         if (data[i].color != null) {
             contenido += "<td>";
@@ -16,10 +16,10 @@
             contenido += "</div>";
             contenido += "</td>";
         } else {
-            contenido += "<td>";
+            contenido += "<td>-";
             contenido += "</td>";
         }
-        let capacity = data[i].capacity != null ? data[i].capacity : "";
+        let capacity = data[i].capacity != null ? data[i].capacity : " - ";
         contenido += "<td>" + capacity + "</td>";
         contenido += "<td>";
         contenido += "<div class='d-flex flex-row justify-content-center'>";

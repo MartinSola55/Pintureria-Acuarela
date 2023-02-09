@@ -145,7 +145,8 @@
     <Content Include="Scripts\navbar.js" />
     <Content Include="Scripts\orders.js" />
     <Content Include="Scripts\products.js" />
-    <Content Include="Scripts\product_business.js" />
+    <Content Include="Scripts\product_business_create.js" />
+    <Content Include="Scripts\product_business_index.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -254,16 +255,13 @@
     <Content Include="Views\Capacities\Index.cshtml" />
     <Content Include="Views\Businesses\Details.cshtml" />
     <Content Include="Views\Orders\Basket.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\Product_Business\Create.cshtml" />
     <Content Include="Views\Product_Business\Delete.cshtml" />
     <Content Include="Views\Product_Business\Details.cshtml" />
     <Content Include="Views\Product_Business\Edit.cshtml" />
     <Content Include="Views\Product_Business\Index.cshtml" />
-=======
     <Content Include="Views\Home\AdminIndex.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
->>>>>>> 70c5fd096bd0231b4c09b99ddbf7a655e7330cfe
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

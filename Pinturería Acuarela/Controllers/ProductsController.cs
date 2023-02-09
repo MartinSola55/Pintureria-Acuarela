@@ -146,7 +146,7 @@ namespace Pinturería_Acuarela.Controllers
                 TempData["DeleteMessage"] = "El producto fue eliminado";
                 return RedirectToAction("Index");
             }
-            catch(Exception e)
+            catch(Exception)
             {
                return RedirectToAction("Index");
             }
@@ -181,7 +181,7 @@ namespace Pinturería_Acuarela.Controllers
                     }).ToList();
                 return Json(list, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(JsonRequestBehavior.AllowGet);
             }

@@ -4,17 +4,14 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Productos de @Model.adress</h2>
+<link href="~/Content/orders.css" rel="stylesheet" />
 
+<h1 class="text-center">Productos de @Model.adress</h1>
+<hr class="pb-3" />
 
-<p>
-    @Html.ActionLink("Cargar un Producto", "Create", new {business_id = Model.id})
-</p>
-
+<a class="btn btn-dark" href="/Product_Business/Create/@Model.id">Agregar un producto</a>
 
 @{
-    var parameter = Request.QueryString["ac"];
-
     if (TempData["SuccessMessage"] != null)
     {
         <div id="alertCreate" class="alert alert-success alert-dismissable">
@@ -45,53 +42,40 @@
 
 
 
-<div class="container d-flex flex-row">
-    <div class="input-group" style="margin:auto">
-        <input type="search" placeholder="Codigo Interno / Descripcion" id="txtSearch" class="form-control" />
-        <button id="btSearch" type="button" class="btn btn-primary">
-            <i class="bi bi-search"></i>
-        </button>
-    </div>
-    <div class="d-flex flex-row align-self-center">
-        <div>
-            <label class="control-label col-md-2">Marca</label>
-            <div class="col-md-10">
-                @Html.DropDownList("id_brand", null, "Seleccionar una marca", htmlAttributes: new { @class = "form-control", @id = "id_brand" })
-            </div>
-        </div>
-        <div>
-            <label class="control-label col-md-2">Categoría</label>
-            <div class="col-md-10">
-                @Html.DropDownList("id_category", null, "Seleccionar una categoría", htmlAttributes: new { @class = "form-control", @id = "id_category" })
-            </div>
-        </div>
-        <div>
-            <label class="control-label col-md-2">Subcategoría</label>
-            <div class="col-md-10">
-                @Html.DropDownList("id_subcategory", null, "Seleccionar una subcategoría", htmlAttributes: new { @class = "form-control", @id = "id_subcategory" })
-            </div>
-        </div>
-        <div>
-            <label class="control-label col-md-2">Color</label>
-            <div class="col-md-10">
-                @Html.DropDownList("id_color", null, "Seleccionar una color", htmlAttributes: new { @class = "form-control", @id = "id_color" })
-            </div>
-        </div>
-        <div>
-            <label class="control-label col-md-2">Capacidad</label>
-            <div class="col-md-10">
-                @Html.DropDownList("id_capacity", null, "Seleccionar una capacidad", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="button" value="Filtrar" class="btn btn-dark" id="btnFilter" />
-            </div>
-        </div>
-    </div>
-
+<div class="container mt-4">
+    <table id='dataTable' class='container table table-light table-striped table-bordered table-hover pt-4'>
+        <thead class='table-dark'>
+            <tr>
+                <td class='text-center'></td>
+                <td class='text-center d-flex flex-row'>
+                    <input class="form-control" id="txtSearch" placeholder="Cód. interno | Nombre" />
+                    <button id="btnSearch" type="button" class="btn btn-primary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </td>
+                <td class='text-center'>@Html.DropDownList("id_brand", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_brand" })</td>
+                <td class='text-center'>@Html.DropDownList("id_category", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_category" })</td>
+                <td class='text-center'>@Html.DropDownList("id_subcategory", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_subcategory" })</td>
+                <td class='text-center'>@Html.DropDownList("id_color", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_color" })</td>
+                <td class='text-center'>@Html.DropDownList("id_capacity", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })</td>
+                <td class='text-center'><input type="button" value="Filtrar" class="btn btn-outline-light" id="btnFilter" /></td>
+                <td></td>
+            </tr>
+            <tr class='fw-bold'>
+                <td class='text-center'>Cód. Interno</td>
+                <td class='text-center'>Producto</td>
+                <td class='text-center'>Marca</td>
+                <td class='text-center'>Categoría</td>
+                <td class='text-center'>Subcategoría</td>
+                <td class='text-center'>Color</td>
+                <td class='text-center'>Capacidad</td>
+                <td class='text-center'>Stock</td>
+                <td class='text-center'>Añadir</td>
+            </tr>
+        </thead>
+        <tbody id="contentTable">
+        </tbody>
+    </table>
 </div>
 
-<div id="contentTable" class="mt-4 container"></div>
-
-<script src="~/Scripts/product_business.js"></script>
+<script src="~/Scripts/product_business_index.js"></script>

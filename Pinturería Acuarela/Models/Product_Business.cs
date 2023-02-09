@@ -18,8 +18,11 @@ namespace Pinturería_Acuarela
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int id_business { get; set; }
 
+        [Range(1, 10000, ErrorMessage = "Debes ingresar un stock mínimo entre 1 y 10.000")]
         public int? minimum_stock { get; set; }
 
+        [Required(ErrorMessage = "Debes ingresar un stock")]
+        [Range(0, 10000, ErrorMessage = "Debes ingresar un stock entre 0 y 10.000")]
         public int stock { get; set; }
 
         public DateTime created_at { get; set; }
