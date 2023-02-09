@@ -1,4 +1,4 @@
-﻿@model Pinturería_Acuarela.Business
+﻿@model Pinturería_Acuarela.Product_Business
 
 @{
     ViewBag.Title = "Index";
@@ -6,10 +6,8 @@
 
 <link href="~/Content/orders.css" rel="stylesheet" />
 
-<h1 class="text-center">Productos de @Model.adress</h1>
+<h1 class="text-center">Productos de @Model.Business.adress</h1>
 <hr class="pb-3" />
-
-<a class="btn btn-dark" href="/Product_Business/Create/@Model.id">Agregar un producto</a>
 
 @{
     if (TempData["SuccessMessage"] != null)
@@ -40,9 +38,57 @@
     }
 }
 
+@using (Html.BeginForm("Edit", "Product_Business", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("id_product")
+    @Html.Hidden("id_business", Model.Business.id)
+    <!-- Modal -->
+    <div class="modal modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Cargar stock</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body d-flex flex-column">
+                    <div class="d-flex flex-column">
+                        <div class="d-flex flex-row justify-content-center align-items-center">
+                            <label class="pe-3">Stock existente: </label>
+                            <div class='d-flex flex-row justify-content-center ps-3'>
+                                <div class='value-button' id='decrease_stock' onclick='decreaseValue("stock")' value='Decrease Value'>-</div>
+                                @Html.TextBoxFor(model => model.stock, null, new { @type = "number", @id = "stock", @class = "number" })
+                                <div class='value-button' id='increase_stock' onclick='increaseValue("stock")' value='Increase Value'>+</div>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.stock, null, new { @class = "text-center text-danger mb-4" })
+                    </div>
+                    <div class="d-flex flex-column">
+                        <div class="d-flex flex-row justify-content-center align-items-center">
+                            <label class="pe-3">Stock mínimo: </label>
+                            <div class='d-flex flex-row justify-content-center ps-3'>
+                                <div class='value-button' id='decrease_minimum_stock' onclick='decreaseValue("minimum_stock")' value='Decrease Value'>-</div>
+                                @Html.TextBoxFor(model => model.minimum_stock, null, new { @type = "number", @id = "minimum_stock", @class = "number" })
+                                <div class='value-button' id='increase_minimum_stock' onclick='increaseValue("minimum_stock")' value='Increase Value'>+</div>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.minimum_stock, null, new { @class = "text-center text-danger mb-4" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSendForm" type="submit" class="btn btn-primary">Actualizar stock</button>
+                    <button id="modalCerrar" type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 
 
 <div class="container mt-4">
+    <a class="btn btn-dark mb-4" href="/Product_Business/Create/@Model.Business.id">Agregar un producto</a>
+
     <table id='dataTable' class='container table table-light table-striped table-bordered table-hover pt-4'>
         <thead class='table-dark'>
             <tr>
@@ -78,4 +124,6 @@
     </table>
 </div>
 
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 <script src="~/Scripts/product_business_index.js"></script>

@@ -256,9 +256,6 @@
     <Content Include="Views\Businesses\Details.cshtml" />
     <Content Include="Views\Orders\Basket.cshtml" />
     <Content Include="Views\Product_Business\Create.cshtml" />
-    <Content Include="Views\Product_Business\Delete.cshtml" />
-    <Content Include="Views\Product_Business\Details.cshtml" />
-    <Content Include="Views\Product_Business\Edit.cshtml" />
     <Content Include="Views\Product_Business\Index.cshtml" />
     <Content Include="Views\Home\AdminIndex.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />

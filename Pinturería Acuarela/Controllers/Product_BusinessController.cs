@@ -20,51 +20,46 @@ namespace Pinturería_Acuarela.Controllers
         // GET: Product_Business
         public ActionResult Index(int? id)
         {
-            if (id == null)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
+                ViewBag.id_capacity = new SelectList(db.Capacity, "id", "description");
+                ViewBag.id_category = new SelectList(db.Category, "id", "description");
+                ViewBag.id_color = new SelectList(db.Color, "id", "name");
+                ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
+                return View(new Product_Business { Business = db.Business.Find(id.Value) });
             }
-            Business oBusiness = db.Business.Find(id);
-            if (oBusiness == null)
+            catch (Exception)
             {
-                return HttpNotFound();
+                return RedirectToAction(Session["User"].ToString() == "1" ? "AdminIndex" : "Index", "Home");
             }
-            ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
-            ViewBag.id_capacity = new SelectList(db.Capacity, "id", "description");
-            ViewBag.id_category = new SelectList(db.Category, "id", "description");
-            ViewBag.id_color = new SelectList(db.Color, "id", "name");
-            ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
-            return View(oBusiness);
-        }
-
-        // GET: Product_Business/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Product_Business product_Business = db.Product_Business.Find(id);
-            if (product_Business == null)
-            {
-                return HttpNotFound();
-            }
-            return View(product_Business);
         }
 
         // GET: Product_Business/Create
         public ActionResult Create(int? id)
         {
-            if (id == null)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
+                ViewBag.id_capacity = new SelectList(db.Capacity, "id", "description");
+                ViewBag.id_category = new SelectList(db.Category, "id", "description");
+                ViewBag.id_color = new SelectList(db.Color, "id", "name");
+                ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
+                
+                return View(new Product_Business { Business = db.Business.Find(id.Value) });
             }
-            ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
-            ViewBag.id_capacity = new SelectList(db.Capacity, "id", "description");
-            ViewBag.id_category = new SelectList(db.Category, "id", "description");
-            ViewBag.id_color = new SelectList(db.Color, "id", "name");
-            ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
-            return View(new Product_Business { Business = db.Business.Find(id.Value) });
+            catch (Exception)
+            {
+                return RedirectToAction(Session["User"].ToString() == "1" ? "AdminIndex" : "Index", "Home");
+            }
         }
 
         // POST: Product_Business/Create
@@ -74,34 +69,21 @@ namespace Pinturería_Acuarela.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id_product,id_business,minimum_stock,stock")] Product_Business product_Business)
         {
-            if (ModelState.IsValid)
+            try
             {
-                product_Business.created_at = DateTime.Now;
-                db.Product_Business.Add(product_Business);
-                db.SaveChanges();
+                if (ModelState.IsValid)
+                {
+                    product_Business.created_at = DateTime.Now;
+                    db.Product_Business.Add(product_Business);
+                    db.SaveChanges();
+                }
                 return RedirectToAction("Index", new { id = product_Business.id_business });
             }
-
-            ViewBag.id_business = new SelectList(db.Business, "id", "adress", product_Business.id_business);
-            ViewBag.id_product = new SelectList(db.Product, "id", "description", product_Business.id_product);
-            return View(product_Business);
-        }
-
-        // GET: Product_Business/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
+            catch (Exception)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction(Session["User"].ToString() == "1" ? "AdminIndex" : "Index", "Home");
             }
-            Product_Business product_Business = db.Product_Business.Find(id);
-            if (product_Business == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.id_business = new SelectList(db.Business, "id", "adress", product_Business.id_business);
-            ViewBag.id_product = new SelectList(db.Product, "id", "description", product_Business.id_product);
-            return View(product_Business);
+
         }
 
         // POST: Product_Business/Edit/5
@@ -109,32 +91,23 @@ namespace Pinturería_Acuarela.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id_product,id_business,minimum_stock,stock")] Product_Business product_Business)
+        public ActionResult Edit([Bind(Include = "id_product,id_business,minimum_stock,stock")] Product_Business stock_updated)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Entry(product_Business).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    Product_Business product_Business = db.Product_Business.Find(stock_updated.id_product, stock_updated.id_business);
+                    product_Business.stock = stock_updated.stock;
+                    product_Business.minimum_stock = stock_updated.minimum_stock;
+                    db.SaveChanges();
+                }
+                return RedirectToAction("Index", new { id = stock_updated.id_business });
             }
-            ViewBag.id_business = new SelectList(db.Business, "id", "adress", product_Business.id_business);
-            ViewBag.id_product = new SelectList(db.Product, "id", "description", product_Business.id_product);
-            return View(product_Business);
-        }
-
-        // GET: Product_Business/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
+            catch (Exception)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction(Session["User"].ToString() == "1" ? "AdminIndex" : "Index", "Home");
             }
-            Product_Business product_Business = db.Product_Business.Find(id);
-            if (product_Business == null)
-            {
-                return HttpNotFound();
-            }
-            return View(product_Business);
         }
 
         // POST: Product_Business/Delete/5
@@ -142,10 +115,17 @@ namespace Pinturería_Acuarela.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Product_Business product_Business = db.Product_Business.Find(id);
-            db.Product_Business.Remove(product_Business);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                Product_Business product_Business = db.Product_Business.Find(id);
+                product_Business.deleted_at = DateTime.Now;
+                db.SaveChanges();
+                return RedirectToAction("Index", new { id = product_Business.id_business });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction(Session["User"].ToString() == "1" ? "AdminIndex" : "Index", "Home");
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -286,7 +266,8 @@ namespace Pinturería_Acuarela.Controllers
                                 color = p.Color.name,
                                 p.Color.rgb_hex_code,
                                 capacity = p.Capacity.description,
-                                stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)).FirstOrDefault().stock.ToString()
+                                stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)).FirstOrDefault().stock.ToString(),
+                                minimum_stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)).FirstOrDefault().minimum_stock.ToString()
                             }).ToList();
 
                     return Json(products, JsonRequestBehavior.AllowGet);
@@ -324,7 +305,8 @@ namespace Pinturería_Acuarela.Controllers
                             color = p.Color.name,
                             p.Color.rgb_hex_code,
                             capacity = p.Capacity.description,
-                            stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)).FirstOrDefault().stock.ToString()
+                            stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)).FirstOrDefault().stock.ToString(),
+                            minimum_stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)).FirstOrDefault().minimum_stock.ToString()
                         }).ToList();
 
                     return Json(products, JsonRequestBehavior.AllowGet);
@@ -335,26 +317,6 @@ namespace Pinturería_Acuarela.Controllers
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
             return Json(null, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult AddProduct(Product_Business pb)
-        {
-            try
-            {
-                if (ModelState.IsValid && pb.stock>=0 && pb.minimum_stock>=0)
-                {
-                    db.Product_Business.Add(pb);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                return View("Create");
-            }
-            catch (Exception)
-            {
-                return View("Index");
-            }
         }
     }
 }

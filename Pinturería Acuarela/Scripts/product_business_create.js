@@ -22,8 +22,9 @@ $("#btnFilter").on("click", function () {
         });
 });
 
-function OpenModal(id) {
+function OpenModal(id, description) {
     $("#stock").val("0");
+    $("#exampleModalLabel").text("Añadir stock - " + description);
     $("#minimum_stock").val("");
     $("#id_product").val(id);
 }
@@ -50,7 +51,7 @@ function createTable(data) {
         content += "<td>" + (data[i].capacity != null ? data[i].capacity : "-") + "</td>";
         content += "<td>";
         content += "<div class='d-flex flex-row justify-content-center'>";
-        content += "<button type='button' onclick = 'OpenModal(" + data[i].product_id +");' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#exampleModal'>Seleccionar</button>";
+        content += `<button type='button' onclick = 'OpenModal(` + data[i].product_id + `, "` + data[i].description + `");' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#exampleModal'>Seleccionar</button>`;
         content += "</div>";
         content += "</td>";
         content += "</tr>";

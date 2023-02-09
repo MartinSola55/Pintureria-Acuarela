@@ -22,10 +22,15 @@ $("#btnFilter").on("click", function () {
         });
 });
 
-function OpenModal(id) {
-    $("#stock").val("0");
-    $("#minimum_stock").val("");
+function OpenModal(id, description, stock, minimum_stock) {
+    $("#exampleModalLabel").text("Añadir stock - " + description);
+    $("#stock").val(stock);
     $("#id_product").val(id);
+    if (minimum_stock != undefined) {
+        $("#minimum_stock").val(minimum_stock);
+    } else {
+        $("#minimum_stock").val("");
+    }
 }
 
 function createTable(data) {
@@ -51,7 +56,7 @@ function createTable(data) {
         content += "<td>" + (data[i].stock) + "</td>";
         content += "<td>";
         content += "<div class='d-flex flex-row justify-content-center'>";
-        content += "<button type='button' onclick = 'OpenModal(" + data[i].product_id + ");' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#exampleModal'>Seleccionar</button>";
+        content += `<button type='button' onclick = 'OpenModal(` + data[i].product_id + `, "` + data[i].description + `", ` + data[i].stock + `, ` + data[i].minimum_stock + `);' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#exampleModal'>Seleccionar</button>`;
         content += "</div>";
         content += "</td>";
         content += "</tr>";

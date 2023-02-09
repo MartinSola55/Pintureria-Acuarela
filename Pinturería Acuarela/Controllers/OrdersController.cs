@@ -21,59 +21,80 @@ namespace Pinturería_Acuarela.Controllers
         // GET: Orders
         public ActionResult Index(int? id)
         {
-            if (TempData.Count == 1)
+            try
             {
-                ViewBag.Message = TempData["Message"].ToString();
+                if (TempData.Count == 1)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                else if (TempData.Count == 2)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                    ViewBag.Error = TempData["Error"];
+                }
+                User user = Session["User"] as User;
+                id = user.Rol.id != 1 ? user.id_business : id;
+                if (id != null)
+                {
+                    var orders = db.Order.Where(o => o.User.Business.id.Equals(id.Value) && o.deleted_at.Equals(null));
+                    return View(orders.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
+                }
+                var order = db.Order.Include(o => o.User).Where(o => o.deleted_at.Equals(null));
+                return View(order.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
             }
-            else if (TempData.Count == 2)
+            catch (Exception)
             {
-                ViewBag.Message = TempData["Message"].ToString();
-                ViewBag.Error = TempData["Error"];
+                return RedirectToAction("Index");
             }
-            User user = Session["User"] as User;
-            id = user.Rol.id != 1 ? user.id_business : id;
-            if (id != null)
-            {
-                var orders = db.Order.Where(o => o.User.Business.id.Equals(id.Value) && o.deleted_at.Equals(null));
-                return View(orders.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
-            }
-            var order = db.Order.Include(o => o.User).Where(o => o.deleted_at.Equals(null));
-            return View(order.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
         }
 
         // GET: Orders/Details/5
         public ActionResult Details(long? id)
         {
-            if (id == null)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                Order order = db.Order.Find(id);
+                if (order == null)
+                {
+                    return HttpNotFound();
+                }
+                if (TempData.Count == 1)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                else if (TempData.Count == 2)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                    ViewBag.Error = TempData["Error"];
+                }
+                return View(order);
             }
-            Order order = db.Order.Find(id);
-            if (order == null)
+            catch (Exception)
             {
-                return HttpNotFound();
+                return RedirectToAction("Index");
             }
-            if (TempData.Count == 1)
-            {
-                ViewBag.Message = TempData["Message"].ToString();
-            }
-            else if (TempData.Count == 2)
-            {
-                ViewBag.Message = TempData["Message"].ToString();
-                ViewBag.Error = TempData["Error"];
-            }
-            return View(order);
         }
 
         // GET: Orders/Create
         public ActionResult Create()
         {
-            ViewBag.id_brand = new SelectList(db.Brand.OrderBy(b => b.name), "id", "name");
-            ViewBag.id_category = new SelectList(db.Category.OrderBy(c => c.description), "id", "description");
-            ViewBag.id_subcategory = new SelectList(db.Subcategory.OrderBy(s => s.description), "id", "description");
-            ViewBag.id_color = new SelectList(db.Color.OrderBy(c => c.name), "id", "name");
-            ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description");
-            return View();
+            try
+            {
+                ViewBag.id_brand = new SelectList(db.Brand.OrderBy(b => b.name), "id", "name");
+                ViewBag.id_category = new SelectList(db.Category.OrderBy(c => c.description), "id", "description");
+                ViewBag.id_subcategory = new SelectList(db.Subcategory.OrderBy(s => s.description), "id", "description");
+                ViewBag.id_color = new SelectList(db.Color.OrderBy(c => c.name), "id", "name");
+                ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description");
+                return View();
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         // POST: Orders/Create
@@ -83,15 +104,22 @@ namespace Pinturería_Acuarela.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id,date,id_user,status")] Order order)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Order.Add(order);
-                db.SaveChanges();
+                if (ModelState.IsValid)
+                {
+                    db.Order.Add(order);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+
+                ViewBag.id_user = new SelectList(db.User, "id", "email", order.id_user);
+                return View(order);
+            }
+            catch (Exception)
+            {
                 return RedirectToAction("Index");
             }
-
-            ViewBag.id_user = new SelectList(db.User, "id", "email", order.id_user);
-            return View(order);
         }
 
         // POST: Orders/Delete/5
@@ -129,7 +157,7 @@ namespace Pinturería_Acuarela.Controllers
         public JsonResult FilterProducts(string id_brand, string id_category, string id_subcategory, string id_color, string id_capacity)
         {
             try
-                {
+            {
                 if (id_brand == "" && id_category == "" && id_subcategory == "" && id_color == "" && id_capacity == "")
                 {
                     return Json(null, JsonRequestBehavior.AllowGet);
@@ -165,49 +193,57 @@ namespace Pinturería_Acuarela.Controllers
         [HttpGet]
         public int AddToCart(int? id_prod, int? quant)
         {
-            List<Product_Order> basket = new List<Product_Order>();
-            if (id_prod != null && quant != null)
+            try
             {
-                if (Session["Basket"] != null)
+                List<Product_Order> basket = new List<Product_Order>();
+                if (id_prod != null && quant != null)
                 {
-                    basket = Session["Basket"] as List<Product_Order>;
-                }
-                if (quant > 0)
-                {
-                    //ViewBag.Error = "Debes seleecionar una cantidad mayor a 1";
-
-                    Product_Order prod = new Product_Order();
-                    prod.Product = db.Product
-                        .Where(p => p.id == id_prod)
-                        .Include(p => p.Brand)
-                        .Include(p => p.Category)
-                        .Include(p => p.Subcategory)
-                        .FirstOrDefault();
-
-                    if (basket.Count == 0)
+                    if (Session["Basket"] != null)
                     {
-                        prod.quantity = quant.Value;
-                        basket.Add(prod);
-                    } else
+                        basket = Session["Basket"] as List<Product_Order>;
+                    }
+                    if (quant > 0)
                     {
-                        int count = basket.Count;
-                        for (int index = 0; index < count; index++)
+                        //ViewBag.Error = "Debes seleecionar una cantidad mayor a 1";
+
+                        Product_Order prod = new Product_Order();
+                        prod.Product = db.Product
+                            .Where(p => p.id == id_prod)
+                            .Include(p => p.Brand)
+                            .Include(p => p.Category)
+                            .Include(p => p.Subcategory)
+                            .FirstOrDefault();
+
+                        if (basket.Count == 0)
                         {
-                            if (basket[index].Product.id == prod.Product.id)
+                            prod.quantity = quant.Value;
+                            basket.Add(prod);
+                        } else
+                        {
+                            int count = basket.Count;
+                            for (int index = 0; index < count; index++)
                             {
-                                basket[index].quantity += quant.Value;
-                                break;
-                            } else if (index == basket.Count - 1)
-                            {
-                                prod.quantity = quant.Value;
-                                basket.Add(prod);
+                                if (basket[index].Product.id == prod.Product.id)
+                                {
+                                    basket[index].quantity += quant.Value;
+                                    break;
+                                } else if (index == basket.Count - 1)
+                                {
+                                    prod.quantity = quant.Value;
+                                    basket.Add(prod);
+                                }
                             }
                         }
+                        Session["Basket"] = basket;
                     }
-                    Session["Basket"] = basket;
                 }
+                return basket.Count;
             }
-            return basket.Count;
+            catch (Exception)
+            {
+                Session["Basket"] = null;
+                return 0;
+            }
         }
 
         // POST: Remove product from basket
@@ -215,18 +251,25 @@ namespace Pinturería_Acuarela.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RemoveProductBasket(int? id_prod)
         {
-            if (id_prod != null && Session["Basket"] != null)
+            try
             {
-                List<Product_Order> basket = Session["Basket"] as List<Product_Order>;
-                Product_Order prod_o = basket.Where(p => p.Product.id == id_prod.Value).FirstOrDefault();
-                basket.Remove(prod_o);
-                if (basket.Count > 0)
+                if (id_prod != null && Session["Basket"] != null)
                 {
-                    Session["Basket"] = basket;
-                } else
-                {
-                    Session["Basket"] = null;
+                    List<Product_Order> basket = Session["Basket"] as List<Product_Order>;
+                    Product_Order prod_o = basket.Where(p => p.Product.id == id_prod.Value).FirstOrDefault();
+                    basket.Remove(prod_o);
+                    if (basket.Count > 0)
+                    {
+                        Session["Basket"] = basket;
+                    } else
+                    {
+                        Session["Basket"] = null;
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                throw;
             }
             return RedirectToAction("Basket");
         }
