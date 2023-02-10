@@ -22,10 +22,24 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
+                User user = Session["User"] as User;
                 if (id == null)
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    id = user.Business.id;
                 }
+
+                id = user.Rol.id != 1 ? user.Business.id : id;
+
+                if (TempData.Count == 1)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                else if (TempData.Count == 2)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                    ViewBag.Error = TempData["Error"];
+                }
+
                 ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
                 ViewBag.id_capacity = new SelectList(db.Capacity, "id", "description");
                 ViewBag.id_category = new SelectList(db.Category, "id", "description");
@@ -44,10 +58,24 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
+                User user = Session["User"] as User;
                 if (id == null)
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    id = user.Business.id;
                 }
+
+                id = user.Rol.id != 1 ? user.Business.id : id;
+
+                if (TempData.Count == 1)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                else if (TempData.Count == 2)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                    ViewBag.Error = TempData["Error"];
+                }
+
                 ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
                 ViewBag.id_capacity = new SelectList(db.Capacity, "id", "description");
                 ViewBag.id_category = new SelectList(db.Category, "id", "description");
@@ -76,11 +104,14 @@ namespace Pinturería_Acuarela.Controllers
                     product_Business.created_at = DateTime.Now;
                     db.Product_Business.Add(product_Business);
                     db.SaveChanges();
+                    TempData["Message"] = "Producto añadido correctamente";
                 }
                 return RedirectToAction("Index", new { id = product_Business.id_business });
             }
             catch (Exception)
             {
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido añadir el producto";
+                TempData["Error"] = 2;
                 return RedirectToAction(Session["User"].ToString() == "1" ? "AdminIndex" : "Index", "Home");
             }
 
@@ -101,11 +132,14 @@ namespace Pinturería_Acuarela.Controllers
                     product_Business.stock = stock_updated.stock;
                     product_Business.minimum_stock = stock_updated.minimum_stock;
                     db.SaveChanges();
+                    TempData["Message"] = "Stock actualizado correctamente";
                 }
                 return RedirectToAction("Index", new { id = stock_updated.id_business });
             }
             catch (Exception)
             {
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido actualizar el stock";
+                TempData["Error"] = 2;
                 return RedirectToAction(Session["User"].ToString() == "1" ? "AdminIndex" : "Index", "Home");
             }
         }
@@ -120,10 +154,13 @@ namespace Pinturería_Acuarela.Controllers
                 Product_Business product_Business = db.Product_Business.Find(id);
                 product_Business.deleted_at = DateTime.Now;
                 db.SaveChanges();
+                TempData["Message"] = "Producto eliminado correctamente";
                 return RedirectToAction("Index", new { id = product_Business.id_business });
             }
             catch (Exception)
             {
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido eliminar el producto";
+                TempData["Error"] = 2;
                 return RedirectToAction(Session["User"].ToString() == "1" ? "AdminIndex" : "Index", "Home");
             }
         }
@@ -148,45 +185,48 @@ namespace Pinturería_Acuarela.Controllers
                     return Json(null, JsonRequestBehavior.AllowGet);
                 }
 
-                if(id_business != null)
+                User user = Session["User"] as User;
+                if (id_business == null)
                 {
+                    id_business = user.Business.id;
+                }
 
-                    var products_in_business = db.Product
-                            .Where(p =>
-                            p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)) &&
-                            p.deleted_at.Equals(null));
+                id_business = user.Rol.id != 1 ? user.Business.id : id_business;
 
-                    var products_not_in_business = db.Product
-                        .Except(products_in_business)
-                    .Where(p =>
-                        p.id_brand.ToString().Contains(id_brand) &&
-                        p.id_category.ToString().Contains(id_category) &&
-                        p.id_subcategory.ToString().Contains(id_subcategory) &&
-                        p.id_color.ToString().Contains(id_color) &&
-                        p.id_capacity.ToString().Contains(id_capacity) &&
+                var products_in_business = db.Product
+                        .Where(p =>
+                        p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)) &&
                         p.deleted_at.Equals(null));
 
-                    var response = products_not_in_business.Select(p => new
-                    {
-                        internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
-                        product_id = p.id.ToString(),
-                        p.description,
-                        brand = p.Brand.name,
-                        category = p.Category.description,
-                        subcategory = p.Subcategory.description,
-                        color = p.Color.name,
-                        p.Color.rgb_hex_code,
-                        capacity = p.Capacity.description,
-                    }).ToList();
+                var products_not_in_business = db.Product
+                    .Except(products_in_business)
+                .Where(p =>
+                    p.id_brand.ToString().Contains(id_brand) &&
+                    p.id_category.ToString().Contains(id_category) &&
+                    p.id_subcategory.ToString().Contains(id_subcategory) &&
+                    p.id_color.ToString().Contains(id_color) &&
+                    p.id_capacity.ToString().Contains(id_capacity) &&
+                    p.deleted_at.Equals(null));
 
-                    return Json(response, JsonRequestBehavior.AllowGet);
-                }
+                var response = products_not_in_business.Select(p => new
+                {
+                    internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
+                    product_id = p.id.ToString(),
+                    p.description,
+                    brand = p.Brand.name,
+                    category = p.Category.description,
+                    subcategory = p.Subcategory.description,
+                    color = p.Color.name,
+                    p.Color.rgb_hex_code,
+                    capacity = p.Capacity.description,
+                }).ToList();
+
+                return Json(response, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
-            return Json(null, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Products by name
@@ -195,9 +235,15 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
-                if (id_business != null)
+                User user = Session["User"] as User;
+                if (id_business == null)
                 {
-                    var products_in_business = db.Product
+                    id_business = user.Business.id;
+                }
+
+                id_business = user.Rol.id != 1 ? user.Business.id : id_business;
+
+                var products_in_business = db.Product
                         .Where(p =>
                         p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)) &&
                         p.deleted_at.Equals(null));
@@ -223,13 +269,11 @@ namespace Pinturería_Acuarela.Controllers
                     }).ToList();
 
                     return Json(response, JsonRequestBehavior.AllowGet);
-                }
             }
             catch (Exception)
             {
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
-            return Json(null, JsonRequestBehavior.AllowGet);
         }
 
         // GET: All products in business by filter
@@ -243,10 +287,15 @@ namespace Pinturería_Acuarela.Controllers
                     return Json(null, JsonRequestBehavior.AllowGet);
                 }
 
-                if (id_business != null)
+                User user = Session["User"] as User;
+                if (id_business == null)
                 {
+                    id_business = user.Business.id;
+                }
 
-                    var products = db.Product
+                id_business = user.Rol.id != 1 ? user.Business.id : id_business;
+
+                var products = db.Product
                             .Where(p =>
                             p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)) &&
                             p.id_brand.ToString().Contains(id_brand) &&
@@ -270,14 +319,12 @@ namespace Pinturería_Acuarela.Controllers
                                 minimum_stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)).FirstOrDefault().minimum_stock.ToString()
                             }).ToList();
 
-                    return Json(products, JsonRequestBehavior.AllowGet);
-                }
+                return Json(products, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
-            return Json(null, JsonRequestBehavior.AllowGet);
         }
 
         // GET: All products in business by name
@@ -286,9 +333,15 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
-                if (id_business != null)
+                User user = Session["User"] as User;
+                if (id_business == null)
                 {
-                    var products = db.Product
+                    id_business = user.Business.id;
+                }
+
+                id_business = user.Rol.id != 1 ? user.Business.id : id_business;
+
+                var products = db.Product
                         .Where(p =>
                         p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)) &&
                         (p.description.Contains(name) ||
@@ -309,14 +362,12 @@ namespace Pinturería_Acuarela.Controllers
                             minimum_stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)).FirstOrDefault().minimum_stock.ToString()
                         }).ToList();
 
-                    return Json(products, JsonRequestBehavior.AllowGet);
-                }
+                return Json(products, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
-            return Json(null, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -18,10 +18,11 @@ namespace Pinturería_Acuarela
 
         public int id { get; set; }
 
-        [Required]
-        [StringLength(255)]
+        [Required(ErrorMessage =  "Debes completar con una descripción")]
+        [StringLength(255, ErrorMessage = "Ingresa una descripción menor de 255 caracteres")]
         public string description { get; set; }
 
+        [Required(ErrorMessage = "Debes seleccionar una marca")]
         public int id_brand { get; set; }
 
         public int? id_category { get; set; }
@@ -32,6 +33,7 @@ namespace Pinturería_Acuarela
 
         public int? id_color { get; set; }
 
+        [Range(1, 20000, ErrorMessage = "Debes ingresar un código entre 1 y 20.000")]
         public int? internal_code { get; set; }
 
         public DateTime created_at { get; set; }

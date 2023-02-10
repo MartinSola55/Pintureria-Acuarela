@@ -162,30 +162,76 @@ namespace Pinturería_Acuarela.Controllers
                 {
                     return Json(null, JsonRequestBehavior.AllowGet);
                 }
+
+                User user = Session["User"] as User;
+                int id_business = user.Business.id;
+                
                 var products = db.Product
                     .Where(p =>
-                    p.deleted_at.Equals(null) &&
+                    p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business)) &&
                     p.id_brand.ToString().Contains(id_brand) &&
                     p.id_category.ToString().Contains(id_category) &&
                     p.id_subcategory.ToString().Contains(id_subcategory) &&
                     p.id_color.ToString().Contains(id_color) &&
-                    p.id_capacity.ToString().Contains(id_capacity))
+                    p.id_capacity.ToString().Contains(id_capacity) &&
+                    p.deleted_at.Equals(null))
                     .Select(p => new
                     {
-                        product_id = p.id,
-                        product = p.description,
+                        internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
+                        product_id = p.id.ToString(),
+                        p.description,
                         brand = p.Brand.name,
                         category = p.Category.description,
                         subcategory = p.Subcategory.description,
                         color = p.Color.name,
-                        hex_color = p.Color.rgb_hex_code,
+                        p.Color.rgb_hex_code,
                         capacity = p.Capacity.description,
-                    });
+                        stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business)).FirstOrDefault().stock.ToString(),
+                        minimum_stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business)).FirstOrDefault().minimum_stock.ToString()
+                    }).ToList();
                 return Json(products.ToList(), JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
                 return Json (JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        // GET: Products by name
+        [HttpGet]
+        public JsonResult FilterProductsByName(string name)
+        {
+            try
+            {
+                User user = Session["User"] as User;
+                int id_business = user.Business.id;
+
+                var products = db.Product
+                        .Where(p =>
+                        p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business)) &&
+                        (p.description.Contains(name) ||
+                        p.internal_code.ToString().Contains(name)) &&
+                        p.deleted_at.Equals(null))
+                        .Select(p => new
+                        {
+                            internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
+                            product_id = p.id.ToString(),
+                            p.description,
+                            brand = p.Brand.name,
+                            category = p.Category.description,
+                            subcategory = p.Subcategory.description,
+                            color = p.Color.name,
+                            p.Color.rgb_hex_code,
+                            capacity = p.Capacity.description,
+                            stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business)).FirstOrDefault().stock.ToString(),
+                            minimum_stock = p.Product_Business.Where(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business)).FirstOrDefault().minimum_stock.ToString()
+                        }).ToList();
+
+                return Json(products, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -403,9 +449,9 @@ namespace Pinturería_Acuarela.Controllers
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                TempData["Message"] = ex.Message;
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido confirmar el product";
                 if (TempData["Error"] != null)
                 {
                     if (TempData["Error"].ToString() != "1")

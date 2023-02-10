@@ -6,7 +6,7 @@
 <link href="~/Content/cards.css" rel="stylesheet" type="text/css" />
 
 <h2>Sucursal @Model.adress</h2>
-<hr />
+<hr class="pb-3"/>
 
 <div class="container-fluid d-flex row">
     <a href="../../Businesses/Details/@Model.id" class="data-card">
@@ -50,6 +50,5 @@
         </span>
     </a>
 </div>
-<p>
-    @Html.ActionLink("Volver a las sucursales", "../Businesses")
-</p>
+
+<a class="btn btn-dark" href="../../Businesses">Volver</a>

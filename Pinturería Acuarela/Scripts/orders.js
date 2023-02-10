@@ -2,7 +2,8 @@
     let contenido = "";
     for (let i = 0; i < data.length; i++) {
         contenido += "<tr>";
-        contenido += "<td>" + data[i].product ?? "" + "</td>";
+        contenido += "<td>" + data[i].internal_code ?? "" + "</td>";
+        contenido += "<td>" + data[i].description + "</td>";
         contenido += "<td>" + data[i].brand + "</td>";
         let category = data[i].category != null ? data[i].category : " - ";
         contenido += "<td>" + category + "</td>";
@@ -12,7 +13,7 @@
             contenido += "<td>";
             contenido += "<div class='d-flex flex-row justify-content-between align-items-center' >";
             contenido += data[i].color;
-            contenido += "<span class='dot' style='background-color: " + data[i].hex_color + "'></span>";
+            contenido += "<span class='dot' style='background-color: " + data[i].rgb_hex_code + "'></span>";
             contenido += "</div>";
             contenido += "</td>";
         } else {
@@ -59,14 +60,30 @@ function addToCart(id) {
     });
 }
 
-$('#btnFilter').on('click', function (ev) {
+$("#btnSearch").on("click", function () {
+    let name = $("#txtSearch").val();
+    $.get("../../Orders/FilterProductsByName/?name=" + name, function (data) {
+        createTable(data);
+    })
+});
+
+$("#btnFilter").on("click", function () {
     let id_brand = $('#id_brand').val();
     let id_category = $('#id_category').val();
     let id_subcategory = $('#id_subcategory').val();
     let id_color = $('#id_color').val();
     let id_capacity = $('#id_capacity').val();
-    
-    $.get("FilterProducts/?id_brand=" + id_brand + "&id_category=" + id_category + "&id_subcategory=" + id_subcategory + "&id_color=" + id_color + "&id_capacity=" + id_capacity, function (data) {
-        createTable(data);
+
+    $.get("../../Orders/FilterProducts/?id_brand=" + id_brand + "&id_category=" + id_category + "&id_subcategory=" + id_subcategory +
+        "&id_color=" + id_color + "&id_capacity=" + id_capacity,
+        function (data) {
+            createTable(data);
     });
+});
+
+$('#txtSearch').keypress(function (e) {
+    if (e.which == 13) {
+        $(this).blur();
+        $('#btnSearch').click();
+    }
 });

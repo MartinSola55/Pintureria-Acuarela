@@ -6,41 +6,25 @@
 
 <link href="~/Content/datatables.css" rel="stylesheet" />
 <link href="~/Content/orders.css" rel="stylesheet" />
-
-@{ if (ViewBag.Message != null)
-    {
-        <!-- Modal -->
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                @{ if (ViewBag.Error == 1)
-                    {
-                        <div class="modal-content d-flex flex-column" id="NotifContainer" style="background-color: khaki;">
-                            <button type="button" id="btnCerrar" class="btn-close mb-3 align-self-end justify-content-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                            <h3 id="txtNotification" class="fw-bold text-center mb-3"><i class="bi bi-exclamation-triangle"></i>&nbsp;@ViewBag.Message<br /></h3>
-                        </div>
-                    }
-                    else if (ViewBag.Error == 2)
-                    {
-                        <div class="modal-content d-flex flex-column" id="NotifContainer" style="background-color: crimson;">
-                            <button type="button" id="btnCerrar" class="btn-close mb-3 align-self-end justify-content-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                            <h3 id="txtNotification" class="fw-bold text-center text-white mb-3"><i class="bi bi-exclamation-diamond"></i>&nbsp;@ViewBag.Message<br /></h3>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="modal-content d-flex flex-column px-5" id="NotifContainer" style="background-color: yellowgreen;">
-                            <button type="button" id="btnCerrar" class="btn-close mb-3 align-self-end justify-content-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                            <h3 id="txtNotification" style="color: black;" class="text-center fw-bold mb-3"><i class="bi bi-info-circle"></i>&nbsp;@ViewBag.Message</h3>
-                        </div>
-                    }}
-            </div>
-        </div>
-        <button id="btnModal" style="display: none" data-bs-toggle='modal' data-bs-target='#staticBackdrop'></button>
-    }
-}
+<link href="~/Content/notification.css" rel="stylesheet" />
 
 <h1 class="text-center">Ordenes</h1>
 <hr class="pb-4" />
+
+@{ if (ViewBag.Message != null)
+    {
+        <div class="py-3 mb-5 @(ViewBag.Error == 1 ? "containerError1" : "")@(ViewBag.Error == 2 ? "containerError2" : "")@(ViewBag.Error == null ? "onlyMessage" : "")" id="notificationContainer">
+            <div class="px-2 d-flex flex-row justify-content-between align-items-center">
+                <div id="txtNotification">@ViewBag.Message</div>
+                <button id="btnCloseNotification" type="button" aria-label="Cerrar">
+                    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-x">
+                        <path id="closeSVG" fill="rgb(0,75,180)" class="@(ViewBag.Error == 1 ? "error1" : "") @(ViewBag.Error == 2 ? "error2" : "") @(ViewBag.Error == null ? "onlyMessage" : "")" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    }
+}
 
 <table id="dataTable" class="table table-striped table-bordered table-hover pt-4">
     <thead class='table-dark'>
@@ -79,18 +63,11 @@
 <a class="btn btn-dark" href="../Orders/Create">Realizar pedido</a>
 
 <script src="~/Scripts/datatables.js"></script>
+<script src="~/Scripts/notification.js"></script>
+
 <script>
     $(".clickable-row").click(function () {
         window.location = $(this).data("href");
-    });
-
-    $(document).ready(function () {
-        if ($("#txtNotification").html() !== "") {
-            $("#btnModal").click();
-            setTimeout(function () {
-                $("#btnCerrar").click();
-            }, 3000)
-        }
     });
 
     $('#dataTable').DataTable(
@@ -114,7 +91,7 @@
             }]
         }
     )
-    
+
 </script>
 
 <style>

@@ -1,40 +1,27 @@
 ﻿@model Pinturería_Acuarela.Product_Business
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Stock";
 }
 
 <link href="~/Content/orders.css" rel="stylesheet" />
+<link href="~/Content/notification.css" rel="stylesheet" />
 
 <h1 class="text-center">Productos de @Model.Business.adress</h1>
 <hr class="pb-3" />
 
-@{
-    if (TempData["SuccessMessage"] != null)
+@{ if (ViewBag.Message != null)
     {
-        <div id="alertCreate" class="alert alert-success alert-dismissable">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>@TempData["SuccessMessage"]</strong>
+        <div class="py-3 mb-5 @(ViewBag.Error == 1 ? "containerError1" : "")@(ViewBag.Error == 2 ? "containerError2" : "")@(ViewBag.Error == null ? "onlyMessage" : "")" id="notificationContainer">
+            <div class="px-2 d-flex flex-row justify-content-between align-items-center">
+                <div id="txtNotification">@ViewBag.Message</div>
+                <button id="btnCloseNotification" type="button" aria-label="Cerrar">
+                    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-x">
+                        <path id="closeSVG" fill="rgb(0,75,180)" class="@(ViewBag.Error == 1 ? "error1" : "") @(ViewBag.Error == 2 ? "error2" : "") @(ViewBag.Error == null ? "onlyMessage" : "")" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
-
-        <script>
-            setTimeout(function () {
-                document.getElementById("alertCreate").style.display = "none";
-            }, 3000);
-        </script>
-    }
-    if (TempData["DeleteMessage"] != null)
-    {
-        <div id="alertDelete" class="alert alert-primary" role="alert">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>@TempData["DeleteMessage"] </strong>
-        </div>
-
-        <script>
-            setTimeout(function () {
-                document.getElementById("alertDelete").style.display = "none";
-            }, 3000);
-        </script>
     }
 }
 
@@ -48,7 +35,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Cargar stock</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body d-flex flex-column">
@@ -127,3 +114,4 @@
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 <script src="~/Scripts/product_business_index.js"></script>
+<script src="~/Scripts/notification.js"></script>

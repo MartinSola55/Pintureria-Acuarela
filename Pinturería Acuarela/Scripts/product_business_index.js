@@ -1,5 +1,12 @@
 ﻿const id_business = window.location.pathname.split("/").pop();
 
+$('#txtSearch').keypress(function (e) {
+    if (e.which == 13) {
+        $(this).blur();
+        $('#btnSearch').click();
+    }
+});
+
 $("#btnSearch").on("click", function () {
     let name = $("#txtSearch").val();
     $.get("../../Product_Business/FilterAllProductsByName/?name=" + name + "&id_business=" + id_business, function (data) {
@@ -7,7 +14,6 @@ $("#btnSearch").on("click", function () {
     })
 });
 
-//TODO: Search by filter
 $("#btnFilter").on("click", function () {
     let id_brand = $('#id_brand').val();
     let id_category = $('#id_category').val();
@@ -23,7 +29,7 @@ $("#btnFilter").on("click", function () {
 });
 
 function OpenModal(id, description, stock, minimum_stock) {
-    $("#exampleModalLabel").text("Añadir stock - " + description);
+    $("#exampleModalLabel").text("Actualizar stock - " + description);
     $("#stock").val(stock);
     $("#id_product").val(id);
     if (minimum_stock != undefined) {

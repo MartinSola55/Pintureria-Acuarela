@@ -4,93 +4,72 @@
     ViewBag.Title = "Productos";
 }
 
-<h2>Productos</h2>
+<link href="~/Content/orders.css" rel="stylesheet" />
+<link href="~/Content/notification.css" rel="stylesheet" />
 
-<p>
-    @Html.ActionLink("Cargar un producto", "Create")
-</p>
+<h1 class="text-center">Productos</h1>
+<hr class="pb-3" />
 
-
-@{
-    var parameter = Request.QueryString["ac"];
-
-    if (TempData["SuccessMessage"] != null)
+@{ if (ViewBag.Message != null)
     {
-        <div id="alertCreate" class="alert alert-success alert-dismissable">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>@TempData["SuccessMessage"]</strong>
+        <div class="py-3 mb-5 @(ViewBag.Error == 1 ? "containerError1" : "")@(ViewBag.Error == 2 ? "containerError2" : "")@(ViewBag.Error == null ? "onlyMessage" : "")" id="notificationContainer">
+            <div class="px-2 d-flex flex-row justify-content-between align-items-center">
+                <div id="txtNotification">@ViewBag.Message</div>
+                <button id="btnCloseNotification" type="button" aria-label="Cerrar">
+                    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-x">
+                        <path id="closeSVG" fill="rgb(0,75,180)" class="@(ViewBag.Error == 1 ? "error1" : "") @(ViewBag.Error == 2 ? "error2" : "") @(ViewBag.Error == null ? "onlyMessage" : "")" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
-
-        <script>
-            setTimeout(function () {
-                document.getElementById("alertCreate").style.display = "none";
-            }, 3000);
-        </script>
-    }
-    if (TempData["DeleteMessage"] != null)
-    {
-        <div id="alertDelete" class="alert alert-primary" role="alert">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>@TempData["DeleteMessage"] </strong>
-        </div>
-
-        <script>
-            setTimeout(function () {
-                document.getElementById("alertDelete").style.display = "none";
-            }, 3000);
-        </script>
     }
 }
 
 
+<div class="container mt4">
+    <a class="btn btn-dark mb-4" href="/Products/Create">Agregar un producto</a>
 
-<div class="container d-flex flex-row">
-    <div class="input-group" style="margin:auto">
-        <input type="search" placeholder="Codigo Interno / Descripcion" id="txtSearch" class="form-control" />
-        <button id="btSearch" type="button" class="btn btn-primary">
-            <i class="bi bi-search"></i>
-        </button>
-    </div>
-    <div class="d-flex flex-row align-self-center">
-        <div>
-            <label class="control-label col-md-2">Marca</label>
-            <div class="col-md-10">
-                @Html.DropDownList("id_brand", null, "Seleccionar una marca", htmlAttributes: new { @class = "form-control", @id = "id_brand" })
-            </div>
-        </div>
-        <div>
-            <label class="control-label col-md-2">Categoría</label>
-            <div class="col-md-10">
-                @Html.DropDownList("id_category", null, "Seleccionar una categoría", htmlAttributes: new { @class = "form-control", @id = "id_category" })
-            </div>
-        </div>
-        <div>
-            <label class="control-label col-md-2">Subcategoría</label>
-            <div class="col-md-10">
-                @Html.DropDownList("id_subcategory", null, "Seleccionar una subcategoría", htmlAttributes: new { @class = "form-control", @id = "id_subcategory" })
-            </div>
-        </div>
-        <div>
-            <label class="control-label col-md-2">Color</label>
-            <div class="col-md-10">
-                @Html.DropDownList("id_color", null, "Seleccionar una color", htmlAttributes: new { @class = "form-control", @id = "id_color" })
-            </div>
-        </div>
-        <div>
-            <label class="control-label col-md-2">Capacidad</label>
-            <div class="col-md-10">
-                @Html.DropDownList("id_capacity", null, "Seleccionar una capacidad", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="button" value="Filtrar" class="btn btn-dark" id="btnFilter" />
-            </div>
-        </div>
-    </div>
-
+    <table id='dataTable' class='container table table-striped table-bordered table-hover pt-4'>
+        <thead class='table-dark'>
+            <tr>
+                <td class='text-center'></td>
+                <td class='text-center d-flex flex-row'>
+                    <input class="form-control" id="txtSearch" placeholder="Cód. interno | Nombre" />
+                    <button id="btnSearch" type="button" class="btn btn-primary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </td>
+                <td class='text-center'>@Html.DropDownList("id_brand", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_brand" })</td>
+                <td class='text-center'>@Html.DropDownList("id_category", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_category" })</td>
+                <td class='text-center'>@Html.DropDownList("id_subcategory", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_subcategory" })</td>
+                <td class='text-center'>@Html.DropDownList("id_color", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_color" })</td>
+                <td class='text-center'>@Html.DropDownList("id_capacity", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })</td>
+                <td class='text-center'><input type="button" value="Filtrar" class="btn btn-outline-light" id="btnFilter" /></td>
+            </tr>
+            <tr class='fw-bold'>
+                <td class='text-center'>Cód. Interno</td>
+                <td class='text-center'>Producto</td>
+                <td class='text-center'>Marca</td>
+                <td class='text-center'>Categoría</td>
+                <td class='text-center'>Subcategoría</td>
+                <td class='text-center'>Color</td>
+                <td class='text-center'>Capacidad</td>
+                <td class='text-center'>Acción</td>
+            </tr>
+        </thead>
+        <tbody id="contentTable">
+        </tbody>
+    </table>
 </div>
 
 <div id="contentTable" class="mt-4 container"></div>
 
 <script src="Scripts/products.js"></script>
+<script src="~/Scripts/notification.js"></script>
+
+<style>
+    .clickable-row:hover {
+        cursor: pointer;
+        background-color: aliceblue;
+    }
+</style>
