@@ -1,0 +1,140 @@
+﻿@model IEnumerable<Pinturería_Acuarela.Product_Business>
+
+@{
+    ViewBag.Title = "Stock";
+}
+
+<h1 class="text-center">Productos sin stock</h1>
+<hr class="pb-3" />
+
+<div class="container mt4">
+    <table id='dataTable' class='container table table-striped table-bordered table-hover pt-4'>
+        <thead class='table-dark'>
+            <tr>
+                <td class='text-center'></td>
+                <td class='text-center'>
+                    <input class="form-control" id="txtSearch" placeholder="Cód. interno | Nombre" />
+                </td>
+                <td class='text-center'>@Html.DropDownList("id_brand", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_brand" })</td>
+                <td class='text-center'>@Html.DropDownList("id_category", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_category" })</td>
+                <td class='text-center'>@Html.DropDownList("id_subcategory", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_subcategory" })</td>
+                <td class='text-center'>@Html.DropDownList("id_color", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_color" })</td>
+                <td class='text-center'>@Html.DropDownList("id_capacity", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })</td>
+            </tr>
+            <tr class='fw-bold'>
+                <td class='text-center'>Cód. Interno</td>
+                <td class='text-center'>Producto</td>
+                <td class='text-center'>Marca</td>
+                <td class='text-center'>Categoría</td>
+                <td class='text-center'>Subcategoría</td>
+                <td class='text-center'>Color</td>
+                <td class='text-center'>Capacidad</td>
+            </tr>
+        </thead>
+        <tbody id="contentTable">
+            @foreach (Product_Business item in Model)
+            {
+                <tr class='text-center'>
+                    <td>@(item.Product.internal_code != null ? item.Product.internal_code.ToString() : "-")</td>
+                    <td>@(item.Product.description != null ? item.Product.description : "-")</td>
+                    <td>@(item.Product.Brand.name != null ? item.Product.Brand.name : "-")</td>
+                    <td>@(item.Product.Category.description != null ? item.Product.Category.description : "-")</td>
+                    <td>@(item.Product.Subcategory.description != null ? item.Product.Subcategory.description : "-")</td>
+                    @if (item.Product.Color.name != null)
+                    {
+                        <td>
+                            <div class='d-flex flex-row justify-content-between align-items-center'>
+                                @item.Product.Color.name
+                                <span class='dot' style='background-color: @item.Product.Color.rgb_hex_code'></span>
+                            </div>
+                        </td>
+                    }
+                    <td>@(item.Product.Capacity.description != null ? item.Product.Capacity.description : "-")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const id_business = window.location.pathname.split("/").pop();
+
+    $("#txtSearch").on("input", function () {
+        let name = $("#txtSearch").val();
+        $.get("../../Products/FilterProductsByName/?name=" + name, function (data) {
+            createTable(data);
+        })
+    });
+
+    $("#id_brand option:first").prop("disabled", "disabled");
+    $("#id_category option:first").prop("disabled", "disabled");
+    $("#id_subcategory option:first").prop("disabled", "disabled");
+    $("#id_color option:first").prop("disabled", "disabled");
+    $("#id_capacity option:first").prop("disabled", "disabled");
+
+    $("#id_brand").on("change", function () {
+        if ($("#id_brand").val() != "") {
+            filter()
+        }
+    });
+    $("#id_category").on("change", function () {
+        if ($("#id_category").val() != "") {
+            filter()
+        }
+    });
+    $("#id_subcategory").on("change", function () {
+        if ($("#id_subcategory").val() != "") {
+            filter()
+        }
+    });
+    $("#id_color").on("change", function () {
+        if ($("#id_color").val() != "") {
+            filter()
+        }
+    });
+    $("#id_capacity").on("change", function () {
+        if ($("#id_capacity").val() != "") {
+            filter()
+        }
+    });
+
+    function filter() {
+        let id_brand = $('#id_brand').val();
+        let id_category = $('#id_category').val();
+        let id_subcategory = $('#id_subcategory').val();
+        let id_color = $('#id_color').val();
+        let id_capacity = $('#id_capacity').val();
+
+        $.get("../../Product_Business/FilterStocklessProducts/?id_brand=" + id_brand + "&id_category=" + id_category + "&id_subcategory=" + id_subcategory +
+            "&id_color=" + id_color + "&id_capacity=" + id_capacity + "&id_business=" + id_business,
+            function (data) {
+                createTable(data);
+            });
+    };
+
+    function createTable(data) {
+        let content = "";
+        for (let i = 0; i < data.length; i++) {
+            content += "<tr class='clickable-row text-center' data-href='/Products/Edit/" + data[i].product_id + "'>";
+            content += "<td>" + (data[i].internal_code != null ? data[i].internal_code : "-") + "</td>";
+            content += "<td>" + data[i].description + "</td>";
+            content += "<td>" + data[i].brand + "</td>";
+            content += "<td>" + (data[i].category != null ? data[i].category : "-") + "</td>";
+            content += "<td>" + (data[i].subcategory != null ? data[i].subcategory : "-") + "</td>";
+            if (data[i].color != null) {
+                content += "<td>";
+                content += "<div class='d-flex flex-row justify-content-between align-items-center' >";
+                content += data[i].color;
+                content += "<span class='dot' style='background-color: " + data[i].rgb_hex_code + "'></span>";
+                content += "</div>";
+                content += "</td>";
+            } else {
+                content += "<td>-</td>";
+            }
+            content += "<td>" + (data[i].capacity != null ? data[i].capacity : "-") + "</td>";
+            content += "</tr>";
+        }
+        //$("#contentTable").html(content);
+        console.log(data)
+    }
+</script>

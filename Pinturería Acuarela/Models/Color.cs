@@ -17,12 +17,14 @@ namespace Pinturería_Acuarela
 
         public int id { get; set; }
 
-        [Required]
-        [StringLength(255)]
+        [Required(ErrorMessage = "Debes ingresar un nombre")]
+        [StringLength(255, ErrorMessage = "Debes ingresar un nombre de menos de 255 caracteres")]
+        [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s.]+$", ErrorMessage = "Ingrese un nombre válido")]
         public string name { get; set; }
 
-        [Required]
-        [StringLength(7)]
+        [Required(ErrorMessage = "Debes seleccionar un color")]
+        [StringLength(7, ErrorMessage = "Debes seleccionar un color válido")]
+        [RegularExpression(@"^#[A-Fa-f0-9]{6}$", ErrorMessage = "Ingrese un código válido")]
         public string rgb_hex_code { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

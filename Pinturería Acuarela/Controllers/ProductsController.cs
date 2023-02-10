@@ -189,6 +189,7 @@ namespace Pinturería_Acuarela.Controllers
             base.Dispose(disposing);
         }
 
+        // GET: Filter products by name or internal code
         [HttpGet]
         public JsonResult FilterProductsByName(string name)
         {
@@ -220,6 +221,7 @@ namespace Pinturería_Acuarela.Controllers
             }
         }
 
+        // GET: Filter products
         [HttpGet]
         public JsonResult FilterProducts(string id_brand, string id_category, string id_subcategory, string id_color, string id_capacity)
         {

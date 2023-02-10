@@ -17,8 +17,9 @@ namespace Pinturería_Acuarela
 
         public int id { get; set; }
 
-        [Required]
-        [StringLength(255)]
+        [Required(ErrorMessage = "Debes ingresar un nombre")]
+        [StringLength(255, ErrorMessage = "Debes ingresar un nombre de menos de 255 caracteres")]
+        [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s'0-9.]+$", ErrorMessage = "Ingrese un nombre válido")]
         public string description { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
