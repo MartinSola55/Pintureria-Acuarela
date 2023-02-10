@@ -33,6 +33,7 @@ namespace Pinturería_Acuarela
 
         public int? id_color { get; set; }
 
+        [RegularExpression("^[0-9]+$", ErrorMessage = "Debes añadir un código válido")]
         [Range(1, 20000, ErrorMessage = "Debes ingresar un código entre 1 y 20.000")]
         public int? internal_code { get; set; }
 

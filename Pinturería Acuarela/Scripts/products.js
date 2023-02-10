@@ -29,7 +29,7 @@ $("#btnFilter").on("click", function () {
 function createTable(data) {
     let content = "";
     for (let i = 0; i < data.length; i++) {
-        content += "<tr class='clickable-row text-center' data-href='/Products/Details/" + data[i].product_id + "'>";
+        content += "<tr class='clickable-row text-center' data-href='/Products/Edit/" + data[i].product_id + "'>";
         content += "<td>" + (data[i].internal_code != null ? data[i].internal_code : "-") + "</td>";
         content += "<td>" + data[i].description + "</td>";
         content += "<td>" + data[i].brand + "</td>";
@@ -46,11 +46,6 @@ function createTable(data) {
             content += "<td>-</td>";
         }
         content += "<td>" + (data[i].capacity != null ? data[i].capacity : "-") + "</td>";
-        content += "<td>";
-        content += "<div class='d-flex flex-row justify-content-center'>";
-        content += `<button type='button' onclick = 'OpenModal(` + data[i].product_id + `, "` + data[i].description + `);' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#exampleModal'>Seleccionar</button>`;
-        content += "</div>";
-        content += "</td>";
         content += "</tr>";
     }
     $("#contentTable").html(content);

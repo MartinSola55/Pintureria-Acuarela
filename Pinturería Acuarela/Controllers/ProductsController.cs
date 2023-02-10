@@ -66,7 +66,7 @@ namespace Pinturería_Acuarela.Controllers
                     return RedirectToAction("Index");
                 } else
                 {
-                    ViewBag.Message = "Alguno de los campos ingresados no es válido";
+                    ViewBag.Message = "Alguno de los campos ingresados no son válidos";
                     ViewBag.Error = 1;
                 }
 
@@ -92,13 +92,17 @@ namespace Pinturería_Acuarela.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Product product = db.Product.Find(id);
             if (product == null)
             {
-                return HttpNotFound();
+                ViewBag.Message = "Ha ocurrido un error. No se ha encontrado el producto";
+                ViewBag.Error = 1;
+                product = new Product();
             }
+            
             ViewBag.id_brand = new SelectList(db.Brand, "id", "name", product.id_brand);
-            ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "capacity", product.id_capacity);
+            ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description", product.id_capacity);
             ViewBag.id_category = new SelectList(db.Category, "id", "description", product.id_category);
             ViewBag.id_color = new SelectList(db.Color, "id", "name", product.id_color);
             ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description", product.id_subcategory);
@@ -110,20 +114,41 @@ namespace Pinturería_Acuarela.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,description,id_brand,id_category,id_subcategory,id_capacity,id_color,quantity,internal_code,created_at,deleted_at")] Product product)
+        public ActionResult Edit([Bind(Include = "id,description,id_brand,id_category,id_subcategory,id_capacity,id_color,internal_code,created_at,deleted_at")] Product product_edited)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Entry(product).State = EntityState.Modified;
-                db.SaveChanges();
+                if (ModelState.IsValid)
+                {
+                    Product product = db.Product.Find(product_edited.id);
+                    product.description = product_edited.description;
+                    product.id_brand = product_edited.id_brand;
+                    product.id_category = product_edited.id_category;
+                    product.id_subcategory = product_edited.id_category;
+                    product.id_capacity = product_edited.id_capacity;
+                    product.id_color = product_edited.id_color;
+                    product.internal_code = product_edited.internal_code;                   
+                    db.SaveChanges();
+                    TempData["Message"] = "El producto se guardó correctamente";
+                    return RedirectToAction("Index");
+                } else
+                {
+                    ViewBag.Message = "Alguno de los campos ingresados no son válidos";
+                    ViewBag.Error = 1;
+                }
+                ViewBag.id_brand = new SelectList(db.Brand, "id", "name", product_edited.id_brand);
+                ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description", product_edited.id_capacity);
+                ViewBag.id_category = new SelectList(db.Category, "id", "description", product_edited.id_category);
+                ViewBag.id_color = new SelectList(db.Color, "id", "name", product_edited.id_color);
+                ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description", product_edited.id_subcategory);
+                return View(product_edited);
+            }
+            catch (Exception)
+            {
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido guardar el producto";
+                TempData["Error"] = 2;
                 return RedirectToAction("Index");
             }
-            ViewBag.id_brand = new SelectList(db.Brand, "id", "name", product.id_brand);
-            ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description", product.id_capacity);
-            ViewBag.id_category = new SelectList(db.Category, "id", "description", product.id_category);
-            ViewBag.id_color = new SelectList(db.Color, "id", "name", product.id_color);
-            ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description", product.id_subcategory);
-            return View(product);
         }
 
         // POST: Products/Delete/5
@@ -134,14 +159,24 @@ namespace Pinturería_Acuarela.Controllers
             try
             {
                 Product product = db.Product.Find(id);
-                product.deleted_at = DateTime.Now;
-                db.SaveChanges();
-                TempData["DeleteMessage"] = "El producto fue eliminado";
-                return RedirectToAction("Index");
+                if (product != null)
+                {
+                    product.deleted_at = DateTime.Now;
+                    db.SaveChanges();
+                    TempData["Message"] = "El producto fue eliminado";
+                    return RedirectToAction("Index");
+                } else
+                {
+                    TempData["Message"] = "Ha ocurrido un error. No se ha encontrado el producto";
+                    TempData["Error"] = 1;
+                    return RedirectToAction("Index");
+                }
             }
             catch(Exception)
             {
-               return RedirectToAction("Index");
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido eliminar el producto";
+                TempData["Error"] = 2;
+                return RedirectToAction("Index");
             }
         }
 
