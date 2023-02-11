@@ -257,6 +257,7 @@
     <Content Include="Views\Home\AdminIndex.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Product_Business\StocklessProducts.cshtml" />
+    <Content Include="Views\Product_Business\StockAlertProducts.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

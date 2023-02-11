@@ -4,7 +4,7 @@
     ViewBag.Title = "Stock";
 }
 
-<h1 class="text-center">Productos sin stock</h1>
+<h1 class="text-center">Productos con bajo stock</h1>
 <hr class="pb-3" />
 
 <div class="container mt4">
@@ -20,6 +20,8 @@
                 <td class='text-center'>@Html.DropDownList("id_subcategory", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_subcategory" })</td>
                 <td class='text-center'>@Html.DropDownList("id_color", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_color" })</td>
                 <td class='text-center'>@Html.DropDownList("id_capacity", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })</td>
+                <td></td>
+                <td></td>
             </tr>
             <tr class='fw-bold'>
                 <td class='text-center'>Cód. Interno</td>
@@ -29,6 +31,8 @@
                 <td class='text-center'>Subcategoría</td>
                 <td class='text-center'>Color</td>
                 <td class='text-center'>Capacidad</td>
+                <td class='text-center'>Stock</td>
+                <td class='text-center'>Stock mínimo</td>
             </tr>
         </thead>
         <tbody id="contentTable">
@@ -54,6 +58,8 @@
                         <td>-</td>
                     }
                     <td>@(item.Product.id_capacity != null ? item.Product.Capacity.description : "-")</td>
+                    <td>@(item.stock)</td>
+                    <td>@(item.minimum_stock)</td>
                 </tr>
             }
         </tbody>
@@ -65,7 +71,7 @@
 
     $("#txtSearch").on("input", function () {
         let name = $("#txtSearch").val();
-        $.get("../../Product_Business/FilterStocklessProductsByName/?name=" + name, function (data) {
+        $.get("../../Product_Business/FilterStockAlertProductsByName/?name=" + name, function (data) {
             createTable(data);
         })
     });
@@ -103,7 +109,7 @@
         let id_color = $('#id_color').val();
         let id_capacity = $('#id_capacity').val();
 
-        $.get("../../Product_Business/FilterStocklessProducts/?id_brand=" + id_brand + "&id_category=" + id_category + "&id_subcategory=" + id_subcategory +
+        $.get("../../Product_Business/FilterStockAlertProducts/?id_brand=" + id_brand + "&id_category=" + id_category + "&id_subcategory=" + id_subcategory +
             "&id_color=" + id_color + "&id_capacity=" + id_capacity + "&id_business=" + id_business,
             function (data) {
                 createTable(data);

@@ -399,6 +399,35 @@ namespace Pinturería_Acuarela.Controllers
             }
         }
 
+        // GET: Stock alert products
+        [HttpGet]
+        public ActionResult StockAlertProducts(int? id)
+        {
+            try
+            {
+                User user = Session["User"] as User;
+                if (id == null)
+                {
+                    id = user.Business.id;
+                }
+
+                id = user.Rol.id != 1 ? user.Business.id : id;
+
+                ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
+                ViewBag.id_capacity = new SelectList(db.Capacity, "id", "description");
+                ViewBag.id_category = new SelectList(db.Category, "id", "description");
+                ViewBag.id_color = new SelectList(db.Color, "id", "name");
+                ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
+
+                List<Product_Business> products = db.Product_Business.Where(pb => pb.id_business.Equals(id.Value) && pb.stock < pb.minimum_stock).ToList();
+                return View(products);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction(Session["User"].ToString() == "1" ? "AdminIndex" : "Index", "Home");
+            }
+        }
+
         // GET: Stockless products by filter
         [HttpGet]
         public JsonResult FilterStocklessProducts(string id_brand, string id_category, string id_subcategory, string id_color, string id_capacity, int? id_business)
@@ -421,12 +450,72 @@ namespace Pinturería_Acuarela.Controllers
                 var products = db.Product_Business
                         .Where(pb =>
                         pb.id_business.Equals(id_business.Value) && 
-                        pb.stock == 0 &&
-                        pb.Product.id_brand.ToString().Contains(id_brand) &&
-                        pb.Product.id_category.ToString().Contains(id_category) &&
-                        pb.Product.id_subcategory.ToString().Contains(id_subcategory) &&
-                        pb.Product.id_color.ToString().Contains(id_color) &&
-                        pb.Product.id_capacity.ToString().Contains(id_capacity) &&
+                        pb.stock.Equals(0) &&
+                        pb.deleted_at.Equals(null));
+
+                if (id_brand != "")
+                {
+                    products = products.Where(pb => pb.Product.id_brand.ToString().Contains(id_brand));
+                }
+                if (id_category != "")
+                {
+                    products = products.Where(pb => pb.Product.id_category.ToString().Contains(id_category));
+                }
+                if (id_subcategory != "")
+                {
+                    products = products.Where(pb => pb.Product.id_subcategory.ToString().Contains(id_subcategory));
+                }
+                if (id_color != "")
+                {
+                    products = products.Where(pb => pb.Product.id_color.ToString().Contains(id_color));
+                }
+                if (id_capacity != "")
+                {
+                    products = products.Where(pb => pb.Product.id_capacity.ToString().Contains(id_capacity));
+                }
+
+                var response = products
+                        .Select(p => new
+                        {
+                            internal_code = p.Product.internal_code != null ? p.Product.internal_code.Value.ToString() : null,
+                            product_id = p.Product.id.ToString(),
+                            p.Product.description,
+                            brand = p.Product.Brand.name,
+                            category = p.Product.Category.description,
+                            subcategory = p.Product.Subcategory.description,
+                            color = p.Product.Color.name,
+                            p.Product.Color.rgb_hex_code,
+                            capacity = p.Product.Capacity.description,
+                        }).ToList();
+
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        // GET: Stockless products by filter
+        [HttpGet]
+        public JsonResult FilterStocklessProductsByName(string name, int? id_business)
+        {
+            try
+            {
+                User user = Session["User"] as User;
+                if (id_business == null)
+                {
+                    id_business = user.Business.id;
+                }
+
+                id_business = user.Rol.id != 1 ? user.Business.id : id_business;
+
+                var products = db.Product_Business
+                        .Where(pb =>
+                        pb.id_business.Equals(id_business.Value) &&
+                        (pb.Product.description.Contains(name) ||
+                        pb.Product.internal_code.ToString().Contains(name)) &&
+                        pb.stock.Equals(0) &&
                         pb.deleted_at.Equals(null))
                         .Select(p => new
                         {
@@ -439,6 +528,120 @@ namespace Pinturería_Acuarela.Controllers
                             color = p.Product.Color.name,
                             p.Product.Color.rgb_hex_code,
                             capacity = p.Product.Capacity.description,
+                        }).ToList();
+
+                return Json(products, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        // GET: Stockless products by filter
+        [HttpGet]
+        public JsonResult FilterStockAlertProducts(string id_brand, string id_category, string id_subcategory, string id_color, string id_capacity, int? id_business)
+        {
+            try
+            {
+                if (id_brand == "" && id_category == "" && id_subcategory == "" && id_color == "" && id_capacity == "")
+                {
+                    return Json(null, JsonRequestBehavior.AllowGet);
+                }
+
+                User user = Session["User"] as User;
+                if (id_business == null)
+                {
+                    id_business = user.Business.id;
+                }
+
+                id_business = user.Rol.id != 1 ? user.Business.id : id_business;
+
+                var products = db.Product_Business
+                        .Where(pb =>
+                        pb.id_business.Equals(id_business.Value) && 
+                        pb.stock < pb.minimum_stock &&
+                        pb.deleted_at.Equals(null));
+
+                if (id_brand != "")
+                {
+                    products = products.Where(pb => pb.Product.id_brand.ToString().Contains(id_brand));
+                }
+                if (id_category != "")
+                {
+                    products = products.Where(pb => pb.Product.id_category.ToString().Contains(id_category));
+                }
+                if (id_subcategory != "")
+                {
+                    products = products.Where(pb => pb.Product.id_subcategory.ToString().Contains(id_subcategory));
+                }
+                if (id_color != "")
+                {
+                    products = products.Where(pb => pb.Product.id_color.ToString().Contains(id_color));
+                }
+                if (id_capacity != "")
+                {
+                    products = products.Where(pb => pb.Product.id_capacity.ToString().Contains(id_capacity));
+                }
+
+                var response = products
+                        .Select(p => new
+                        {
+                            internal_code = p.Product.internal_code != null ? p.Product.internal_code.Value.ToString() : null,
+                            product_id = p.Product.id.ToString(),
+                            p.Product.description,
+                            brand = p.Product.Brand.name,
+                            category = p.Product.Category.description,
+                            subcategory = p.Product.Subcategory.description,
+                            color = p.Product.Color.name,
+                            p.Product.Color.rgb_hex_code,
+                            capacity = p.Product.Capacity.description,
+                            p.stock,
+                            p.minimum_stock,
+                        }).ToList();
+
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        // GET: Stockless products by filter
+        [HttpGet]
+        public JsonResult FilterStockAlertProductsByName(string name, int? id_business)
+        {
+            try
+            {
+                User user = Session["User"] as User;
+                if (id_business == null)
+                {
+                    id_business = user.Business.id;
+                }
+
+                id_business = user.Rol.id != 1 ? user.Business.id : id_business;
+
+                var products = db.Product_Business
+                        .Where(pb =>
+                        pb.id_business.Equals(id_business.Value) &&
+                        (pb.Product.description.Contains(name) ||
+                        pb.Product.internal_code.ToString().Contains(name)) &&
+                        pb.stock < pb.minimum_stock &&
+                        pb.deleted_at.Equals(null))
+                        .Select(p => new
+                        {
+                            internal_code = p.Product.internal_code != null ? p.Product.internal_code.Value.ToString() : null,
+                            product_id = p.Product.id.ToString(),
+                            p.Product.description,
+                            brand = p.Product.Brand.name,
+                            category = p.Product.Category.description,
+                            subcategory = p.Product.Subcategory.description,
+                            color = p.Product.Color.name,
+                            p.Product.Color.rgb_hex_code,
+                            capacity = p.Product.Capacity.description,
+                            p.stock,
+                            p.minimum_stock,
                         }).ToList();
 
                 return Json(products, JsonRequestBehavior.AllowGet);
