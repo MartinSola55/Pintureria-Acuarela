@@ -21,7 +21,9 @@ namespace Pinturería_Acuarela
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<Product_Business> Product_Business { get; set; }
         public virtual DbSet<Product_Order> Product_Order { get; set; }
+        public virtual DbSet<Product_Sell> Product_Sell { get; set; }
         public virtual DbSet<Rol> Rol { get; set; }
+        public virtual DbSet<Sell> Sell { get; set; }
         public virtual DbSet<Subcategory> Subcategory { get; set; }
         public virtual DbSet<User> User { get; set; }
 
@@ -111,6 +113,12 @@ namespace Pinturería_Acuarela
                 .HasForeignKey(e => e.id_product)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Product>()
+                .HasMany(e => e.Product_Sell)
+                .WithRequired(e => e.Product)
+                .HasForeignKey(e => e.id_product)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Rol>()
                 .Property(e => e.description)
                 .IsUnicode(false);
@@ -119,6 +127,12 @@ namespace Pinturería_Acuarela
                 .HasMany(e => e.User)
                 .WithRequired(e => e.Rol)
                 .HasForeignKey(e => e.id_rol)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Sell>()
+                .HasMany(e => e.Product_Sell)
+                .WithRequired(e => e.Sell)
+                .HasForeignKey(e => e.id_sell)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Subcategory>()
@@ -141,6 +155,12 @@ namespace Pinturería_Acuarela
 
             modelBuilder.Entity<User>()
                 .HasMany(e => e.Order)
+                .WithRequired(e => e.User)
+                .HasForeignKey(e => e.id_user)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Sell)
                 .WithRequired(e => e.User)
                 .HasForeignKey(e => e.id_user)
                 .WillCascadeOnDelete(false);

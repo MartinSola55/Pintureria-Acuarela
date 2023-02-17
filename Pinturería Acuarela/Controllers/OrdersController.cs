@@ -123,14 +123,14 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         // POST: Orders/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]    
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(long id)
         {
             try
             {
                 Order order = db.Order.Find(id);
-                order.deleted_at = DateTime.Now;
+                order.deleted_at = DateTime.UtcNow.AddHours(-3);
                 
                 db.SaveChanges();
                 TempData["Message"] = "La orden se eliminó correctamente";
@@ -258,6 +258,7 @@ namespace Pinturería_Acuarela.Controllers
                             .Include(p => p.Brand)
                             .Include(p => p.Category)
                             .Include(p => p.Subcategory)
+                            .Include(p => p.Capacity)
                             .FirstOrDefault();
 
                         if (basket.Count == 0)
@@ -326,7 +327,7 @@ namespace Pinturería_Acuarela.Controllers
         {
             if (Session["Basket"] != null)
             {
-               return View();
+                return View();
             } else
             {
                 return RedirectToAction("Create");
@@ -346,7 +347,7 @@ namespace Pinturería_Acuarela.Controllers
                     List<Product_Order> basket = Session["Basket"] as List<Product_Order>;
                     Order order = new Order
                     {
-                        date = DateTime.Now,
+                        date = DateTime.UtcNow.AddHours(-3),
                         id_user = user.id,
                         status = false
                     };

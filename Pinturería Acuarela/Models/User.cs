@@ -13,6 +13,7 @@ namespace Pinturería_Acuarela
         public User()
         {
             Order = new HashSet<Order>();
+            Sell = new HashSet<Sell>();
         }
 
         public int id { get; set; }
@@ -35,5 +36,8 @@ namespace Pinturería_Acuarela
         public virtual ICollection<Order> Order { get; set; }
 
         public virtual Rol Rol { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Sell> Sell { get; set; }
     }
 }

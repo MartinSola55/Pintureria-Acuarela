@@ -136,6 +136,8 @@
                 content += "<td>-</td>";
             }
             content += "<td>" + (data[i].capacity != null ? data[i].capacity : "-") + "</td>";
+            content += "<td>" + (data[i].stock) + "</td>";
+            content += "<td>" + (data[i].minimum_stock) + "</td>";
             content += "</tr>";
         }
         $("#contentTable").html(content);

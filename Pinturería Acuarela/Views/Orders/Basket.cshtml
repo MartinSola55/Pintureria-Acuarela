@@ -1,6 +1,11 @@
 ﻿@{
     ViewBag.Title = "Ordenes";
     List<Product_Order> products = Session["Basket"] as List<Product_Order>;
+    double totalLiters = 0;
+    foreach (Product_Order item in products)
+    {
+        totalLiters += item.quantity * (item.Product.id_capacity != null ? item.Product.Capacity.capacity : 0);
+    }
 }
 
 <h1 class="text-center">Productos añadidos a la orden</h1>
@@ -62,7 +67,11 @@
             </td>
         </tr>
     }
-
+    <tr>
+        <td>
+            Total: @totalLiters litros
+        </td>
+    </tr>
 </table>
 
 <div class="d-flex flex-row justify-content-between pe-3 pt-4">

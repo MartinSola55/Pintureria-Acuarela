@@ -59,7 +59,7 @@ namespace Pinturería_Acuarela.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    product.created_at= DateTime.Now;
+                    product.created_at= DateTime.UtcNow.AddHours(-3);
                     db.Product.Add(product);
                     db.SaveChanges();
                     TempData["Message"] = "El producto se creó correctamente";
@@ -161,7 +161,7 @@ namespace Pinturería_Acuarela.Controllers
                 Product product = db.Product.Find(id);
                 if (product != null)
                 {
-                    product.deleted_at = DateTime.Now;
+                    product.deleted_at = DateTime.UtcNow.AddHours(-3);
                     db.SaveChanges();
                     TempData["Message"] = "El producto fue eliminado";
                     return RedirectToAction("Index");

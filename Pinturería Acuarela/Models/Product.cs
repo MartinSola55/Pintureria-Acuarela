@@ -14,11 +14,12 @@ namespace Pinturería_Acuarela
         {
             Product_Business = new HashSet<Product_Business>();
             Product_Order = new HashSet<Product_Order>();
+            Product_Sell = new HashSet<Product_Sell>();
         }
 
         public int id { get; set; }
 
-        [Required(ErrorMessage =  "Debes completar con una descripción")]
+        [Required(ErrorMessage = "Debes completar con una descripción")]
         [StringLength(255, ErrorMessage = "Ingresa una descripción menor de 255 caracteres")]
         public string description { get; set; }
 
@@ -54,6 +55,9 @@ namespace Pinturería_Acuarela
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product_Order> Product_Order { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Product_Sell> Product_Sell { get; set; }
 
         public virtual Subcategory Subcategory { get; set; }
     }

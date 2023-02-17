@@ -8,7 +8,7 @@
 <h2>Sucursal @Model.adress</h2>
 <hr class="pb-3"/>
 
-<div class="container-fluid d-flex row">
+<div class="container-fluid d-flex row justify-content-center">
     <a href="../../Businesses/Details/@Model.id" class="data-card">
         <h3>@ViewBag.StocklessProducts</h3>
         <h4>Productos sin stock</h4>
@@ -49,6 +49,13 @@
             </svg>
         </span>
     </a>
+    <div class="data-card">
+        <h3>@ViewBag.TotalLiters</h3>
+        <h4>Litros</h4>
+        <p>
+            Cantidad de litros sumando todos los productos de la sucursal
+        </p>
+    </div>
 </div>
 
 <a class="btn btn-dark" href="../../Businesses">Volver</a>
