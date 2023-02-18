@@ -3,6 +3,11 @@
 @{
     ViewBag.Title = "Ordenes";
     User user = Session["User"] as User;
+    double totalLiters = 0;
+    foreach (Product_Order item in Model.Product_Order)
+    {
+        totalLiters += item.quantity * (item.Product.id_capacity != null ? item.Product.Capacity.capacity : 0);
+    }
 }
 
 <link href="~/Content/orders.css" rel="stylesheet" />
@@ -149,6 +154,11 @@
                 }
             </tr>
         }
+        <tr>
+            <td>
+                Total: @totalLiters litros
+            </td>
+        </tr>
 
     </table>
 </div>

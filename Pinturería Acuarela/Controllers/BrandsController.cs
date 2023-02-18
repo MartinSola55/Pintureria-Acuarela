@@ -7,9 +7,11 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Pinturería_Acuarela;
+using Pinturería_Acuarela.Filter;
 
 namespace Pinturería_Acuarela.Controllers
 {
+    [Admin]
     public class BrandsController : Controller
     {
         private EFModel db = new EFModel();
@@ -17,22 +19,17 @@ namespace Pinturería_Acuarela.Controllers
         // GET: Brands
         public ActionResult Index()
         {
-            return View(db.Brand.ToList());
-        }
-
-        // GET: Brands/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
+            if (TempData.Count == 1)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                ViewBag.Message = TempData["Message"].ToString();
             }
-            Brand brand = db.Brand.Find(id);
-            if (brand == null)
+            else if (TempData.Count == 2)
             {
-                return HttpNotFound();
+                ViewBag.Message = TempData["Message"].ToString();
+                ViewBag.Error = TempData["Error"];
             }
-            return View(brand);
+            var brands = db.Brand.Where(b => b.deleted_at.Equals(null)).ToList();
+            return View(brands);
         }
 
         // GET: Brands/Create
@@ -48,14 +45,29 @@ namespace Pinturería_Acuarela.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id,name")] Brand brand)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Brand.Add(brand);
-                db.SaveChanges();
+                if (ModelState.IsValid)
+                {
+                    brand.created_at = DateTime.UtcNow.AddHours(-3);
+                    db.Brand.Add(brand);
+                    db.SaveChanges();
+                    TempData["Message"] = "La marca se creó correctamente";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ViewBag.Message = "El nombre ingresado no es válido";
+                    ViewBag.Error = 1;
+                }
+                return View(brand);
+            }
+            catch (Exception)
+            {
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido cargar la marca";
+                TempData["Error"] = 2;
                 return RedirectToAction("Index");
             }
-
-            return View(brand);
         }
 
         // GET: Brands/Edit/5
@@ -68,7 +80,9 @@ namespace Pinturería_Acuarela.Controllers
             Brand brand = db.Brand.Find(id);
             if (brand == null)
             {
-                return HttpNotFound();
+                ViewBag.Message = "Ha ocurrido un error. No se ha encontrado la marca";
+                ViewBag.Error = 1;
+                brand = new Brand();
             }
             return View(brand);
         }
@@ -80,28 +94,28 @@ namespace Pinturería_Acuarela.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "id,name")] Brand brand)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Entry(brand).State = EntityState.Modified;
-                db.SaveChanges();
+                if (ModelState.IsValid)
+                {
+                    db.Entry(brand).State = EntityState.Modified;
+                    db.SaveChanges();
+                    TempData["Message"] = "La marca se guardó correctamente";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ViewBag.Message = "El nombre ingresado no es válido";
+                    ViewBag.Error = 1;
+                }
+                return View(brand);
+            }
+            catch (Exception)
+            {
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido guardar la marca";
+                TempData["Error"] = 2;
                 return RedirectToAction("Index");
             }
-            return View(brand);
-        }
-
-        // GET: Brands/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Brand brand = db.Brand.Find(id);
-            if (brand == null)
-            {
-                return HttpNotFound();
-            }
-            return View(brand);
         }
 
         // POST: Brands/Delete/5
@@ -109,10 +123,28 @@ namespace Pinturería_Acuarela.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Brand brand = db.Brand.Find(id);
-            db.Brand.Remove(brand);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                Brand brand = db.Brand.Find(id);
+                if (brand != null)
+                {
+                    brand.deleted_at = DateTime.UtcNow.AddHours(-3);
+                    db.SaveChanges();
+                    TempData["Message"] = "La marca fue eliminada";
+                    return RedirectToAction("Index");
+                } else
+                {
+                    TempData["Message"] = "Ha ocurrido un error. No se ha encontrado la marca";
+                    TempData["Error"] = 1;
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception)
+            {
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido eliminar la marca";
+                TempData["Error"] = 2;
+                return RedirectToAction("Index");
+            }
         }
 
         protected override void Dispose(bool disposing)

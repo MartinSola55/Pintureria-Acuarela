@@ -153,9 +153,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Models\Brand.cs" />
     <Compile Include="Controllers\Product_BusinessController.cs" />
     <Compile Include="Models\EFModel.cs" />
-    <Compile Include="Models\Brand.cs" />
     <Compile Include="Models\Business.cs" />
     <Compile Include="Models\Capacity.cs" />
     <Compile Include="Models\Category.cs" />
@@ -175,11 +175,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Product_Business.cs" />
     <Compile Include="Models\Product_Order.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\Product_Sell.cs" />
+    <Compile Include="Models\Order.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Rol.cs" />
     <Compile Include="Models\Subcategory.cs" />
@@ -222,8 +222,6 @@
     <Content Include="Views\Categories\Edit.cshtml" />
     <Content Include="Views\Categories\Index.cshtml" />
     <Content Include="Views\Brands\Create.cshtml" />
-    <Content Include="Views\Brands\Delete.cshtml" />
-    <Content Include="Views\Brands\Details.cshtml" />
     <Content Include="Views\Brands\Edit.cshtml" />
     <Content Include="Views\Brands\Index.cshtml" />
     <Content Include="Views\Subcategories\Create.cshtml" />
