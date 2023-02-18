@@ -92,15 +92,16 @@ namespace Pinturería_Acuarela.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,name")] Brand brand)
+        public ActionResult Edit([Bind(Include = "id,name")] Brand brand_edited)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    db.Entry(brand).State = EntityState.Modified;
+                    Brand brand = db.Brand.Find(brand_edited.id);
+                    brand.name = brand_edited.name;
                     db.SaveChanges();
-                    TempData["Message"] = "La marca se guardó correctamente";
+                    TempData["Message"] = "La marca se editó correctamente";
                     return RedirectToAction("Index");
                 }
                 else
@@ -108,7 +109,7 @@ namespace Pinturería_Acuarela.Controllers
                     ViewBag.Message = "El nombre ingresado no es válido";
                     ViewBag.Error = 1;
                 }
-                return View(brand);
+                return View(brand_edited);
             }
             catch (Exception)
             {

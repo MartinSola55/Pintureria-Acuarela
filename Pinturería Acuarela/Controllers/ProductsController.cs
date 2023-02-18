@@ -28,7 +28,7 @@ namespace Pinturería_Acuarela.Controllers
                 ViewBag.Message = TempData["Message"].ToString();
                 ViewBag.Error = TempData["Error"];
             }
-            ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
+            ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name");
             ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description");
             ViewBag.id_category = new SelectList(db.Category, "id", "description");
             ViewBag.id_color = new SelectList(db.Color, "id", "name");
@@ -40,7 +40,7 @@ namespace Pinturería_Acuarela.Controllers
         // GET: Products/Create
         public ActionResult Create()
         {
-            ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
+            ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name");
             ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description");
             ViewBag.id_category = new SelectList(db.Category, "id", "description");
             ViewBag.id_color = new SelectList(db.Color, "id", "name");
@@ -70,7 +70,7 @@ namespace Pinturería_Acuarela.Controllers
                     ViewBag.Error = 1;
                 }
 
-                ViewBag.id_brand = new SelectList(db.Brand, "id", "name", product.id_brand);
+                ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name", product.id_brand);
                 ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description", product.id_capacity);
                 ViewBag.id_category = new SelectList(db.Category, "id", "description", product.id_category);
                 ViewBag.id_color = new SelectList(db.Color, "id", "name", product.id_color);
@@ -101,7 +101,7 @@ namespace Pinturería_Acuarela.Controllers
                 product = new Product();
             }
             
-            ViewBag.id_brand = new SelectList(db.Brand, "id", "name", product.id_brand);
+            ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name", product.id_brand);
             ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description", product.id_capacity);
             ViewBag.id_category = new SelectList(db.Category, "id", "description", product.id_category);
             ViewBag.id_color = new SelectList(db.Color, "id", "name", product.id_color);
@@ -136,7 +136,7 @@ namespace Pinturería_Acuarela.Controllers
                     ViewBag.Message = "Alguno de los campos ingresados no son válidos";
                     ViewBag.Error = 1;
                 }
-                ViewBag.id_brand = new SelectList(db.Brand, "id", "name", product_edited.id_brand);
+                ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name", product_edited.id_brand);
                 ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description", product_edited.id_capacity);
                 ViewBag.id_category = new SelectList(db.Category, "id", "description", product_edited.id_category);
                 ViewBag.id_color = new SelectList(db.Color, "id", "name", product_edited.id_color);
@@ -199,6 +199,7 @@ namespace Pinturería_Acuarela.Controllers
                         .Where(p =>
                         (p.description.Contains(name) ||
                         p.internal_code.ToString().Contains(name)) &&
+                        p.Brand.deleted_at.Equals(null) &&
                         p.deleted_at.Equals(null))
                         .Select(p => new
                         {
@@ -239,6 +240,7 @@ namespace Pinturería_Acuarela.Controllers
                             p.id_subcategory.ToString().Contains(id_subcategory) &&
                             p.id_color.ToString().Contains(id_color) &&
                             p.id_capacity.ToString().Contains(id_capacity) &&
+                            p.Brand.deleted_at.Equals(null) &&
                             p.deleted_at.Equals(null))
                             .Select(p => new
                             {
