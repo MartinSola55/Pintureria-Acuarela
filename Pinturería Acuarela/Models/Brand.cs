@@ -22,6 +22,10 @@ namespace Pinturería_Acuarela
         [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s'0-9.]+$", ErrorMessage = "Ingrese un nombre válido")]
         public string name { get; set; }
 
+        public DateTime created_at { get; set; }
+
+        public DateTime? deleted_at { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Product { get; set; }
     }

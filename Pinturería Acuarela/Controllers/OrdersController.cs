@@ -84,7 +84,7 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
-                ViewBag.id_brand = new SelectList(db.Brand.OrderBy(b => b.name), "id", "name");
+                ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name");
                 ViewBag.id_category = new SelectList(db.Category.OrderBy(c => c.description), "id", "description");
                 ViewBag.id_subcategory = new SelectList(db.Subcategory.OrderBy(s => s.description), "id", "description");
                 ViewBag.id_color = new SelectList(db.Color.OrderBy(c => c.name), "id", "name");
@@ -131,7 +131,24 @@ namespace Pinturería_Acuarela.Controllers
             {
                 Order order = db.Order.Find(id);
                 order.deleted_at = DateTime.UtcNow.AddHours(-3);
-                
+                order.status = false;
+
+                foreach (Product_Order item in order.Product_Order)
+                {
+                    if (item.id_business_sender != null)
+                    {
+                        Product_Business prod_b_sender = db.Product_Business.Where(p => p.id_product == item.id_product && p.id_business == item.id_business_sender).First();
+                        prod_b_sender.stock += item.quantity_send;
+
+                        Product_Business prod_b_receiver = db.Product_Business.Where(p => p.id_product == item.id_product && p.id_business == item.Order.User.Business.id).First();
+                        prod_b_receiver.stock -= item.quantity_send;
+                    }
+
+                    item.quantity_send = 0;
+                    item.id_business_sender = null;
+                    item.status = false;
+                }
+
                 db.SaveChanges();
                 TempData["Message"] = "La orden se eliminó correctamente";
             }
@@ -174,6 +191,7 @@ namespace Pinturería_Acuarela.Controllers
                     p.id_subcategory.ToString().Contains(id_subcategory) &&
                     p.id_color.ToString().Contains(id_color) &&
                     p.id_capacity.ToString().Contains(id_capacity) &&
+                    p.Brand.deleted_at.Equals(null) &&
                     p.deleted_at.Equals(null))
                     .Select(p => new
                     {
@@ -211,6 +229,7 @@ namespace Pinturería_Acuarela.Controllers
                         p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business)) &&
                         (p.description.Contains(name) ||
                         p.internal_code.ToString().Contains(name)) &&
+                        p.Brand.deleted_at.Equals(null) &&
                         p.deleted_at.Equals(null))
                         .Select(p => new
                         {
@@ -611,6 +630,7 @@ namespace Pinturería_Acuarela.Controllers
             {
                 var query = db.Product_Business
                     .Where(p =>
+                    p.Product.Brand.deleted_at.Equals(null) &&
                     p.deleted_at.Equals(null) &&
                     p.Product.id.Equals(id_product) &&
                     p.id_business != id_business &&
@@ -622,7 +642,7 @@ namespace Pinturería_Acuarela.Controllers
                         p.stock
                     })
                     .ToList();
-                return Json(query,JsonRequestBehavior.AllowGet);
+                return Json(query, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {

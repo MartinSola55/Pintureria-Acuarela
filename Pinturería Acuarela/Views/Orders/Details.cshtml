@@ -3,6 +3,13 @@
 @{
     ViewBag.Title = "Ordenes";
     User user = Session["User"] as User;
+    double totalLiters = 0;
+    double totalLitersSent = 0;
+    foreach (Product_Order item in Model.Product_Order)
+    {
+        totalLiters += item.quantity * (item.Product.id_capacity != null ? item.Product.Capacity.capacity : 0);
+        totalLitersSent += item.quantity_send * (item.Product.id_capacity != null ? item.Product.Capacity.capacity : 0);
+    }
 }
 
 <link href="~/Content/orders.css" rel="stylesheet" />
@@ -149,6 +156,16 @@
                 }
             </tr>
         }
+        <tr>
+            <td>
+                <b>Total pedido: </b>@totalLiters litros
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>Total enviado: </b>@totalLitersSent litros
+            </td>
+        </tr>
 
     </table>
 </div>

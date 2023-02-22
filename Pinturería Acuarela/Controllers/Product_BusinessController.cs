@@ -40,7 +40,7 @@ namespace Pinturería_Acuarela.Controllers
                     ViewBag.Error = TempData["Error"];
                 }
 
-                ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
+                ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name");
                 ViewBag.id_capacity = new SelectList(db.Capacity, "id", "description");
                 ViewBag.id_category = new SelectList(db.Category, "id", "description");
                 ViewBag.id_color = new SelectList(db.Color, "id", "name");
@@ -76,7 +76,7 @@ namespace Pinturería_Acuarela.Controllers
                     ViewBag.Error = TempData["Error"];
                 }
 
-                ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
+                ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name");
                 ViewBag.id_capacity = new SelectList(db.Capacity, "id", "description");
                 ViewBag.id_category = new SelectList(db.Category, "id", "description");
                 ViewBag.id_color = new SelectList(db.Color, "id", "name");
@@ -196,6 +196,7 @@ namespace Pinturería_Acuarela.Controllers
                 var products_in_business = db.Product
                         .Where(p =>
                         p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)) &&
+                        p.Brand.deleted_at.Equals(null) &&
                         p.deleted_at.Equals(null));
 
                 var products_not_in_business = db.Product
@@ -206,6 +207,7 @@ namespace Pinturería_Acuarela.Controllers
                     p.id_subcategory.ToString().Contains(id_subcategory) &&
                     p.id_color.ToString().Contains(id_color) &&
                     p.id_capacity.ToString().Contains(id_capacity) &&
+                    p.Brand.deleted_at.Equals(null) &&
                     p.deleted_at.Equals(null));
 
                 var response = products_not_in_business.Select(p => new
@@ -246,6 +248,7 @@ namespace Pinturería_Acuarela.Controllers
                 var products_in_business = db.Product
                         .Where(p =>
                         p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)) &&
+                        p.Brand.deleted_at.Equals(null) &&
                         p.deleted_at.Equals(null));
 
                     var products_not_in_business = db.Product
@@ -253,6 +256,7 @@ namespace Pinturería_Acuarela.Controllers
                         .Where(p =>
                         (p.description.Contains(name) ||
                         p.internal_code.ToString().Contains(name)) &&
+                        p.Brand.deleted_at.Equals(null) &&
                         p.deleted_at.Equals(null));
 
                     var response = products_not_in_business.Select(p => new
@@ -303,6 +307,7 @@ namespace Pinturería_Acuarela.Controllers
                             p.id_subcategory.ToString().Contains(id_subcategory) &&
                             p.id_color.ToString().Contains(id_color) &&
                             p.id_capacity.ToString().Contains(id_capacity) &&
+                            p.Brand.deleted_at.Equals(null) &&
                             p.deleted_at.Equals(null))
                             .Select(p => new
                             {
@@ -346,6 +351,7 @@ namespace Pinturería_Acuarela.Controllers
                         p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)) &&
                         (p.description.Contains(name) ||
                         p.internal_code.ToString().Contains(name)) &&
+                        p.Brand.deleted_at.Equals(null) &&
                         p.deleted_at.Equals(null))
                         .Select(p => new
                         {
@@ -384,7 +390,7 @@ namespace Pinturería_Acuarela.Controllers
 
                 id = user.Rol.id != 1 ? user.Business.id : id;
 
-                ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
+                ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name");
                 ViewBag.id_capacity = new SelectList(db.Capacity, "id", "description");
                 ViewBag.id_category = new SelectList(db.Category, "id", "description");
                 ViewBag.id_color = new SelectList(db.Color, "id", "name");
@@ -413,7 +419,7 @@ namespace Pinturería_Acuarela.Controllers
 
                 id = user.Rol.id != 1 ? user.Business.id : id;
 
-                ViewBag.id_brand = new SelectList(db.Brand, "id", "name");
+                ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name");
                 ViewBag.id_capacity = new SelectList(db.Capacity, "id", "description");
                 ViewBag.id_category = new SelectList(db.Category, "id", "description");
                 ViewBag.id_color = new SelectList(db.Color, "id", "name");
@@ -451,6 +457,8 @@ namespace Pinturería_Acuarela.Controllers
                         .Where(pb =>
                         pb.id_business.Equals(id_business.Value) && 
                         pb.stock.Equals(0) &&
+                        pb.Product.Brand.deleted_at.Equals(null) &&
+                        pb.Product.deleted_at.Equals(null) &&
                         pb.deleted_at.Equals(null));
 
                 if (id_brand != "")
@@ -516,6 +524,8 @@ namespace Pinturería_Acuarela.Controllers
                         (pb.Product.description.Contains(name) ||
                         pb.Product.internal_code.ToString().Contains(name)) &&
                         pb.stock.Equals(0) &&
+                        pb.Product.deleted_at.Equals(null) &&
+                        pb.Product.Brand.deleted_at.Equals(null) &&
                         pb.deleted_at.Equals(null))
                         .Select(p => new
                         {
@@ -560,7 +570,9 @@ namespace Pinturería_Acuarela.Controllers
                 var products = db.Product_Business
                         .Where(pb =>
                         pb.id_business.Equals(id_business.Value) && 
-                        pb.stock < pb.minimum_stock &&
+                        pb.stock < pb.minimum_stock && 
+                        pb.Product.deleted_at.Equals(null) &&
+                        pb.Product.Brand.deleted_at.Equals(null) &&
                         pb.deleted_at.Equals(null));
 
                 if (id_brand != "")
@@ -628,6 +640,8 @@ namespace Pinturería_Acuarela.Controllers
                         (pb.Product.description.Contains(name) ||
                         pb.Product.internal_code.ToString().Contains(name)) &&
                         pb.stock < pb.minimum_stock &&
+                        pb.Product.deleted_at.Equals(null) &&
+                        pb.Product.Brand.deleted_at.Equals(null) &&
                         pb.deleted_at.Equals(null))
                         .Select(p => new
                         {

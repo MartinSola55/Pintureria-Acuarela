@@ -92,6 +92,10 @@ namespace Pinturería_Acuarela
                 .HasForeignKey(e => e.id_color);
 
             modelBuilder.Entity<Order>()
+                .Property(e => e.comment)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Order>()
                 .HasMany(e => e.Product_Order)
                 .WithRequired(e => e.Order)
                 .HasForeignKey(e => e.id_order)

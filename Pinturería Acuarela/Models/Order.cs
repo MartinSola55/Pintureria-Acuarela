@@ -25,6 +25,8 @@ namespace Pinturería_Acuarela
 
         public DateTime? deleted_at { get; set; }
 
+        public string comment { get; set; }
+
         public virtual User User { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
