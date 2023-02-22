@@ -22,11 +22,12 @@
         }
         let capacity = data[i].capacity != null ? data[i].capacity : " - ";
         contenido += "<td>" + capacity + "</td>";
+        contenido += "<td class='text-center'>" + data[i].stock + "</td>";
         contenido += "<td>";
         contenido += "<div class='d-flex flex-row justify-content-center'>";
-        contenido += "<div class='value-button' id='decrease' onclick='decreaseValue(" + data[i].product_id + ")' value='Decrease Value'>-</div>";
+        contenido += "<div class='value-button' onclick='decreaseValue(" + data[i].product_id + ")'>-</div>";
         contenido += "<input type='number' id='number" + data[i].product_id + "' class='number' value='0' />";
-        contenido += "<div class='value-button' id='increase' onclick='increaseValue(" + data[i].product_id + ")' value='Increase Value'>+</div>";
+        contenido += "<div class='value-button' onclick='increaseValue(" + data[i].product_id + ", " + data[i].stock + ")' value='Increase Value'>+</div>";
         contenido += "</div>";
         contenido += "</td>";
         contenido += "<td>";
@@ -39,9 +40,10 @@
     $("#contentTable").html(contenido);
 }
 
-function increaseValue(id) {
+function increaseValue(id, quant) {
     let value = parseInt(document.getElementById('number' + id).value, 10);
     value = isNaN(value) ? 0 : value;
+    value >= quant ? value = quant - 1 : '';
     value++;
     document.getElementById('number' + id).value = value;
 }

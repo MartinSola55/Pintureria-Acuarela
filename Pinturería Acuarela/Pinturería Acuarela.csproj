@@ -261,9 +261,6 @@
     <Content Include="Views\Product_Business\StocklessProducts.cshtml" />
     <Content Include="Views\Product_Business\StockAlertProducts.cshtml" />
     <Content Include="Views\Sells\Create.cshtml" />
-    <Content Include="Views\Sells\Delete.cshtml" />
-    <Content Include="Views\Sells\Details.cshtml" />
-    <Content Include="Views\Sells\Edit.cshtml" />
     <Content Include="Views\Sells\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

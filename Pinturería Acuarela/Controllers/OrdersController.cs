@@ -267,13 +267,13 @@ namespace Pinturería_Acuarela.Controllers
                     {
                         basket = Session["Basket"] as List<Product_Order>;
                     }
-                    if (quant > 0)
+                    if (quant.Value > 0)
                     {
                         //ViewBag.Error = "Debes seleecionar una cantidad mayor a 1";
 
                         Product_Order prod = new Product_Order();
                         prod.Product = db.Product
-                            .Where(p => p.id == id_prod)
+                            .Where(p => p.id == id_prod.Value)
                             .Include(p => p.Brand)
                             .Include(p => p.Category)
                             .Include(p => p.Subcategory)

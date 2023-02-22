@@ -42,6 +42,15 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
+                if (TempData.Count == 1)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                else if (TempData.Count == 2)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                    ViewBag.Error = TempData["Error"];
+                }
                 ViewBag.id_user = new SelectList(db.User, "id", "email");
                 ViewBag.id_brand = new SelectList(db.Brand.OrderBy(b => b.name), "id", "name");
                 ViewBag.id_category = new SelectList(db.Category.OrderBy(c => c.description), "id", "description");
@@ -54,83 +63,6 @@ namespace Pinturería_Acuarela.Controllers
             {
                 return RedirectToAction("Index");
             }
-        }
-
-        // POST: Sells/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
-        /*[HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,date,id_user")] Sell sell)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Sell.Add(sell);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.id_user = new SelectList(db.User, "id", "email", sell.id_user);
-            return View(sell);
-        }*/
-
-        // GET: Sells/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Sell sell = db.Sell.Find(id);
-            if (sell == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.id_user = new SelectList(db.User, "id", "email", sell.id_user);
-            return View(sell);
-        }
-
-        // POST: Sells/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,date,id_user")] Sell sell)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(sell).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.id_user = new SelectList(db.User, "id", "email", sell.id_user);
-            return View(sell);
-        }
-
-        // GET: Sells/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Sell sell = db.Sell.Find(id);
-            if (sell == null)
-            {
-                return HttpNotFound();
-            }
-            return View(sell);
-        }
-
-        // POST: Sells/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Sell sell = db.Sell.Find(id);
-            db.Sell.Remove(sell);
-            db.SaveChanges();
-            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
@@ -231,56 +163,56 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
-                List<Product_Sell> sale = new List<Product_Sell>();
+                List<Product_Sell> sell = new List<Product_Sell>();
                 if (id_prod != null && quant != null)
                 {
-                    if (Session["Sale"] != null)
+                    if (Session["Sell"] != null)
                     {
-                        sale = Session["Sale"] as List<Product_Sell>;
+                        sell = Session["Sell"] as List<Product_Sell>;
                     }
-                    if (quant > 0)
+                    if (quant.Value > 0)
                     {
                         //ViewBag.Error = "Debes seleecionar una cantidad mayor a 1";
 
                         Product_Sell prod = new Product_Sell();
                         prod.Product = db.Product
-                            .Where(p => p.id == id_prod)
+                            .Where(p => p.id.Equals(id_prod.Value))
                             .Include(p => p.Brand)
                             .Include(p => p.Category)
                             .Include(p => p.Subcategory)
                             .Include(p => p.Capacity)
-                            .FirstOrDefault();
-                        prod.id_product = db.Product.Where(p => p.id == id_prod).First().id;
-                        if (sale.Count == 0)
+                            .Include(p => p.Product_Business)
+                            .First();
+                        if (sell.Count == 0)
                         {
                             prod.quantity = quant.Value;
-                            sale.Add(prod);
+                            sell.Add(prod);
                         }
                         else
                         {
-                            int count = sale.Count;
+                            int count = sell.Count;
                             for (int index = 0; index < count; index++)
                             {
-                                if (sale[index].Product.id == prod.Product.id)
+                                if (sell[index].Product.id == prod.Product.id)
                                 {
-                                    sale[index].quantity += quant.Value;
+                                    sell[index].quantity += quant.Value;
                                     break;
                                 }
-                                else if (index == sale.Count - 1)
+                                else if (index == sell.Count - 1)
                                 {
                                     prod.quantity = quant.Value;
-                                    sale.Add(prod);
+                                    sell.Add(prod);
                                 }
                             }
                         }
-                        Session["Sale"] = sale;
+                        Session["Sell"] = sell;
                     }
                 }
-                return sale.Count;
+                return sell.Count;
             }
             catch (Exception)
             {
-                Session["Sale"] = null;
+                Session["Sell"] = null;
                 return 0;
             }
         }
@@ -290,18 +222,18 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
-                if (id_prod != null && Session["Sale"] != null)
+                if (id_prod != null && Session["Sell"] != null)
                 {
-                    List<Product_Sell> sale = Session["Sale"] as List<Product_Sell>;
-                    Product_Sell prod_s = sale.Where(p => p.id_product == id_prod.Value).FirstOrDefault();
-                    sale.Remove(prod_s);
-                    if (sale.Count > 0)
+                    List<Product_Sell> sell = Session["Sell"] as List<Product_Sell>;
+                    Product_Sell prod_s = sell.Where(p => p.Product.id.Equals(id_prod.Value)).FirstOrDefault();
+                    sell.Remove(prod_s);
+                    if (sell.Count > 0)
                     {
-                        Session["Sale"] = sale;
+                        Session["Sell"] = sell;
                     }
                     else
                     {
-                        Session["Sale"] = null;
+                        Session["Sell"] = null;
                     }
                 }
             }
@@ -318,42 +250,59 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
-                if (Session["Sale"] != null)
+                if (Session["Sell"] != null)
                 {
+                    User user = Session["User"] as User;
+                    List<Product_Sell> products = Session["Sell"] as List<Product_Sell>;
+                    
+                    Sell sell = new Sell
+                    {
+                        date = DateTime.UtcNow.AddHours(-3),
+                        id_user = user.id
+                    };
+
                     using (var transaccion = new TransactionScope())
                     {
-                        Sell sell = new Sell();
-                        sell.date = DateTime.UtcNow.AddHours(-3);
-                        User user = Session["User"] as User;
-                        sell.id_user = user.id;
                         db.Sell.Add(sell);
                         db.SaveChanges();
-                        List<Product_Sell> obj = Session["Sale"] as List<Product_Sell>;
-                        foreach(Product_Sell item in obj)
+                                                
+                        foreach(Product_Sell item in products)
                         {
-                            Product_Sell aux = new Product_Sell();
-                            aux.quantity = item.quantity;
-                            aux.id_product = item.id_product;
-                            aux.id_sell = sell.id;
-                            db.Product_Sell.Add(aux);
+                            Product_Sell prod_sell = new Product_Sell
+                            {
+                                id_sell = sell.id,
+                                id_product = item.Product.id,
+                                quantity = item.quantity,
+                            };
+                            
+                            db.Product_Sell.Add(prod_sell);
+
+                            db.SaveChanges();
+
+                            prod_sell.Product = db.Product.Where(p => p.id == prod_sell.id_product).First();
+                            
+                            prod_sell.Product.Product_Business.Where(pb => pb.id_business.Equals(user.id_business)).First().stock -= item.quantity;
+                            db.SaveChanges();                            
                         }
-                        db.SaveChanges();
-                        Session["Sale"] = null;
+
+                        Session["Sell"] = null;
                         transaccion.Complete();
                     }
-                    TempData["Confirm"] = "Venta realizada con exito";
+                    TempData["Message"] = "Venta realizada con exito";
                     return RedirectToAction("Create");
                 }
                 else
                 {
-                    TempData["Confirm"] = 0;
+                    TempData["Error"] = 1;
+                    TempData["Message"] = "No se han agregado productos a la venta";
                     return RedirectToAction("Create");
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                TempData["Confirm"] = 0;
-                return HttpNotFound();
+                TempData["Error"] = 2;
+                TempData["Message"] = "Ha ocurrido un error inesperado. La venta no se ha podido realizar";
+                return RedirectToAction("Create");
             }
         }
             

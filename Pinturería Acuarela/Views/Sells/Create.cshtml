@@ -1,25 +1,26 @@
 ﻿@model Pinturería_Acuarela.Sell
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Ventas";
     User user = Session["User"] as User;
-    List<Product_Sell> products = Session["Sale"] as List<Product_Sell>;
+    List<Product_Sell> products = Session["Sell"] as List<Product_Sell>;
 }
 
 <link href="~/Content/orders.css" rel="stylesheet" />
 <link href="~/Content/notification.css" rel="stylesheet" />
 
-<h2>Create</h2>
+<h1 class="text-center">Ventas</h1>
+<hr class="pb-3" />
 
 
-@{ if (TempData["Confirm"] != null)
+@{ if (ViewBag.Message != null)
     {
-        <div class="py-3 mb-5 @(TempData["Confirm"].Equals(0) ? "containerError1" : "onlyMessage")" id="notificationContainer">
+        <div class="py-3 mb-5 @(ViewBag.Error == 1 ? "containerError1" : "")@(ViewBag.Error == 2 ? "containerError2" : "")@(ViewBag.Error == null ? "onlyMessage" : "")" id="notificationContainer">
             <div class="px-2 d-flex flex-row justify-content-between align-items-center">
-                <div id="txtNotification">@(TempData["Confirm"].Equals(0) ? "Error al realizar la venta" : TempData["Confirm"] )</div>
+                <div id="txtNotification">@ViewBag.Message</div>
                 <button id="btnCloseNotification" type="button" aria-label="Cerrar">
                     <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-x">
-                        <path id="closeSVG" fill="rgb(0,75,180)" class="@(TempData["Confirm"].Equals(0) ? "error1" : "onlyMessage")" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+                        <path id="closeSVG" fill="rgb(0,75,180)" class="@(ViewBag.Error == 1 ? "error1" : "") @(ViewBag.Error == 2 ? "error2" : "") @(ViewBag.Error == null ? "onlyMessage" : "")" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
                     </svg>
                 </button>
             </div>
@@ -114,6 +115,7 @@
                 <td class='text-center'>@Html.DropDownList("id_capacity", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })</td>
                 <td class='text-center'><input type="button" value="Filtrar" class="btn btn-outline-light" id="btnFilter" /></td>
                 <td class='text-center'></td>
+                <td class='text-center'></td>
             </tr>
             <tr class='fw-bold'>
                 <td class='text-center'>Cód. Interno</td>
@@ -123,6 +125,7 @@
                 <td class='text-center'>Subcategoría</td>
                 <td class='text-center'>Color</td>
                 <td class='text-center'>Capacidad</td>
+                <td class='text-center'>Stock</td>
                 <td class='text-center'>Cantidad</td>
                 <td class='text-center'>Añadir</td>
             </tr>
@@ -132,9 +135,7 @@
     </table>
 </div>
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+<a href="../../Sells" class="btn btn-dark">Volver</a>
 
 <script src="~/Scripts/Sell.js"></script>
 <script src="~/Scripts/notification.js"></script>
