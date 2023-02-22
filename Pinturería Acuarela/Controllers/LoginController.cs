@@ -11,9 +11,13 @@ namespace Pinturería_Acuarela.Controllers
     public class LoginController : Controller
     {
         // GET: Login
-        public ActionResult Index()
+        public ActionResult Index(User user)
         {
-            return View();
+            if (user == null)
+            {
+                user = new User();
+            }
+            return View(user);
         }
         public ActionResult Logout()
         {
@@ -48,13 +52,13 @@ namespace Pinturería_Acuarela.Controllers
                 }
                 ViewBag.Error = 1;
                 ViewBag.Message = "Email y/o contraseña incorrectos";
-                return View("Index");
+                return View("Index", new User { email = email });
             }
             catch (Exception ex)
             {
                 ViewBag.Message = ex.Message;
                 ViewBag.Error = 2;
-                return View("Index");
+                return View("Index", new User { email = email });
             }
         }
     }

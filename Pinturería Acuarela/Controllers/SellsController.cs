@@ -288,7 +288,7 @@ namespace Pinturería_Acuarela.Controllers
                         Session["Sell"] = null;
                         transaccion.Complete();
                     }
-                    TempData["Message"] = "Venta realizada con exito";
+                    TempData["Message"] = "Venta realizada con éxito";
                     return RedirectToAction("Create");
                 }
                 else

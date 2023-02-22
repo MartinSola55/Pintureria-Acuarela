@@ -8,9 +8,11 @@
 
 <link href="~/Content/orders.css" rel="stylesheet" />
 <link href="~/Content/notification.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet">
+<link href="~/Content/table.css" rel="stylesheet" />
 
 <h1 class="text-center">Ventas</h1>
-<hr class="pb-3" />
+<hr class="mb-3"/>
 
 
 @{ if (ViewBag.Message != null)
@@ -28,114 +30,122 @@
     }
 }
 
+<div class="mx-4 mb-5 d-flex flex-row">
+    <div class="col-9 me-3">
+        <div class="sombra p-4 mb-5" style="border-radius: 20px">
+            <div class="sombra mb-3 d-flex flex-row" style="max-width: fit-content">
+                <input class="form-control py-2" id="txtSearch" placeholder="Cód. interno | Nombre" />
+                <button id="btnSearch" type="button" class="btn" style="background-color: #6c7ae0">
+                    <i class="bi bi-search" style="color: white"></i>
+                </button>
+            </div>
+            <div class="d-flex flex-row">
+                <div class="col-2">
+                    <label class="text-center">Marca</label>
+                    @Html.DropDownList("id_brand", null, "Seleccionar", htmlAttributes: new { @class = "form-select sombra", @id = "id_brand" })
+                </div>
+                <div class="col-2">
+                    <label class="text-center">Categoría</label>
+                    @Html.DropDownList("id_category", null, "Seleccionar", htmlAttributes: new { @class = "form-select sombra", @id = "id_category" })
+                </div>
+                <div class="col-2">
+                    <label class="text-center">Subcategoría</label>
+                    @Html.DropDownList("id_subcategory", null, "Seleccionar", htmlAttributes: new { @class = "form-select sombra", @id = "id_subcategory" })
+                </div>
+                <div class="col-2">
+                    <label class="text-center">Color</label>
+                    @Html.DropDownList("id_color", null, "Seleccionar", htmlAttributes: new { @class = "form-select sombra", @id = "id_color" })
+                </div>
+                <div class="col-2">
+                    <label class="text-center">Capacidad</label>
+                    @Html.DropDownList("id_capacity", null, "Seleccionar", htmlAttributes: new { @class = "form-select sombra", @id = "id_capacity" })
+                </div>
+                <button type="button" class="btn w-50 align-self-end" style="background-color: #6c7ae0" id="btnFilter"><i class="bi bi-search" style="color: white"></i></button>
+            </div>
+        </div>
 
-<table class="table">
-    @if (products != null)
-    {
-        <tr>
-            <th>
-                Descripción
-            </th>
-            <th>
-                Marca
-            </th>
-            <th>
-                Categoría
-            </th>
-            <th>
-                Subcategoría
-            </th>
-            <th>
-                Código interno
-            </th>
-            <th>
-                Cantidad pedida
-            </th>
-            <th>
-                Eliminar
-            </th>
-        </tr>
-        foreach (Product_Sell item in products.OrderByDescending(p => p.quantity))
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.internal_code)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.Brand.name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.Category.description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.Subcategory.description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.quantity)
-                </td>
-                <td>
-                    @using (Html.BeginForm("RemoveProductSell", "Sells", FormMethod.Post))
-                    {
-                        @Html.AntiForgeryToken()
-                        @Html.Hidden("id_prod", item.Product.id)
-                        <button class="btn btn-danger" type="submit"><i class='bi bi-trash3'></i></button>
-                    }
-                </td>
-            </tr>
-        }
-    }
-</table>
-@if (products != null)
-{
-    using (Html.BeginForm("ConfirmSale", "Sells", FormMethod.Post))
-    {
-        @Html.AntiForgeryToken()
-        <button class="btn btn-success" type="submit">Confirmar Venta</button>
-    }
-}
+        @* Tabla *@
+        <div class="table100 ver1 m-b-110">
+            <div class="table100-head">
+                <table>
+                    <thead>
+                        <tr class="row100 head">
+                            <th class="text-center column5">Código</th>
+                            <th class="text-center column20">Producto</th>
+                            <th class="text-center column10">Marca</th>
+                            <th class="text-center column10">Categoría</th>
+                            <th class="text-center column10">Subcategoría</th>
+                            <th class="text-center column10">Color</th>
+                            <th class="text-center column10">Capacidad</th>
+                            <th class="text-center column10">Stock</th>
+                            <th class="text-center column20">Cantidad</th>
+                            <th class="text-center column10">Agregar</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table100-body js-pscroll ps ps--active-y">
+                <table>
+                    <tbody id="contentTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-<div class="container mt-4">
-    <table id='dataTable' class='container table table-light table-striped table-bordered table-hover pt-4'>
-        <thead class='table-dark'>
-            <tr>
-                <td class='text-center'></td>
-                <td class='text-center d-flex flex-row'>
-                    <input class="form-control" id="txtSearch" placeholder="Cód. interno | Nombre" />
-                    <button id="btnSearch" type="button" class="btn btn-primary">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </td>
-                <td class='text-center'>@Html.DropDownList("id_brand", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_brand" })</td>
-                <td class='text-center'>@Html.DropDownList("id_category", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_category" })</td>
-                <td class='text-center'>@Html.DropDownList("id_subcategory", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_subcategory" })</td>
-                <td class='text-center'>@Html.DropDownList("id_color", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_color" })</td>
-                <td class='text-center'>@Html.DropDownList("id_capacity", null, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "id_capacity" })</td>
-                <td class='text-center'><input type="button" value="Filtrar" class="btn btn-outline-light" id="btnFilter" /></td>
-                <td class='text-center'></td>
-                <td class='text-center'></td>
-            </tr>
-            <tr class='fw-bold'>
-                <td class='text-center'>Cód. Interno</td>
-                <td class='text-center'>Producto</td>
-                <td class='text-center'>Marca</td>
-                <td class='text-center'>Categoría</td>
-                <td class='text-center'>Subcategoría</td>
-                <td class='text-center'>Color</td>
-                <td class='text-center'>Capacidad</td>
-                <td class='text-center'>Stock</td>
-                <td class='text-center'>Cantidad</td>
-                <td class='text-center'>Añadir</td>
-            </tr>
-        </thead>
-        <tbody id="contentTable">
-        </tbody>
-    </table>
+    @* Tabla carrito *@
+    <div class="col-3 me-2">
+        <div class="table100 ver1 m-b-110">
+            <div class="table100-head">
+                <table>
+                    <thead>
+                        <tr class="row100 head">
+                            <th class="cell100 text-center" style="background-color: lightgreen; width: 50%; text-shadow: 0px 0px 20px #000;">Producto</th>
+                            <th class="cell100 text-center" style="background-color: lightgreen; width: 25%; text-shadow: 0px 0px 20px #000;">Cantidad</th>
+                            <th class="cell100 text-center" style="background-color: lightgreen; width: 25%; text-shadow: 0px 0px 20px #000;">Eliminar</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table100-body js-pscroll ps ps--active-y">
+                <table>
+                    <tbody id="contentTable">
+                        @if (products != null)
+                        {
+                            foreach (Product_Sell item in products.OrderByDescending(p => p.quantity))
+                            {
+                                <tr class="row100 body">
+                                    <td class="cell100 ms-3" style="width: 50%;">@Html.DisplayFor(modelItem => item.Product.description)</td>
+                                    <td class="cell100" style="width: 25%;">@Html.DisplayFor(modelItem => item.quantity)</td>
+                                    <td class="cell100" style="width: 25%;">
+                                        @using (Html.BeginForm("RemoveProductSell", "Sells", FormMethod.Post))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @Html.Hidden("id_prod", item.Product.id)
+                                            <button class="btn btn-danger" type="submit"><i class='bi bi-trash3'></i></button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                @using (Html.BeginForm("ConfirmSale", "Sells", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <td class="cell100 ps-4" style="width: 100%; background-color: white;">
+                                        <button class="btn btn-success" type="submit">Confirmar</button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+
 
 <a href="../../Sells" class="btn btn-dark">Volver</a>
 
 <script src="~/Scripts/Sell.js"></script>
 <script src="~/Scripts/notification.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"></script>

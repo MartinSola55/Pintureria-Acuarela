@@ -5,6 +5,7 @@
         basket = Session["Basket"] as List<Product_Order>;
     }
     User user = @Session["User"] as User;
+    user = user ?? new User();
 }
 
 <!DOCTYPE html>
