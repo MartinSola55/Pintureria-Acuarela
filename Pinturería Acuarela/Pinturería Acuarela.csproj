@@ -149,11 +149,13 @@
     <Content Include="Scripts\products.js" />
     <Content Include="Scripts\product_business_create.js" />
     <Content Include="Scripts\product_business_index.js" />
+    <Content Include="Scripts\Sell.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Product_BusinessController.cs" />
+    <Compile Include="Controllers\SellsController.cs" />
     <Compile Include="Models\EFModel.cs" />
     <Compile Include="Models\Brand.cs" />
     <Compile Include="Models\Business.cs" />
@@ -260,6 +262,11 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Product_Business\StocklessProducts.cshtml" />
     <Content Include="Views\Product_Business\StockAlertProducts.cshtml" />
+    <Content Include="Views\Sells\Create.cshtml" />
+    <Content Include="Views\Sells\Delete.cshtml" />
+    <Content Include="Views\Sells\Details.cshtml" />
+    <Content Include="Views\Sells\Edit.cshtml" />
+    <Content Include="Views\Sells\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
