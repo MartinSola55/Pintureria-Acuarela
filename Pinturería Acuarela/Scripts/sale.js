@@ -2,7 +2,7 @@
     let contenido = "";
     for (let i = 0; i < data.length; i++) {
         contenido += "<tr class='row100 body'>";
-        contenido += "<td class='column5'>" + data[i].internal_code ?? "" + "</td>";
+        contenido += "<td class='column5 ps-3'>" + data[i].internal_code ?? "" + "</td>";
         contenido += "<td class='column20'>" + data[i].description + "</td>";
         contenido += "<td class='column10'>" + data[i].brand + "</td>";
         let category = data[i].category != null ? data[i].category : " - ";
@@ -11,17 +11,17 @@
         contenido += "<td class='column10'>" + subcategory + "</td>";
         if (data[i].color != null) {
             contenido += "<td class='cell100 column10'>";
-            contenido += "<div class='d-flex flex-row justify-content-start align-items-center' >";
+            contenido += "<div class='d-flex flex-row justify-content-center align-items-center' >";
             contenido += data[i].color;
-            contenido += "<span class='dot' style='background-color: " + data[i].rgb_hex_code + "'></span>";
+            contenido += "<span class='dot ms-2' style='background-color: " + data[i].rgb_hex_code + "'></span>";
             contenido += "</div>";
             contenido += "</td>";
         } else {
-            contenido += "<td class='cell100 column10'>-";
+            contenido += "<td class='cell100 column10 text-center'>-";
             contenido += "</td>";
         }
         let capacity = data[i].capacity != null ? data[i].capacity : " - ";
-        contenido += "<td class='cell100 column10'>" + capacity + "</td>";
+        contenido += "<td class='cell100 column10 text-center'>" + capacity + "</td>";
         contenido += "<td class='text-center cell100 column10'>" + data[i].stock + "</td>";
         contenido += "<td class='cell100 column20'>";
         contenido += "<div class='d-flex flex-row justify-content-center'>";
@@ -30,7 +30,7 @@
         contenido += "<div class='value-button' onclick='increaseValue(" + data[i].product_id + ", " + data[i].stock + ")' value='Increase Value'>+</div>";
         contenido += "</div>";
         contenido += "</td>";
-        contenido += "<td class='cell100 column10'>";
+        contenido += "<td class='cell100 column10 pe-3'>";
         contenido += "<div class='d-flex justify-content-center'>";
         contenido += "<button class='btn btn-success' onclick='addToSale(" + data[i].product_id + ")'><i class='bi bi-plus-circle'></i></button>";
         contenido += "</div>";

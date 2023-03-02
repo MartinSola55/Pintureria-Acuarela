@@ -88,25 +88,34 @@ namespace Pinturería_Acuarela.Controllers
         // GET: Products/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
 
-            Product product = db.Product.Find(id);
-            if (product == null)
-            {
-                ViewBag.Message = "Ha ocurrido un error. No se ha encontrado el producto";
-                ViewBag.Error = 1;
-                product = new Product();
-            }
+                Product product = db.Product.Find(id);
+                if (product == null)
+                {
+                    ViewBag.Message = "Ha ocurrido un error. No se ha encontrado el producto";
+                    ViewBag.Error = 1;
+                    product = new Product();
+                }
             
-            ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name", product.id_brand);
-            ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description", product.id_capacity);
-            ViewBag.id_category = new SelectList(db.Category, "id", "description", product.id_category);
-            ViewBag.id_color = new SelectList(db.Color, "id", "name", product.id_color);
-            ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description", product.id_subcategory);
-            return View(product);
+                ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name", product.id_brand);
+                ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description", product.id_capacity);
+                ViewBag.id_category = new SelectList(db.Category, "id", "description", product.id_category);
+                ViewBag.id_color = new SelectList(db.Color, "id", "name", product.id_color);
+                ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description", product.id_subcategory);
+                return View(product);
+            }
+            catch (Exception)
+            {
+                TempData["Message"] = "Ha ocurrido un error inesperado.";
+                TempData["Error"] = 2;
+                return RedirectToAction("Index");
+            }
         }
 
         // POST: Products/Edit/5
@@ -114,7 +123,7 @@ namespace Pinturería_Acuarela.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,description,id_brand,id_category,id_subcategory,id_capacity,id_color,internal_code,created_at,deleted_at")] Product product_edited)
+        public ActionResult Edit([Bind(Include = "id,description,id_brand,id_category,id_subcategory,id_capacity,id_color,internal_code")] Product product_edited)
         {
             try
             {

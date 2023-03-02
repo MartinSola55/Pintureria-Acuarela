@@ -8,36 +8,17 @@ using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
 using Pinturería_Acuarela;
+using Pinturería_Acuarela.Filter;
 
 namespace Pinturería_Acuarela.Controllers
 {
+    [Security]
     public class SellsController : Controller
     {
         private EFModel db = new EFModel();
 
-        // GET: Sells
-        public ActionResult Index()
-        {
-            var sell = db.Sell.Include(s => s.User);
-            return View(sell.ToList());
-        }
-
-        // GET: Sells/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Sell sell = db.Sell.Find(id);
-            if (sell == null)
-            {
-                return HttpNotFound();
-            }
-            return View(sell);
-        }
-
         // GET: Sells/Create
+        [Employee]
         public ActionResult Create()
         {
             try
@@ -75,6 +56,7 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         // GET: Products by filter
+        [Employee]
         [HttpGet]
         public JsonResult FilterProducts(string id_brand, string id_category, string id_subcategory, string id_color, string id_capacity)
         {
@@ -120,6 +102,7 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         // GET: Products by name
+        [Employee]
         [HttpGet]
         public JsonResult FilterProductsByName(string name)
         {
@@ -158,11 +141,13 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         // GET: Add products to cart
+        [Employee]
         [HttpGet]
         public int AddToSale(int? id_prod, int? quant)
         {
             try
             {
+                User user = Session["User"] as User;
                 List<Product_Sell> sell = new List<Product_Sell>();
                 if (id_prod != null && quant != null)
                 {
@@ -172,7 +157,8 @@ namespace Pinturería_Acuarela.Controllers
                     }
                     if (quant.Value > 0)
                     {
-                        //ViewBag.Error = "Debes seleecionar una cantidad mayor a 1";
+                        // Check del stock
+                        int stock = db.Product_Business.Where(b => b.id_business.Equals(user.id_business.Value) && b.id_product.Equals(id_prod.Value)).FirstOrDefault().stock;
 
                         Product_Sell prod = new Product_Sell();
                         prod.Product = db.Product
@@ -183,7 +169,9 @@ namespace Pinturería_Acuarela.Controllers
                             .Include(p => p.Capacity)
                             .Include(p => p.Product_Business)
                             .First();
-                        if (sell.Count == 0)
+
+                        // Si no hay ningun producto agregado
+                        if (sell.Count == 0 && quant.Value < stock)
                         {
                             prod.quantity = quant.Value;
                             sell.Add(prod);
@@ -193,11 +181,16 @@ namespace Pinturería_Acuarela.Controllers
                             int count = sell.Count;
                             for (int index = 0; index < count; index++)
                             {
+                                // Si se repite el producto
                                 if (sell[index].Product.id == prod.Product.id)
                                 {
-                                    sell[index].quantity += quant.Value;
+                                    if (sell[index].quantity + quant.Value <= stock)
+                                    {
+                                        sell[index].quantity += quant.Value;
+                                    }
                                     break;
                                 }
+                                // Si no se repite el producto
                                 else if (index == sell.Count - 1)
                                 {
                                     prod.quantity = quant.Value;
@@ -205,17 +198,19 @@ namespace Pinturería_Acuarela.Controllers
                                 }
                             }
                         }
-                        Session["Sell"] = sell;
+                        Session["Sell"] = sell.Count == 0 ? null : sell;
                     }
                 }
                 return sell.Count;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Session["Sell"] = null;
                 return 0;
             }
         }
+
+        [Employee]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult RemoveProductSell(int? id_prod)
@@ -244,6 +239,8 @@ namespace Pinturería_Acuarela.Controllers
             return RedirectToAction("Create");
         }
 
+        // POST: Confirm a sale
+        [Employee]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ConfirmSale()
@@ -305,6 +302,59 @@ namespace Pinturería_Acuarela.Controllers
                 return RedirectToAction("Create");
             }
         }
-            
+
+        // GET: Stats page
+        [Admin]
+        public ActionResult Stats()
+        {
+            return View();
+        }
+
+        // GET: Top 10 most sold products
+        [Admin]
+        public JsonResult MostSoldProducts(string dates, int id_business)
+        {
+            try
+            {
+                string[] dates_formated = dates.Trim().Split(',');
+                DateTime date_from = Convert.ToDateTime(dates_formated[0]);
+                DateTime date_to = Convert.ToDateTime(dates_formated[1]);
+
+                Business business = db.Business.Find(id_business);
+
+                var prod = db.Product_Sell
+                    .Where(ps => ps.Sell.date >= date_from && ps.Sell.date <= date_to && ps.Sell.User.Business.id.Equals(id_business))
+                    .GroupBy(po => po.id_product)
+                    .Select(pr => new
+                    {
+                        db.Product.Where(p => p.id.Equals(pr.Key)).FirstOrDefault().description,
+                        quantity = pr.Sum(p => p.quantity),
+                        business_name = business.adress,
+                        liters = db.Product.Where(p => p.id.Equals(pr.Key)).FirstOrDefault().id_capacity != null ? db.Product.Where(p => p.id.Equals(pr.Key)).FirstOrDefault().Capacity.capacity * pr.Sum(p => p.quantity) : 0,
+                    })
+                    .OrderByDescending(a => a.quantity)
+                    .Take(10);
+
+                return Json(prod, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        // GET: All business ids
+        [Admin]
+        public JsonResult GetBusinessIDS()
+        {
+            try
+            {
+                return Json(db.Business.Select(b => b.id), JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

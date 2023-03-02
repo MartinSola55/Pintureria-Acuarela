@@ -17,7 +17,6 @@ namespace Pinturería_Acuarela.Controllers
     public class OrdersController : Controller
     {
         private EFModel db = new EFModel();
-
         // GET: Orders
         public ActionResult Index(int? id)
         {
@@ -40,7 +39,7 @@ namespace Pinturería_Acuarela.Controllers
                     return View(orders.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
                 }
                 var order = db.Order.Include(o => o.User).Where(o => o.deleted_at.Equals(null));
-                return View(order.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
+                return View(order.ToList().OrderBy(o => o.User.Business.id).ThenBy(o => o.date).ThenBy(o => o.status));
             }
             catch (Exception)
             {
@@ -211,7 +210,7 @@ namespace Pinturería_Acuarela.Controllers
             }
             catch (Exception)
             {
-                return Json (JsonRequestBehavior.AllowGet);
+                return Json (null, JsonRequestBehavior.AllowGet);
             }
         }
 

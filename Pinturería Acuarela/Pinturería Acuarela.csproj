@@ -99,6 +99,7 @@
   <ItemGroup>
     <Content Include="Content\cards.css" />
     <Content Include="Content\datatables.css" />
+    <Content Include="Content\daterangepicker.css" />
     <Content Include="Content\Images\favicon.png" />
     <Content Include="Content\Images\logo-acuarela.png" />
     <Content Include="Content\bootstrap-grid.css" />
@@ -133,6 +134,8 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.6.3.intellisense.js" />
     <Content Include="Scripts\datatables.js" />
+    <Content Include="Scripts\daterangepicker.js" />
+    <Content Include="Scripts\stats.js" />
     <Content Include="Scripts\jquery-3.6.3.js" />
     <Content Include="Scripts\jquery-3.6.3.min.js" />
     <Content Include="Scripts\jquery-3.6.3.slim.js" />
@@ -144,6 +147,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
     <Content Include="Scripts\navbar.js" />
     <Content Include="Scripts\notification.js" />
     <Content Include="Scripts\orders.js" />
@@ -262,7 +266,7 @@
     <Content Include="Views\Product_Business\StocklessProducts.cshtml" />
     <Content Include="Views\Product_Business\StockAlertProducts.cshtml" />
     <Content Include="Views\Sells\Create.cshtml" />
-    <Content Include="Views\Sells\Index.cshtml" />
+    <Content Include="Views\Sells\Stats.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

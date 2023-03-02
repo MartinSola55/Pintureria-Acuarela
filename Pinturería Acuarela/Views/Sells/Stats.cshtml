@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Gastos";
+}
+
+<link href="~/Content/orders.css" rel="stylesheet" />
+<link href="~/Content/notification.css" rel="stylesheet" />
+<link href="~/Content/table.css" rel="stylesheet" />
+<link href="~/Content/daterangepicker.css" rel="stylesheet" />
+
+<h1 class="text-center">Estadísticas</h1>
+<hr class="mb-3" />
+
+
+<div class="mb-5 d-flex flex-row">
+    <div class="col-xl-9 col-11 mx-auto">
+
+        @* Input fecha *@
+        <div class="sombra p-4 mb-4 mx-auto d-flex justify-content-center" style="border-radius: 20px; max-width: fit-content">
+            <div id="searchContainer" class="d-flex justify-content-center">
+                <div class="d-flex flex-column">
+                    <label for="datepicker" class="form-label">Intervalo de fechas:</label>
+                    <input type="text" class="form-control py-2" id="datepicker" readonly placeholder="dd/mm/aaaa" />
+                </div>
+            </div>
+        </div>
+
+
+        @* Tabla *@
+        <div id="tablesContainer">
+
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/moment-with-locales.js"></script>
+<script src="~/Scripts/daterangepicker.js"></script>
+<script src="~/Scripts/stats.js"></script>
+<script src="~/Scripts/notification.js"></script>
