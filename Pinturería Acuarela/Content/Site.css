@@ -1,4 +1,18 @@
-﻿/* Set padding to keep content from hitting the edges */
+﻿.sombra {
+    box-shadow: 0 0 40px 0 rgb(0 0 0 / 15%);
+    -moz-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+    -webkit-box-shadow: 0 0 40px 0 rgb(0 0 0 / 15%);
+    -o-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+    -ms-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+}
+
+.required::after {
+    content: ' *';
+    color: crimson;
+    font-weight: bold;
+}
+
+/* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
     padding-right: 15px;

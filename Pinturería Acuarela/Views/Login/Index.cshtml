@@ -29,7 +29,7 @@
                                     <h4 class="text-white-50 mb-3">Por favor, ingrese su usuario y contraseña</h4>
 
                                     <div id="containerUser" class="form-outline form-white mb-5 text-start">
-                                        <label class="form-label">Email</label>
+                                        <label class="mt-2" for="txtUser">Email</label>
                                         <div class="formInput">
                                             @Html.TextBoxFor(model => model.email, new { @id = "txtUser", @type = "email", @class = "form-control limpiarCampo habilitarCampo deshabilitarCampo" })
                                         </div>
@@ -37,15 +37,17 @@
                                     </div>
 
                                     <div id="containerPass" class="form-outline form-white mb-5 text-start">
-                                        <label class="form-label" for="typePasswordX">Contraseña</label>
+                                        <label class="mt-2" for="txtPass">Contraseña</label>
                                         <div class="formInput">
                                             @Html.TextBoxFor(model => model.password, new { @id = "txtPass", @type = "password", @class = "form-control limpiarCampo habilitarCampo deshabilitarCampo" })
                                         </div>
                                         @Html.ValidationMessageFor(model => model.password, null, new { @class = "text-danger mb-4 mt-3", @id = "lblPass" })
                                     </div>
 
-                                    <input id="btnIngresar" type="submit" class="btn btn-outline-light btn-lg px-5 mt-2" value="Ingresar" />
-                                    <a class="btn btn-outline-light btn-lg px-5 mt-2" href="/Home">Volver</a>
+                                    <div class="d-flex flex-row justify-content-between mt-2">
+                                        <input id="btnIngresar" type="submit" class="btn btn-outline-light btn-lg px-4 px-sm-5" value="Ingresar" />
+                                        <a class="btn btn-outline-danger btn-lg px-4 px-sm-5" href="/Home">Volver</a>
+                                    </div>
 
                                     <div class="p-2 mt-4 errorMessage" id="errorMessage">
                                         <p class="my-auto text-center"><i class="bi bi-exclamation-triangle-fill"></i><b> Error: </b>Por favor, completa los datos requeridos</p>
@@ -76,6 +78,7 @@
     </section>
 
     <script src="~/Scripts/jquery-3.6.3.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/Scripts/login.js"></script>

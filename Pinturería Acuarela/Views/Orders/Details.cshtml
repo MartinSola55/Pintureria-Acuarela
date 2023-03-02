@@ -39,8 +39,13 @@
     </div>
 </div>
 
-<h1 class="text-center">Detalles de la orden</h1>
-<hr class="pb-4" />
+<div class="d-flex align-items-end">
+    <a class="btn btn-dark py-2" href="../../Orders"><i class="bi bi-arrow-left"></i></a>
+    <div class="d-flex flex-grow-1 justify-content-center me-md-4">
+        <h1 class="text-center">Detalles de la orden</h1>
+    </div>
+</div>
+<hr class="mb-4"/>
 
 @{ if (ViewBag.Message != null)
     {
@@ -171,8 +176,6 @@
 </div>
 <div class="mx-2 mt-3">
     <div class="d-flex flex-row justify-content-between mb-4">
-        <a class="btn btn-dark" href="../">Volver al listado</a>
-
         @if (user.Rol.id == 1)
         {
             if (!Model.status)

@@ -6,8 +6,13 @@
 
 <link href="~/Content/notification.css" rel="stylesheet" />
 
-<h1 class="text-center">Editar producto</h1>
-<hr class="pb-3" />
+<div class="d-flex align-items-end">
+    <a class="btn btn-dark py-2" href="../../Products/Index"><i class="bi bi-arrow-left"></i></a>
+    <div class="d-flex flex-grow-1 justify-content-center me-md-4">
+        <h1 class="text-center">Editar producto</h1>
+    </div>
+</div>
+<hr class="mb-4" />
 
 @{ if (ViewBag.Message != null)
     {
@@ -81,8 +86,6 @@
         </div>
     }
 </div>
-
-<a class="btn btn-dark" href="../../Products/Index">Volver</a>
 
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

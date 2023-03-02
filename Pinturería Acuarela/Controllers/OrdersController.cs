@@ -415,12 +415,14 @@ namespace Pinturería_Acuarela.Controllers
                     {
                         if (prod_order.quantity_send + quant.Value > prod_order.quantity)
                         {
+                            TempData["Message"] = "La cantidad seleccionada es mayor a la disponible";
                             TempData["Error"] = 1;
-                            throw new Exception("La cantidad seleccionada es mayor a la disponible");
+                            return RedirectToAction("Details", new { id = id_order });
                         } else if (quant.Value < 0 )
                         {
+                            TempData["Message"] = "Debes seleccionar una cantidad mayor o igual a 0";
                             TempData["Error"] = 1;
-                            throw new Exception("Debes seleccionar una cantidad mayor o igual a 0");
+                            return RedirectToAction("Details", new { id = id_order });
                         }
                         if (prod_order.quantity == quant.Value)
                         {
@@ -447,12 +449,15 @@ namespace Pinturería_Acuarela.Controllers
                                 }
                                 else
                                 {
+                                    TempData["Message"] = "La sucursal no cuenta con suficiente stock";
                                     TempData["Error"] = 1;
-                                    throw new Exception("La sucursal no cuenta con suficiente stock");
+                                    return RedirectToAction("Details", new { id = id_order });
                                 }
                             } else
                             {
-                                throw new Exception("La sucursal no tiene registrado el producto");
+                                TempData["Message"] = "La sucursal no tiene registrado el producto";
+                                TempData["Error"] = 1;
+                                return RedirectToAction("Details", new { id = id_order });
                             }
 
                             Product_Business prod_b_receiver = db.Product_Business.Where(p => p.id_product == id_product.Value && p.id_business == prod_order.Order.User.Business.id).FirstOrDefault();
@@ -464,13 +469,13 @@ namespace Pinturería_Acuarela.Controllers
 
                         db.SaveChanges();
                         TempData["Message"] = "Producto confirmado correctamente";
-                        return RedirectToAction("/Details", new { id = id_order});
+                        return RedirectToAction("Details", new { id = id_order});
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido confirmar el product";
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido confirmar el producto";
                 if (TempData["Error"] != null)
                 {
                     if (TempData["Error"].ToString() != "1")

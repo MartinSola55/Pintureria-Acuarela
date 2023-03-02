@@ -6,8 +6,13 @@
 
 <link href="~/Content/orders.css" rel="stylesheet" />
 
-<h1 class="text-center">Agregar producto a @Model.Business.adress</h1>
-<hr class="pb-3" />
+<div class="d-flex align-items-end">
+    <a class="btn btn-dark py-2" href="../../Product_Business/Index/@Model.Business.id"><i class="bi bi-arrow-left"></i></a>
+    <div class="d-flex flex-grow-1 justify-content-center me-md-4">
+        <h1 class="text-center">Agregar producto a @Model.Business.adress</h1>
+    </div>
+</div>
+<hr class="mb-4" />
 
 @using (Html.BeginForm("Create", "Product_Business", FormMethod.Post))
 {
@@ -89,8 +94,6 @@
         </tbody>
     </table>
 </div>
-
-<a class="btn btn-dark" href="/Product_Business/Index/@Model.Business.id">Volver</a>
 
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

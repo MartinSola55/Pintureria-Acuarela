@@ -7,8 +7,20 @@
 
 <link href="~/Content/orders.css" rel="stylesheet" />
 
-<h1 class="text-center">Buscar productos</h1>
-<hr class="pb-4" />
+@if (user.Rol.id == 1)
+{
+    <div class="d-flex align-items-end">
+            <a class="btn btn-dark py-2" href="../../Orders"><i class="bi bi-arrow-left"></i></a>
+        <div class="d-flex flex-grow-1 justify-content-center me-md-4">
+            <h1 class="text-center">Buscar productos</h1>
+        </div>
+    </div>
+}
+else
+{
+    <h1 class="text-center">Buscar productos</h1>
+}
+<hr class="mb-4" />
 
 <div class="container mt-4">
     <table id='dataTable' class='container table table-light table-striped table-bordered table-hover pt-4'>
@@ -44,15 +56,6 @@
         <tbody id="contentTable">
         </tbody>
     </table>
-</div>
-
-<div>
-    @{
-        if (user.Rol.id == 1)
-        {
-            <a class="btn btn-dark" href="/Orders">Volver al listado</a>
-        }
-    }
 </div>
 
 <script src="~/Scripts/orders.js"></script>

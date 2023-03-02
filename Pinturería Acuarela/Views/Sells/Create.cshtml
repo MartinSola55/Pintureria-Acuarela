@@ -53,7 +53,8 @@
                     }
                 }
 
-                <div class="mx-4 mb-5 d-flex flex-row">
+                @* Filtros *@
+                <div class="mb-5 d-flex flex-row">
                     <div class="col-9 me-3">
                         <div class="sombra p-4 mb-5" style="border-radius: 20px">
                             <div class="sombra mb-3 d-flex flex-row" style="max-width: fit-content">
@@ -83,7 +84,9 @@
                                     <label class="text-center">Capacidad</label>
                                     @Html.DropDownList("id_capacity", null, "Seleccionar", htmlAttributes: new { @class = "form-select sombra", @id = "id_capacity" })
                                 </div>
-                                <button type="button" class="btn w-50 align-self-end" style="background-color: #6c7ae0" id="btnFilter"><i class="bi bi-search" style="color: white"></i></button>
+                                <div class="col-2 d-flex align-items-end">
+                                    <button type="button" class="btn" style="background-color: #6c7ae0; padding: 0.7rem 1rem;" id="btnFilter"><i class="bi bi-search" style="color: white"></i></button>
+                                </div>
                             </div>
                         </div>
 
@@ -93,7 +96,7 @@
                                 <table>
                                     <thead>
                                         <tr class="row100 head">
-                                            <th class="text-center column5 ps-3">Código</th>
+                                            <th class="text-center column5 ps-2">Código</th>
                                             <th class="text-center column20">Producto</th>
                                             <th class="text-center column10">Marca</th>
                                             <th class="text-center column10">Categoría</th>
@@ -109,22 +112,24 @@
                             </div>
                             <div class="table100-body js-pscroll ps ps--active-y">
                                 <table>
-                                    <tbody id="contentTable"></tbody>
+                                    <tbody id="contentTable">
+
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
 
                     @* Tabla carrito *@
-                    <div class="col-3 me-2">
-                        <div class="table100 ver1 m-b-110">
+                    <div class="col-3 mx-auto">
+                        <div class="table100 ver1">
                             <div class="table100-head">
                                 <table>
                                     <thead>
-                                        <tr class="row100 head">
-                                            <th class="cell100 text-center" style="background-color: lightgreen; width: 50%; text-shadow: 0px 0px 20px #000;">Producto</th>
-                                            <th class="cell100 text-center" style="background-color: lightgreen; width: 25%; text-shadow: 0px 0px 20px #000;">Cantidad</th>
-                                            <th class="cell100 text-center" style="background-color: lightgreen; width: 25%; text-shadow: 0px 0px 20px #000;">Eliminar</th>
+                                        <tr class="row100 head d-flex">
+                                            <th class="cell100 py-3 text-center" style="width: 40%; background-color: lightgreen; background-image: linear-gradient(to bottom, transparent, #646464ab); color: rgb(80, 80, 80)">Producto</th>
+                                            <th class="cell100 py-3 text-center" style="width: 30%; background-color: lightgreen; background-image: linear-gradient(to bottom, transparent, #646464ab); color: rgb(80, 80, 80) ">Cantidad</th>
+                                            <th class="cell100 py-3 text-center" style="width: 30%; background-color: lightgreen; background-image: linear-gradient(to bottom, transparent, #646464ab); color: rgb(80, 80, 80) ">Eliminar</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -136,15 +141,15 @@
                                         {
                                             foreach (Product_Sell item in products.OrderByDescending(p => p.quantity))
                                             {
-                                                <tr class="row100 body">
-                                                    <td class="cell100 ms-3" style="width: 50%;">@Html.DisplayFor(modelItem => item.Product.description)</td>
-                                                    <td class="cell100" style="width: 25%;">@Html.DisplayFor(modelItem => item.quantity)</td>
-                                                    <td class="cell100" style="width: 25%;">
+                                                <tr class="row100 body d-flex">
+                                                    <td class="cell100 ms-3 ms-xl-1" style="width: 40%">@Html.DisplayFor(modelItem => item.Product.description)</td>
+                                                    <td class="cell100 text-center" style="width: 30%">@Html.DisplayFor(modelItem => item.quantity)</td>
+                                                    <td class="cell100 text-center" style="width: 30%">
                                                         @using (Html.BeginForm("RemoveProductSell", "Sells", FormMethod.Post))
                                                         {
                                                             @Html.AntiForgeryToken()
                                                             @Html.Hidden("id_prod", item.Product.id)
-                                                            <button class="btn btn-danger" type="submit"><i class='bi bi-trash3'></i></button>
+                                                            <button class="btn" style="background-color: #ff5969; color: white; padding: 0.2rem 0.5rem" type="submit"><i class='bi bi-x-lg'></i></button>
                                                         }
                                                     </td>
                                                 </tr>
@@ -153,8 +158,8 @@
                                                 @using (Html.BeginForm("ConfirmSale", "Sells", FormMethod.Post))
                                                 {
                                                     @Html.AntiForgeryToken()
-                                                    <td class="cell100 ps-4" style="width: 100%; background-color: white;">
-                                                        <button class="btn btn-success" type="submit">Confirmar</button>
+                                                    <td class="cell100 d-flex justify-content-end pe-3">
+                                                        <button class="btn" style="background-color: lightgreen; color: rgb(80, 80, 80); text-shadow: 0px 0px 30px #000;" type="submit">Confirmar</button>
                                                     </td>
                                                 }
                                             </tr>
@@ -164,6 +169,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <br />
             </div>

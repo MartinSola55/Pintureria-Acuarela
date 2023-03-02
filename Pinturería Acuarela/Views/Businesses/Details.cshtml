@@ -5,8 +5,13 @@
 }
 <link href="~/Content/cards.css" rel="stylesheet" type="text/css" />
 
-<h2>Sucursal @Model.adress</h2>
-<hr class="pb-3"/>
+<div class="d-flex align-items-end">
+    <a class="btn btn-dark py-2" href="../../Businesses"><i class="bi bi-arrow-left"></i></a>
+    <div class="d-flex flex-grow-1 justify-content-center me-md-4">
+        <h1 class="text-center">Sucursal @Model.adress</h1>
+    </div>
+</div>
+<hr class="mb-4" />
 
 <div class="container-fluid d-flex row justify-content-center">
     <a href="../../Product_Business/StocklessProducts/@Model.id" class="data-card">
@@ -57,5 +62,3 @@
         </p>
     </div>
 </div>
-
-<a class="btn btn-dark" href="../../Businesses">Volver</a>

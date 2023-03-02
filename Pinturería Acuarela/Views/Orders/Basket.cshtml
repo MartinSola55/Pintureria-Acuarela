@@ -8,8 +8,13 @@
     }
 }
 
-<h1 class="text-center">Productos añadidos a la orden</h1>
-<hr class="pb-3"/>
+<div class="d-flex align-items-end">
+    <a class="btn btn-dark py-2" href="../../Orders/Create"><i class="bi bi-arrow-left"></i></a>
+    <div class="d-flex flex-grow-1 justify-content-center me-md-4">
+        <h1 class="text-center">Productos añadidos a la orden</h1>
+    </div>
+</div>
+<hr class="mb-4" />
 
 <table class="table">
     <tr>
@@ -40,19 +45,19 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Product.description)
+                @item.Product.description
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Product.Brand.name)
+                @item.Product.Brand.name
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Product.Category.description)
+                @(item.Product.id_category != null ? item.Product.Category.description : "-")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Product.Subcategory.description)
+                @(item.Product.id_subcategory != null ? item.Product.Subcategory.description : "-")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Product.internal_code)
+                @(item.Product.internal_code != null ? item.Product.internal_code.ToString() : "-")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.quantity)
@@ -75,7 +80,6 @@
 </table>
 
 <div class="d-flex flex-row justify-content-between pe-3 pt-4">
-    <a href="../Orders/Create" class="btn btn-dark">Volver</a>
     @using (Html.BeginForm("CreateOrder", "Orders", FormMethod.Post))
     {
         @Html.AntiForgeryToken()

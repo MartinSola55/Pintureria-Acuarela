@@ -45,7 +45,7 @@ namespace Pinturería_Acuarela.Controllers
             ViewBag.id_category = new SelectList(db.Category, "id", "description");
             ViewBag.id_color = new SelectList(db.Color, "id", "name");
             ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
-            return View();
+            return View(new Product());
         }
 
         // POST: Products/Create

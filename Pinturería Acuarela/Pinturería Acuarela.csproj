@@ -154,7 +154,7 @@
     <Content Include="Scripts\products.js" />
     <Content Include="Scripts\product_business_create.js" />
     <Content Include="Scripts\product_business_index.js" />
-    <Content Include="Scripts\Sell.js" />
+    <Content Include="Scripts\sale.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

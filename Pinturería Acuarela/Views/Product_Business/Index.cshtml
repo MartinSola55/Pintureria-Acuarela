@@ -74,8 +74,15 @@
 
 
 <div class="container mt-4">
-    <a class="btn btn-dark mb-4" href="/Product_Business/Create/@Model.Business.id">Agregar un producto</a>
 
+    @* Agregar productos *@
+    <div class="sombra p-4 mb-5" style="border-radius: 20px; max-width: fit-content">
+        <div id="searchContainer" class="d-flex justify-content-between">
+            <a id="btnAdd" class="btn text-white" href="../../Product_Business/Create/@Model.Business.id" style="background-color: #e38e00">Agregar nuevo <i class="bi bi-plus-circle"></i></a>
+        </div>
+    </div>
+
+    @* Tabla *@
     <table id='dataTable' class='container table table-light table-striped table-bordered table-hover pt-4'>
         <thead class='table-dark'>
             <tr>

@@ -26,41 +26,50 @@
     }
 }
 
-<table id="dataTable" class="table table-striped table-bordered table-hover pt-4">
-    <thead class='table-dark'>
-        <tr class="fw-bold text-center">
-            <td>
-                Sucursal
-            </td>
-            <td>
-                Pedido
-            </td>
-            <td>
-                Estado
-            </td>
-        </tr>
-    </thead>
+<div class="container">
+    @* Realizar pedido *@
+    <div class="sombra p-4 mb-3" style="border-radius: 20px; max-width: fit-content">
+        <div class="d-flex justify-content-between">
+            <a class="btn text-white" href="../../Orders/Create" style="background-color: #e38e00">Realizar pedido <i class="bi bi-plus-circle"></i></a>
+        </div>
+    </div>
 
-    @foreach (var item in Model)
-    {
-        <tr class='clickable-row text-center' data-href='/Orders/Details/@item.id'>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Business.adress)
-            </td>
-            <td>
-                Día: @(item.date.ToShortDateString())
-                <br>
-                Hora: @(item.date.ToShortTimeString())
-            </td>
-            <td>
-                @(item.status == false ? "En espera" : "Confirmado")
-            </td>
-        </tr>
-    }
+    @* Tabla *@
+    <table id="dataTable" class="table table-striped table-bordered table-hover pt-4">
+        <thead class='table-dark'>
+            <tr class="fw-bold text-center">
+                <td>
+                    Sucursal
+                </td>
+                <td>
+                    Pedido
+                </td>
+                <td>
+                    Estado
+                </td>
+            </tr>
+        </thead>
 
-</table>
+        @foreach (var item in Model)
+        {
+            <tr class='clickable-row text-center' data-href='/Orders/Details/@item.id'>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Business.adress)
+                </td>
+                <td>
+                    Día: @(item.date.ToShortDateString())
+                    <br>
+                    Hora: @(item.date.ToShortTimeString())
+                </td>
+                <td>
+                    @(item.status == false ? "En espera" : "Confirmado")
+                </td>
+            </tr>
+        }
 
-<a class="btn btn-dark" href="../../Orders/Create">Realizar pedido</a>
+    </table>
+</div>
+
 
 <script src="~/Scripts/datatables.js"></script>
 <script src="~/Scripts/notification.js"></script>

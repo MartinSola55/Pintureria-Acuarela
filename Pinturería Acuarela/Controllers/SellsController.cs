@@ -171,7 +171,7 @@ namespace Pinturería_Acuarela.Controllers
                             .First();
 
                         // Si no hay ningun producto agregado
-                        if (sell.Count == 0 && quant.Value < stock)
+                        if (sell.Count == 0 && quant.Value <= stock)
                         {
                             prod.quantity = quant.Value;
                             sell.Add(prod);
