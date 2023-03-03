@@ -31,7 +31,11 @@
         contenido += "</td>";
         contenido += "<td>";
         contenido += "<div class='d-flex justify-content-center'>";
+        contenido += `<form action='/Orders/AddToCart' id='formAddToCart_` + data[i].product_id + `'>`;
+        contenido += "<input type='hidden' name='id_prod' id='id_prod_" + data[i].product_id + "' value='" + data[i].product_id + "' />";
+        contenido += "<input type='hidden' name='quant' id='quant_" + data[i].product_id + "' />";
         contenido += "<button class='btn text-white' style='background-color: yellowgreen;' onclick='addToCart(" + data[i].product_id + ")'><i class='bi bi-plus-circle'></i></button>";
+        contenido += "</form>";
         contenido += "</div>";
         contenido += "</td>";
         contenido += "</tr>";
@@ -55,10 +59,11 @@ function decreaseValue(id) {
 }
 
 function addToCart(id) {
-    $.get("AddToCart/?id_prod=" + id + "&quant=" + $("#number" + id).val(), function (data) {
-        $("#basketCount").html(data);
-    });
-}
+    let quant = $("#number" + id).val();
+    $("#quant_" + id).val(quant);
+    $("#formAddToCart_" + id).submit();
+};
+
 
 $("#btnSearch").on("click", function () {
     let name = $("#txtSearch").val();

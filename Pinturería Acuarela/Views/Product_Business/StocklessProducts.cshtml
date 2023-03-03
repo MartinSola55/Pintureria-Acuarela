@@ -8,8 +8,8 @@
 <hr class="pb-3" />
 
 <div class="container mt4">
-    <table id='dataTable' class='container table table-striped table-bordered table-hover pt-4'>
-        <thead class='table-dark'>
+    <table id='dataTable' class='container table table-light table-striped table-bordered table-hover pt-4'>
+        <thead class='table-red'>
             <tr>
                 <td></td>
                 <td class='text-center'>
@@ -59,6 +59,19 @@
         </tbody>
     </table>
 </div>
+
+<style>
+    .table-red {
+        --bs-table-bg: #950000bf;
+        color: white;
+    }
+
+    .table-light {
+        --bs-table-bg: #ff00001a;
+        --bs-table-striped-bg: white;
+        --bs-table-hover-bg: #6e000040;
+    }
+</style>
 
 <script>
     const id_business = window.location.pathname.split("/").pop();

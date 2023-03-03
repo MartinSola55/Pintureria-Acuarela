@@ -27,7 +27,7 @@
 @* Realizar pedido *@
 <div class="sombra p-4 mb-3" style="border-radius: 20px; max-width: fit-content">
     <div class="d-flex justify-content-between">
-        <a class="btn text-white" href="../../Brands/Create" style="background-color: #e38e00">Agregar una marca <i class="bi bi-plus-circle"></i></a>
+        <a class="btn text-white" href="../../Brands/Create" style="background-color: #6c7ae0">Agregar una marca <i class="bi bi-plus-circle"></i></a>
     </div>
 </div>
 
@@ -48,12 +48,12 @@
                 @Html.DisplayFor(modelItem => item.name)
             </td>
             <td class="d-flex justify-content-center">
-                <a class="btn btn-success me-4" href="../../Brands/Edit/@item.id"><i class='bi bi-pencil-square'></i></a>
+                <a class="btn me-4" style="background-color: yellowgreen" href="../../Brands/Edit/@item.id"><i class='bi bi-pencil-square'></i></a>
                 @using (Html.BeginForm("Delete", "Brands", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     @Html.Hidden("id", item.id)
-                    <button class="btn btn-danger ms-4" type="submit"><i class='bi bi-trash3'></i></button>
+                    <button class="btn text-white ms-4" style="background-color: crimson" type="submit"><i class='bi bi-trash3'></i></button>
                 }
             </td>
         </tr>

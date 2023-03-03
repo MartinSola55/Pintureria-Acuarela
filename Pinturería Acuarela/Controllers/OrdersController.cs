@@ -43,7 +43,7 @@ namespace Pinturería_Acuarela.Controllers
             }
             catch (Exception)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
         }
 
@@ -83,6 +83,15 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
+                if (TempData.Count == 1)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                else if (TempData.Count == 2)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                    ViewBag.Error = TempData["Error"];
+                }
                 ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name");
                 ViewBag.id_category = new SelectList(db.Category.OrderBy(c => c.description), "id", "description");
                 ViewBag.id_subcategory = new SelectList(db.Subcategory.OrderBy(s => s.description), "id", "description");
@@ -255,7 +264,7 @@ namespace Pinturería_Acuarela.Controllers
 
         // GET: Add products to cart
         [HttpGet]
-        public int AddToCart(int? id_prod, int? quant)
+        public ActionResult AddToCart(int? id_prod, int? quant)
         {
             try
             {
@@ -266,10 +275,9 @@ namespace Pinturería_Acuarela.Controllers
                     {
                         basket = Session["Basket"] as List<Product_Order>;
                     }
+                    // Si seleccionó una cantidad mayor a cero
                     if (quant.Value > 0)
                     {
-                        //ViewBag.Error = "Debes seleecionar una cantidad mayor a 1";
-
                         Product_Order prod = new Product_Order();
                         prod.Product = db.Product
                             .Where(p => p.id == id_prod.Value)
@@ -279,35 +287,54 @@ namespace Pinturería_Acuarela.Controllers
                             .Include(p => p.Capacity)
                             .FirstOrDefault();
 
+                        // Si el carrito está vacío
                         if (basket.Count == 0)
                         {
                             prod.quantity = quant.Value;
                             basket.Add(prod);
+                            Session["Basket"] = basket;
+                            TempData["Message"] = "El producto se agregó correctamente";
+                            return RedirectToAction("Create");
                         } else
                         {
                             int count = basket.Count;
                             for (int index = 0; index < count; index++)
                             {
+                                // Si el producto ya estaba en el carrito
                                 if (basket[index].Product.id == prod.Product.id)
                                 {
                                     basket[index].quantity += quant.Value;
-                                    break;
-                                } else if (index == basket.Count - 1)
+                                    Session["Basket"] = basket;
+                                    TempData["Message"] = "El producto se sumó correctamente";
+                                    return RedirectToAction("Create");
+                                }
+                                // Si es un nuevo producto en el carrito
+                                else if (index == basket.Count - 1)
                                 {
                                     prod.quantity = quant.Value;
                                     basket.Add(prod);
+                                    Session["Basket"] = basket;
+                                    TempData["Message"] = "El producto se agregó correctamente";
+                                    return RedirectToAction("Create");
                                 }
                             }
                         }
-                        Session["Basket"] = basket;
+                        TempData["Message"] = "Ha ocurrido un error. El producto no ha podido ser agregado";
                     }
+                    TempData["Message"] = "Por favor, selecciona una cantidad mayor a 0";
+                    TempData["Error"] = 1;
+                    return RedirectToAction("Create");
                 }
-                return basket.Count;
+                TempData["Message"] = "No has seleccionado un producto o una cantidad correctamente";
+                TempData["Error"] = 1;
+                return RedirectToAction("Create");
             }
             catch (Exception)
             {
                 Session["Basket"] = null;
-                return 0;
+                TempData["Message"] = "Ha ocurrido un error. El producto no ha podido ser agregado";
+                TempData["Error"] = 2;
+                return RedirectToAction("Create");
             }
         }
 
@@ -326,15 +353,18 @@ namespace Pinturería_Acuarela.Controllers
                     if (basket.Count > 0)
                     {
                         Session["Basket"] = basket;
+                        TempData["Message"] = "El producto se eliminó correctamente";
                     } else
                     {
                         Session["Basket"] = null;
+                        TempData["Message"] = "La orden se eliminó correctamente";
                     }
                 }
             }
             catch (Exception)
             {
-                throw;
+                TempData["Message"] = "Ha ocurrido un error. El producto no ha podido ser eliminado";
+                TempData["Error"] = 2;
             }
             return RedirectToAction("Basket");
         }
@@ -345,6 +375,15 @@ namespace Pinturería_Acuarela.Controllers
         {
             if (Session["Basket"] != null)
             {
+                if (TempData.Count == 1)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                else if (TempData.Count == 2)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                    ViewBag.Error = TempData["Error"];
+                }
                 return View();
             } else
             {
@@ -391,11 +430,13 @@ namespace Pinturería_Acuarela.Controllers
                         transaccion.Complete();
                     }
                     Session["Basket"] = null;
+                    TempData["Message"] = "La orden se ha creado exitosamente";
                 }
             }
             catch (Exception)
             {
-                throw;
+                TempData["Message"] = "Ha ocurrido un error. La orden no ha podido ser creada";
+                TempData["Error"] = 2;
             }
             return RedirectToAction("Index");
         }
