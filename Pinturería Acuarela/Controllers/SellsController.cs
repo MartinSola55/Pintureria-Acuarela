@@ -7,6 +7,7 @@ using System.Net;
 using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using Pinturería_Acuarela;
 using Pinturería_Acuarela.Filter;
 
@@ -143,7 +144,7 @@ namespace Pinturería_Acuarela.Controllers
         // GET: Add products to cart
         [Employee]
         [HttpGet]
-        public int AddToSale(int? id_prod, int? quant)
+        public ActionResult AddToSale(int? id_prod, int? quant)
         {
             try
             {
@@ -175,6 +176,9 @@ namespace Pinturería_Acuarela.Controllers
                         {
                             prod.quantity = quant.Value;
                             sell.Add(prod);
+                            TempData["Message"] = "El producto se agregó correctamente";
+                            Session["Sell"] = sell.Count == 0 ? null : sell;
+                            return RedirectToAction("Create");
                         }
                         else
                         {
@@ -187,26 +191,42 @@ namespace Pinturería_Acuarela.Controllers
                                     if (sell[index].quantity + quant.Value <= stock)
                                     {
                                         sell[index].quantity += quant.Value;
+                                        TempData["Message"] = "El producto se sumó correctamente";
+                                        Session["Sell"] = sell.Count == 0 ? null : sell;
+                                        return RedirectToAction("Create");
                                     }
-                                    break;
+                                    else
+                                    {
+                                        TempData["Message"] = "No cuentas con stock suficiente";
+                                        TempData["Error"] = 1;
+                                        return RedirectToAction("Create");
+                                    }
                                 }
                                 // Si no se repite el producto
                                 else if (index == sell.Count - 1)
                                 {
                                     prod.quantity = quant.Value;
                                     sell.Add(prod);
+                                    TempData["Message"] = "El producto se agregó correctamente";
+                                    Session["Sell"] = sell.Count == 0 ? null : sell;
+                                    return RedirectToAction("Create");
                                 }
                             }
                         }
-                        Session["Sell"] = sell.Count == 0 ? null : sell;
                     }
+                    TempData["Message"] = "Por favor, selecciona una cantidad mayor a 0";
+                    TempData["Error"] = 1;
+                    return RedirectToAction("Create");
                 }
-                return sell.Count;
+                TempData["Message"] = "No has seleccionado un producto o una cantidad correctamente";
+                TempData["Error"] = 1;
+                return RedirectToAction("Create");
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Session["Sell"] = null;
-                return 0;
+                TempData["Message"] = "Hubo un error al agregar el producto la venta";
+                TempData["Error"] = 2;
+                return RedirectToAction("Create");
             }
         }
 

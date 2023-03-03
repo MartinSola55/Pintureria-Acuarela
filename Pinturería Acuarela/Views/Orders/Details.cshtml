@@ -153,8 +153,8 @@
                             }
                             else
                             {
-                                <button class="btn btn-success" onclick="ConfirmProduct(id_product = @item.id_product, id_business = @item.Order.User.Business.id)" data-bs-toggle="modal" data-bs-target="#orderConfirmation">Confirmar</button>
-                                <button class="btn btn-success" onclick="ConfirmProductDefault(id_product = @item.id_product)">SCC</button>
+                                <button class="btn" style="background-color: yellowgreen" onclick="ConfirmProduct(id_product = @item.id_product, id_business = @item.Order.User.Business.id)" data-bs-toggle="modal" data-bs-target="#orderConfirmation">Confirmar</button>
+                                <button class="btn" style="background-color: yellowgreen" onclick="ConfirmProductDefault(id_product = @item.id_product)">SCC</button>
                             }
                         </td>
                     }
@@ -184,7 +184,7 @@
                 {
                     @Html.AntiForgeryToken()
                     @Html.Hidden("id", Model.id)
-                    <button class="btn btn-success" type="submit">Confirmar orden</button>
+                    <button class="btn" style="background-color: yellowgreen" type="submit">Confirmar orden</button>
                 }
             }
             else
@@ -204,7 +204,7 @@
                 {
                     @Html.AntiForgeryToken()
                     @Html.Hidden("id", Model.id)
-                    <button class="btn btn-danger" type="submit">Eliminar orden</button>
+                    <button class="btn text-white" style="background-color: crimson" type="submit">Eliminar orden</button>
                 }
             }
             else if (user.Rol.id == 1)
@@ -213,7 +213,7 @@
                 {
                     @Html.AntiForgeryToken()
                     @Html.Hidden("id", Model.id)
-                    <button class="btn btn-danger" type="submit">Eliminar orden</button>
+                    <button class="btn text-white" style="background-color: crimson" type="submit">Eliminar orden</button>
                 }
             }
         }

@@ -473,7 +473,7 @@ namespace Pinturería_Acuarela.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido confirmar el producto";
                 if (TempData["Error"] != null)
@@ -486,7 +486,7 @@ namespace Pinturería_Acuarela.Controllers
                 {
                     TempData["Error"] = 2;
                 }
-                return RedirectToAction("/Details", new { id = id_order });
+                return RedirectToAction("Details", new { id = id_order });
             }
             return RedirectToAction("Index");
         }
@@ -539,7 +539,7 @@ namespace Pinturería_Acuarela.Controllers
 
                         db.SaveChanges();
                         TempData["Message"] = "Se ha cancelado la confirmación";
-                        return RedirectToAction("/Details", new { id = id_order });
+                        return RedirectToAction("Details", new { id = id_order });
                     }
                 }
             }
@@ -547,7 +547,7 @@ namespace Pinturería_Acuarela.Controllers
             {
                 TempData["Message"] = ex.Message;
                 TempData["Error"] = 2;
-                return RedirectToAction("/Details", new { id = id_order });
+                return RedirectToAction("Details", new { id = id_order });
             }
             return RedirectToAction("Index");
         }
@@ -571,14 +571,14 @@ namespace Pinturería_Acuarela.Controllers
                     db.Entry(order).State = EntityState.Modified;
                     db.SaveChanges();
                     TempData["Message"] = "Se ha confirmado la orden";
-                    return RedirectToAction("/Details", new { id });
+                    return RedirectToAction("Details", new { id });
                 }
             }
             catch (Exception ex)
             {
                 TempData["Message"] = ex.Message;
                 TempData["Error"] = 2;
-                return RedirectToAction("/Details", new { id });
+                return RedirectToAction("Details", new { id });
             }
             return RedirectToAction("Index");
         }
@@ -613,14 +613,14 @@ namespace Pinturería_Acuarela.Controllers
                     db.Entry(order).State = EntityState.Modified;
                     db.SaveChanges();
                     TempData["Message"] = "Se ha cancelado la confirmación";
-                    return RedirectToAction("/Details", new { id });
+                    return RedirectToAction("Details", new { id });
                 }
             }
             catch (Exception ex)
             {
                 TempData["Message"] = ex.Message;
                 TempData["Error"] = 2;
-                return RedirectToAction("/Details", new { id });
+                return RedirectToAction("Details", new { id });
             }
             return RedirectToAction("Index");
         }

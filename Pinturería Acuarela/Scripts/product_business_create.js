@@ -57,7 +57,7 @@ function createTable(data) {
         content += "<td>" + (data[i].capacity != null ? data[i].capacity : "-") + "</td>";
         content += "<td>";
         content += "<div class='d-flex flex-row justify-content-center'>";
-        content += `<button type='button' onclick = 'OpenModal(` + data[i].product_id + `, "` + data[i].description + `");' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#exampleModal'>Seleccionar</button>`;
+        content += `<button type='button' style="border: none; background-color: #6c7ae0" onclick = 'OpenModal(` + data[i].product_id + `, "` + data[i].description + `");' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#exampleModal'>Seleccionar</button>`;
         content += "</div>";
         content += "</td>";
         content += "</tr>";

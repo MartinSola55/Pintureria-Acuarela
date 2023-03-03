@@ -32,7 +32,11 @@
         contenido += "</td>";
         contenido += "<td class='cell100 column10 pe-3'>";
         contenido += "<div class='d-flex justify-content-center'>";
-        contenido += "<button class='btn btn-success' onclick='addToSale(" + data[i].product_id + ")'><i class='bi bi-plus-circle'></i></button>";
+        contenido += `<form action='/Sells/AddToSale' id='formAddToSale_` + data[i].product_id + `'>`;
+        contenido += "<input type='hidden' name='id_prod' id='id_prod_" + data[i].product_id + "' value='" + data[i].product_id + "' />";
+        contenido += "<input type='hidden' name='quant' id='quant_" + data[i].product_id + "' />";
+        contenido += "<button class='btn' style='background-color: yellowgreen' type='button' onClick='addToSale(" + data[i].product_id + ")'><i class='bi bi-plus-circle'></i></button>";
+        contenido += "</form>";
         contenido += "</div>";
         contenido += "</td>";
         contenido += "</tr>";
@@ -85,6 +89,7 @@ $('#txtSearch').keypress(function (e) {
 });
 
 function addToSale(id) {
-    $.get("AddToSale/?id_prod=" + id + "&quant=" + $("#number" + id).val());
-    location.reload();
-}
+    let quant = $("#number" + id).val();
+    $("#quant_" + id).val(quant);
+    $("#formAddToSale_" + id).submit();
+};

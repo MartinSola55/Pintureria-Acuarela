@@ -30,13 +30,13 @@
         <th>
             Subcategoría
         </th>
-        <th>
+        <th class="text-center">
             Código interno
         </th>
-        <th>
+        <th class="text-center">
             Cantidad pedida
         </th>
-        <th>
+        <th class="text-center">
             Eliminar
         </th>
     </tr>
@@ -56,18 +56,18 @@
             <td>
                 @(item.Product.id_subcategory != null ? item.Product.Subcategory.description : "-")
             </td>
-            <td>
+            <td class="text-center">
                 @(item.Product.internal_code != null ? item.Product.internal_code.ToString() : "-")
             </td>
-            <td>
+            <td class="text-center">
                 @Html.DisplayFor(modelItem => item.quantity)
             </td>
-            <td>
+            <td class="text-center">
                 @using (Html.BeginForm("RemoveProductBasket", "Orders", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     @Html.Hidden("id_prod", item.Product.id)
-                    <button class="btn btn-danger" type="submit"><i class='bi bi-trash3'></i></button>
+                    <button class="btn text-white" style="background-color: crimson" type="submit"><i class='bi bi-trash3'></i></button>
                 }
             </td>
         </tr>
@@ -83,6 +83,6 @@
     @using (Html.BeginForm("CreateOrder", "Orders", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
-        <button class="btn btn-success" type="submit">Crear orden</button>
+        <button class="btn" style="background-color: yellowgreen" type="submit">Crear orden</button>
     }
 </div>

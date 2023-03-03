@@ -31,7 +31,7 @@
         contenido += "</td>";
         contenido += "<td>";
         contenido += "<div class='d-flex justify-content-center'>";
-        contenido += "<button class='btn btn-success' onclick='addToCart(" + data[i].product_id + ")'><i class='bi bi-plus-circle'></i></button>";
+        contenido += "<button class='btn text-white' style='background-color: yellowgreen;' onclick='addToCart(" + data[i].product_id + ")'><i class='bi bi-plus-circle'></i></button>";
         contenido += "</div>";
         contenido += "</td>";
         contenido += "</tr>";

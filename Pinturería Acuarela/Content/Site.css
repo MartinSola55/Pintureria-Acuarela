@@ -1,9 +1,20 @@
-﻿.sombra {
-    box-shadow: 0 0 40px 0 rgb(0 0 0 / 15%);
-    -moz-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
-    -webkit-box-shadow: 0 0 40px 0 rgb(0 0 0 / 15%);
-    -o-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
-    -ms-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+﻿#btnFilter {
+    color: #6c7ae0;
+    border-color: #6c7ae0;
+}
+
+#btnFilter:hover {
+    background-color: #6c7ae0;
+    color:white;
+}
+
+.sombra {
+    box-shadow: 0 0 40px 0 rgb(0 0 0 / 15%) !important;
+    -moz-box-shadow: 0 0 40px 0 rgba(0,0,0,.15) !important;
+    -webkit-box-shadow: 0 0 40px 0 rgb(0 0 0 / 15%) !important;
+    -o-box-shadow: 0 0 40px 0 rgba(0,0,0,.15) !important;
+    -ms-box-shadow: 0 0 40px 0 rgba(0,0,0,.15) !important;
+    background-color: none;
 }
 
 .required::after {

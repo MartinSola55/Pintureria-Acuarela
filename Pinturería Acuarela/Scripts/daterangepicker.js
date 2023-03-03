@@ -111,7 +111,7 @@
                 '</div>' +
                 '<div class="drp-buttons">' +
                     '<button class="cancelBtn" type="button"></button>' +
-                    '<button class="applyBtn"  style="background-color: #e38e00; color: white" disabled="disabled" type="button"></button> ' +
+                    '<button class="applyBtn"  style="background-color: #6c7ae0; color: white; border: none" disabled="disabled" type="button"></button> ' +
                 '</div>' +
             '</div>';
 

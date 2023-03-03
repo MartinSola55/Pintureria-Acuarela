@@ -173,9 +173,9 @@
 }
 
 .daterangepicker td.available:hover, .daterangepicker th.available:hover {
-  background-color: #eee;
+  background-color: #6c7ae0;
   border-color: transparent;
-  color: inherit;
+  color: white;
 }
 
 .daterangepicker td.week, .daterangepicker th.week {
@@ -190,7 +190,7 @@
 }
 
 .daterangepicker td.in-range {
-  background-color: #ebf4f8;
+  background-color: #ddd6ed;
   border-color: transparent;
   color: #000;
   border-radius: 0;
@@ -209,7 +209,7 @@
 }
 
 .daterangepicker td.active, .daterangepicker td.active:hover {
-  background-color: #357ebd;
+  background-color: #6c7ae0;
   border-color: transparent;
   color: #fff;
 }
