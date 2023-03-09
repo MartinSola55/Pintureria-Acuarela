@@ -195,6 +195,17 @@
                 <b>Total enviado: </b>@totalLitersSent litros
             </td>
         </tr>
+        @{ 
+            if(Model.comment != null)
+            {
+                <tr>
+                    <td>
+                        <b>Comentario: </b>@Model.comment
+                    </td>
+                </tr>
+            }
+        }
+        
 
     </table>
 </div>

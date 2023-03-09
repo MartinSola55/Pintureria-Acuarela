@@ -394,7 +394,7 @@ namespace Pinturería_Acuarela.Controllers
         // POST: Create order
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateOrder()
+        public ActionResult CreateOrder(string comment)
         {
             try
             {
@@ -406,7 +406,8 @@ namespace Pinturería_Acuarela.Controllers
                     {
                         date = DateTime.UtcNow.AddHours(-3),
                         id_user = user.id,
-                        status = false
+                        status = false,
+                        comment = comment == "" ? null : comment
                     };
                     using (var transaccion = new TransactionScope())
                     {
