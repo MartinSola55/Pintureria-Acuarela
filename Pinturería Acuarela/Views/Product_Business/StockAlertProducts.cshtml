@@ -2,9 +2,15 @@
 
 @{
     ViewBag.Title = "Stock";
+    User user = Session["User"] as User;
 }
 
-<h1 class="text-center">Productos con bajo stock</h1>
+<div class="d-flex align-items-end">
+    <a class="btn btn-dark py-2" href="../../Home"><i class="bi bi-arrow-left"></i></a>
+    <div class="d-flex flex-grow-1 justify-content-center me-md-4">
+        <h1 class="text-center">Productos con bajo stock</h1>
+    </div>
+</div>
 <hr class="pb-3" />
 
 <div class="container mt4">

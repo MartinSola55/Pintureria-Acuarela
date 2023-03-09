@@ -73,7 +73,7 @@
 
         <div class="mt-3">
             @Html.LabelFor(model => model.internal_code, "Codigo interno", htmlAttributes: new { @class = "control-label" })
-            @Html.TextBoxFor(model => model.internal_code, new { @class = "form-control", @min = 1, @max = 20000, @placeholder = "xxxxx" })
+            @Html.TextBoxFor(model => model.internal_code, new { @class = "form-control", @type = "number", @min = 1, @max = 20000, @placeholder = "xxxxx", @data_val_number = "Por favor, escriba solamente números" })
             @Html.ValidationMessageFor(model => model.internal_code, "", new { @class = "text-danger mb-4 mt-3" })
         </div>
 

@@ -122,11 +122,11 @@ namespace Pinturería_Acuarela.Controllers
         // POST: Brands/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id_brand)
         {
             try
             {
-                Brand brand = db.Brand.Find(id);
+                Brand brand = db.Brand.Find(id_brand);
                 if (brand != null)
                 {
                     brand.deleted_at = DateTime.UtcNow.AddHours(-3);

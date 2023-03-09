@@ -15,6 +15,30 @@
 <link href="~/Content/orders.css" rel="stylesheet" />
 <link href="~/Content/notification.css" rel="stylesheet" />
 
+@using (Html.BeginForm("Delete", "Orders", FormMethod.Post))
+{
+    @Html.AntiForgeryToken();
+    @Html.HiddenFor(model => model.id)
+    <!-- Modal -->
+    <div class="modal fade" id="modalConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalConfirmationLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalConfirmationLabel">Eliminar orden</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Seguro deseas eliminar esta orden?
+                </div>
+                <div class="modal-footer d-flex justify-content-between justify-content-lg-end px-3">
+                    <button type="submit" id="btnSendForm" class="btn me-lg-4" style="background-color: yellowgreen">Confirmar</button>
+                    <button type="button" class="btn" style="background-color: crimson; color: white" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 <!-- Modal order confirmation -->
 <div class="modal fade" id="orderConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -45,7 +69,7 @@
         <h1 class="text-center">Detalles de la orden</h1>
     </div>
 </div>
-<hr class="mb-4"/>
+<hr class="mb-4" />
 
 @{ if (ViewBag.Message != null)
     {
@@ -200,21 +224,11 @@
         @{
             if (user.Rol.id != 1 && !Model.status)
             {
-                using (@Html.BeginForm("Delete", "Orders", FormMethod.Post))
-                {
-                    @Html.AntiForgeryToken()
-                    @Html.Hidden("id", Model.id)
-                    <button class="btn text-white" style="background-color: crimson" type="submit">Eliminar orden</button>
-                }
+                <button class="btn text-white" style="background-color: crimson" type="button" data-bs-toggle="modal" data-bs-target="#modalConfirmation">Eliminar orden</button>
             }
             else if (user.Rol.id == 1)
             {
-                using (@Html.BeginForm("Delete", "Orders", FormMethod.Post))
-                {
-                    @Html.AntiForgeryToken()
-                    @Html.Hidden("id", Model.id)
-                    <button class="btn text-white" style="background-color: crimson" type="submit">Eliminar orden</button>
-                }
+                <button class="btn text-white" style="background-color: crimson" type="button" data-bs-toggle="modal" data-bs-target="#modalConfirmation">Eliminar orden</button>
             }
         }
     </div>

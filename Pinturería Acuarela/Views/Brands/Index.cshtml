@@ -6,6 +6,30 @@
 
 <link href="~/Content/notification.css" rel="stylesheet" />
 
+@using (Html.BeginForm("Delete", "Brands", FormMethod.Post))
+{
+    @Html.AntiForgeryToken();
+    @Html.Hidden("id_brand")
+    <!-- Modal -->
+    <div class="modal fade" id="modalConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalConfirmationLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalConfirmationLabel">Eliminar marca</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Seguro deseas eliminar esta marca?
+                </div>
+                <div class="modal-footer d-flex justify-content-between justify-content-lg-end px-3">
+                    <button type="submit" id="btnSendForm" class="btn me-lg-4" style="background-color: yellowgreen">Confirmar</button>
+                    <button type="button" class="btn" style="background-color: crimson; color: white" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 <h1 class="text-center">Marcas</h1>
 <hr class="pb-3" />
 
@@ -24,40 +48,43 @@
     }
 }
 
-@* Realizar pedido *@
-<div class="sombra p-4 mb-3" style="border-radius: 20px; max-width: fit-content">
-    <div class="d-flex justify-content-between">
-        <a class="btn text-white" href="../../Brands/Create" style="background-color: #6c7ae0">Agregar una marca <i class="bi bi-plus-circle"></i></a>
+<div class="container">
+    @* Realizar pedido *@
+    <div class="sombra p-4 mb-3" style="border-radius: 20px; max-width: fit-content">
+        <div class="d-flex justify-content-between">
+            <a class="btn text-white" href="../../Brands/Create" style="background-color: #6c7ae0">Agregar una marca <i class="bi bi-plus-circle"></i></a>
+        </div>
     </div>
+
+    <table class="table">
+        <tr>
+            <th>
+                Nombre
+            </th>
+            <th class="text-center">
+                Acción
+            </th>
+        </tr>
+
+        @foreach (Brand item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.name)
+                </td>
+                <td class="d-flex justify-content-center">
+                    <a class="btn me-4" style="background-color: yellowgreen" href="../../Brands/Edit/@item.id"><i class='bi bi-pencil-square'></i></a>
+                    <button onclick="setDeleteID(@item.id)" class="btn text-white ms-4" style="background-color: crimson" type="button" data-bs-toggle="modal" data-bs-target="#modalConfirmation"><i class='bi bi-trash3'></i></button>
+                </td>
+            </tr>
+        }
+    </table>
 </div>
 
-<table class="table">
-    <tr>
-        <th>
-            Nombre
-        </th>
-        <th class="text-center">
-            Acción
-        </th>
-    </tr>
-
-    @foreach (Brand item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.name)
-            </td>
-            <td class="d-flex justify-content-center">
-                <a class="btn me-4" style="background-color: yellowgreen" href="../../Brands/Edit/@item.id"><i class='bi bi-pencil-square'></i></a>
-                @using (Html.BeginForm("Delete", "Brands", FormMethod.Post))
-                {
-                    @Html.AntiForgeryToken()
-                    @Html.Hidden("id", item.id)
-                    <button class="btn text-white ms-4" style="background-color: crimson" type="submit"><i class='bi bi-trash3'></i></button>
-                }
-            </td>
-        </tr>
-    }
-</table>
-
 <script src="~/Scripts/notification.js"></script>
+<script>
+    function setDeleteID(id) {
+        $("#id_brand").val(id);
+        $("#")
+    };
+</script>

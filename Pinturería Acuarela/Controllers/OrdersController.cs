@@ -36,7 +36,7 @@ namespace Pinturería_Acuarela.Controllers
                 if (id != null)
                 {
                     var orders = db.Order.Where(o => o.User.Business.id.Equals(id.Value) && o.deleted_at.Equals(null));
-                    return View(orders.ToList().OrderBy(o => o.User.Business.id).OrderBy(o => o.date).OrderBy(o => o.status));
+                    return View(orders.ToList().OrderBy(o => o.User.Business.id).ThenBy(o => o.date).ThenBy(o => o.status));
                 }
                 var order = db.Order.Include(o => o.User).Where(o => o.deleted_at.Equals(null));
                 return View(order.ToList().OrderBy(o => o.User.Business.id).ThenBy(o => o.date).ThenBy(o => o.status));
