@@ -20,8 +20,8 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
-                int stocklessProducts = db.Product_Business.Where(p => p.stock == 0 && p.deleted_at.Equals(null)).Count();
-                int stockAlertProducts = db.Product_Business.Where(p => p.stock < p.minimum_stock && p.deleted_at.Equals(null)).Count();
+                int stocklessProducts = db.Product_Business.Where(p => p.stock == 0 && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
+                int stockAlertProducts = db.Product_Business.Where(p => p.stock < p.minimum_stock && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
                 int pendingOrders = db.Order.Where(o => o.status.Equals(false) && o.deleted_at.Equals(null)).Count();
 
                 ViewBag.StocklessProducts = stocklessProducts;
@@ -41,8 +41,8 @@ namespace Pinturería_Acuarela.Controllers
             try
             {
                 User user = Session["User"] as User;
-                int stocklessProducts = db.Product_Business.Where(p => p.id_business.Equals(user.id_business.Value) && p.stock == 0 && p.deleted_at.Equals(null)).Count();
-                int stockAlertProducts = db.Product_Business.Where(p => p.id_business.Equals(user.id_business.Value) && p.stock < p.minimum_stock && p.deleted_at.Equals(null)).Count();
+                int stocklessProducts = db.Product_Business.Where(p => p.id_business.Equals(user.id_business.Value) && p.stock == 0 && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
+                int stockAlertProducts = db.Product_Business.Where(p => p.id_business.Equals(user.id_business.Value) && p.stock < p.minimum_stock && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
                 int pendingOrders = db.Order.Where(o => o.User.id.Equals(user.id) && o.status.Equals(false) && o.deleted_at.Equals(null)).Count();
 
                 ViewBag.StocklessProducts = stocklessProducts;

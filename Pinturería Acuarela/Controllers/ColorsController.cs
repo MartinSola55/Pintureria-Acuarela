@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -16,27 +17,6 @@ namespace Pinturería_Acuarela.Controllers
     {
         private EFModel db = new EFModel();
 
-        // GET: Colors
-        public ActionResult Index()
-        {
-            return View(db.Color.ToList());
-        }
-
-        // GET: Colors/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Color color = db.Color.Find(id);
-            if (color == null)
-            {
-                return HttpNotFound();
-            }
-            return View(color);
-        }
-
         // GET: Colors/Create
         public ActionResult Create()
         {
@@ -50,14 +30,35 @@ namespace Pinturería_Acuarela.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id,name,rgb_hex_code")] Color color)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Color.Add(color);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    Color repeted = db.Color.Where(c => c.name.Equals(color.name) || c.rgb_hex_code.Equals(color.rgb_hex_code)).FirstOrDefault();
+                    if (repeted != null)
+                    {
+                        ViewBag.Message = "El color o el nombre ingresado ya existe";
+                        ViewBag.Error = 1;
+                        return View(color);
+                    }
+                    db.Color.Add(color);
+                    db.SaveChanges();
+                    TempData["Message"] = "El color se creó correctamente";
+                    return RedirectToAction("Index", "Brands");
+                }
+                else
+                {
+                    ViewBag.Message = "El nombre ingresado o el color seleccionado no son válidos";
+                    ViewBag.Error = 1;
+                    return View(color);
+                }
             }
-
-            return View(color);
+            catch (Exception)
+            {
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido cargar el color";
+                TempData["Error"] = 2;
+                return RedirectToAction("Index", "Brands");
+            }
         }
 
         // GET: Colors/Edit/5
@@ -70,7 +71,9 @@ namespace Pinturería_Acuarela.Controllers
             Color color = db.Color.Find(id);
             if (color == null)
             {
-                return HttpNotFound();
+                ViewBag.Message = "Ha ocurrido un error. No se ha encontrado el color";
+                ViewBag.Error = 1;
+                color = new Color();
             }
             return View(color);
         }
@@ -80,41 +83,39 @@ namespace Pinturería_Acuarela.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,name,rgb_hex_code")] Color color)
+        public ActionResult Edit([Bind(Include = "id,name,rgb_hex_code")] Color color_edited)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Entry(color).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    Color repeted = db.Color.Where(c => (c.name.Equals(color_edited.name) || c.rgb_hex_code.Equals(color_edited.rgb_hex_code)) && !c.id.Equals(color_edited.id)).FirstOrDefault();
+                    if (repeted != null)
+                    {
+                        ViewBag.Message = "El color o el nombre ingresado ya existe";
+                        ViewBag.Error = 1;
+                        return View(color_edited);
+                    }
+                    Color color = db.Color.Find(color_edited.id);
+                    color.name = color_edited.name;
+                    color.rgb_hex_code = color_edited.rgb_hex_code;
+                    db.SaveChanges();
+                    TempData["Message"] = "El color se editó correctamente";
+                    return RedirectToAction("Index", "Brands");
+                }
+                else
+                {
+                    ViewBag.Message = "El nombre ingresado no es válido";
+                    ViewBag.Error = 1;
+                    return View(color_edited);
+                }
             }
-            return View(color);
-        }
-
-        // GET: Colors/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
+            catch (Exception)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido guardar el color";
+                TempData["Error"] = 2;
+                return RedirectToAction("Index", "Brands");
             }
-            Color color = db.Color.Find(id);
-            if (color == null)
-            {
-                return HttpNotFound();
-            }
-            return View(color);
-        }
-
-        // POST: Colors/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Color color = db.Color.Find(id);
-            db.Color.Remove(color);
-            db.SaveChanges();
-            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

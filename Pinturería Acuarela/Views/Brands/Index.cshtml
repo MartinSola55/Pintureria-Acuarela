@@ -1,8 +1,8 @@
-﻿@model IEnumerable<Pinturería_Acuarela.Brand>
-
-@{
+﻿@{
     ViewBag.Title = "Marcas";
 }
+
+@model Tuple<List<Brand>, List<Color>>
 
 <link href="~/Content/notification.css" rel="stylesheet" />
 
@@ -30,7 +30,7 @@
     </div>
 }
 
-<h1 class="text-center">Marcas</h1>
+<h1 class="text-center">Editar</h1>
 <hr class="pb-3" />
 
 @{ if (ViewBag.Message != null)
@@ -49,42 +49,90 @@
 }
 
 <div class="container">
-    @* Realizar pedido *@
-    <div class="sombra p-4 mb-3" style="border-radius: 20px; max-width: fit-content">
-        <div class="d-flex justify-content-between">
-            <a class="btn text-white" href="../../Brands/Create" style="background-color: #6c7ae0">Agregar una marca <i class="bi bi-plus-circle"></i></a>
+    <div class="d-flex flex-row justify-content-between">
+        @* Cargar nueva marca *@
+        <div class="sombra p-4 mb-3" style="border-radius: 20px; max-width: fit-content">
+            <div class="d-flex justify-content-between">
+                <a class="btn text-white me-3" href="../../Brands/Create" style="background-color: #6c7ae0">Agregar marca <i class="bi bi-plus-circle"></i></a>
+            </div>
+        </div>
+
+        @* Cargar nuevo color*@
+        <div class="sombra p-4 mb-3" style="border-radius: 20px; max-width: fit-content">
+            <div class="d-flex justify-content-between">
+                <a class="btn text-white me-3" href="../../Colors/Create" style="background-color: #6c7ae0">Agregar color <i class="bi bi-plus-circle"></i></a>
+            </div>
         </div>
     </div>
 
-    <table class="table">
-        <tr>
-            <th>
-                Nombre
-            </th>
-            <th class="text-center">
-                Acción
-            </th>
-        </tr>
+    <div class="d-flex flex-row">
+        
+        @* Tabla marcas *@
+        <div class="w-50 me-5">
+            <h2 class="text-start">Marcas</h2>
+            <table class="table">
+                <tr>
+                    <th>
+                        Nombre
+                    </th>
+                    <th class="text-center">
+                        Acción
+                    </th>
+                </tr>
 
-        @foreach (Brand item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.name)
-                </td>
-                <td class="d-flex justify-content-center">
-                    <a class="btn me-4" style="background-color: yellowgreen" href="../../Brands/Edit/@item.id"><i class='bi bi-pencil-square'></i></a>
-                    <button onclick="setDeleteID(@item.id)" class="btn text-white ms-4" style="background-color: crimson" type="button" data-bs-toggle="modal" data-bs-target="#modalConfirmation"><i class='bi bi-trash3'></i></button>
-                </td>
-            </tr>
-        }
-    </table>
+                @foreach (Brand item in Model.Item1)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.name)
+                        </td>
+                        <td class="d-flex justify-content-center">
+                            <a class="btn me-4" style="background-color: yellowgreen" href="../../Brands/Edit/@item.id"><i class='bi bi-pencil-square'></i></a>
+                            <button onclick="setDeleteID(@item.id)" class="btn text-white ms-4" style="background-color: crimson" type="button" data-bs-toggle="modal" data-bs-target="#modalConfirmation"><i class='bi bi-trash3'></i></button>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        
+        @* Tabla colores *@
+        <div class="w-50">
+            <h2 class="text-start">Colores</h2>
+            <table class="table">
+                <tr>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                        Color
+                    </th>
+                    <th class="text-center">
+                        Acción
+                    </th>
+                </tr>
+
+                @foreach (Color item in Model.Item2)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.name)
+                        </td>
+                        <td class="d-flex justify-content-center">
+                            <a class="btn" style="background-color: yellowgreen" href="../../Colors/Edit/@item.id"><i class='bi bi-pencil-square'></i></a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
 </div>
 
 <script src="~/Scripts/notification.js"></script>
 <script>
     function setDeleteID(id) {
         $("#id_brand").val(id);
-        $("#")
     };
 </script>

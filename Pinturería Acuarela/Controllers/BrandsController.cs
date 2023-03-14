@@ -19,17 +19,28 @@ namespace Pinturería_Acuarela.Controllers
         // GET: Brands
         public ActionResult Index()
         {
-            if (TempData.Count == 1)
+            try
             {
-                ViewBag.Message = TempData["Message"].ToString();
+                if (TempData.Count == 1)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                else if (TempData.Count == 2)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                    ViewBag.Error = TempData["Error"];
+                }
+                var brands = db.Brand.Where(b => b.deleted_at.Equals(null)).ToList();
+                var colors = db.Color.ToList();
+
+                Tuple<List<Brand>, List<Color>> model = new Tuple<List<Brand>, List<Color>>(brands, colors);
+
+                return View(model);
             }
-            else if (TempData.Count == 2)
+            catch (Exception)
             {
-                ViewBag.Message = TempData["Message"].ToString();
-                ViewBag.Error = TempData["Error"];
+                return RedirectToAction("Index", "Home");
             }
-            var brands = db.Brand.Where(b => b.deleted_at.Equals(null)).ToList();
-            return View(brands);
         }
 
         // GET: Brands/Create
@@ -49,6 +60,13 @@ namespace Pinturería_Acuarela.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    Brand repeted = db.Brand.Where(b => b.name.Equals(brand.name)).FirstOrDefault();
+                    if (repeted != null)
+                    {
+                        ViewBag.Message = "La marca ingresada ya existe";
+                        ViewBag.Error = 1;
+                        return View(brand);
+                    }
                     brand.created_at = DateTime.UtcNow.AddHours(-3);
                     db.Brand.Add(brand);
                     db.SaveChanges();
@@ -59,8 +77,8 @@ namespace Pinturería_Acuarela.Controllers
                 {
                     ViewBag.Message = "El nombre ingresado no es válido";
                     ViewBag.Error = 1;
+                    return View(brand);
                 }
-                return View(brand);
             }
             catch (Exception)
             {
@@ -98,6 +116,13 @@ namespace Pinturería_Acuarela.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    Brand repeted = db.Brand.Where(b => b.name.Equals(brand_edited.name) && !b.id.Equals(brand_edited.id)).FirstOrDefault();
+                    if (repeted != null)
+                    {
+                        ViewBag.Message = "La marca ingresada ya existe";
+                        ViewBag.Error = 1;
+                        return View(brand_edited);
+                    }
                     Brand brand = db.Brand.Find(brand_edited.id);
                     brand.name = brand_edited.name;
                     db.SaveChanges();
@@ -108,8 +133,8 @@ namespace Pinturería_Acuarela.Controllers
                 {
                     ViewBag.Message = "El nombre ingresado no es válido";
                     ViewBag.Error = 1;
+                    return View(brand_edited);
                 }
-                return View(brand_edited);
             }
             catch (Exception)
             {
