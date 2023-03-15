@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Pinturería_Acuarela.Sell>
+
+@{
+    ViewBag.Title = "Historial de Ventas";
+}
+
+<link href="~/Content/datatables.css" rel="stylesheet" />
+<link href="~/Content/orders.css" rel="stylesheet" />
+<link href="~/Content/notification.css" rel="stylesheet" />
+
+
+
+@* Tabla *@
+<table id="dataTable" class="table table-striped table-bordered table-hover pt-4">
+    <thead class='table-dark'>
+        <tr class="fw-bold text-center">
+            <td>
+                Fecha venta
+            </td>
+        </tr>
+    </thead>
+
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+        <tr class='clickable-row text-center' data-href='/Sells/DetailsSale/@item.id'>
+            <td>
+                Día: @(item.date.ToShortDateString())
+                <br>
+                Hora: @(item.date.ToShortTimeString())
+            </td>
+        </tr>
+        }
+    }
+
+</table>
+</div>

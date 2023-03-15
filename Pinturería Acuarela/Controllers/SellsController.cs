@@ -376,5 +376,45 @@ namespace Pinturería_Acuarela.Controllers
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        public ActionResult Details(int? id)
+        {
+            try
+            {
+                if(id != null)
+                {
+                    var sales = db.Sell.Where(p => p.User.id_business.Equals(id.Value) && p.date<=DateTime.UtcNow.AddHours(-3) && p.date > DateTime.UtcNow.AddHours(-3).AddDays(-30)).ToList();
+                    return View(sales);
+                }
+                return View();
+            }
+            catch(Exception e)
+            {
+                return HttpNotFound();
+            }
+        }
+
+        public ActionResult DetailsSale(long? id)
+        {
+            try
+            {
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                Sell sale = db.Sell.Find(id);
+                if (sale == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(sale);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
     }
 }

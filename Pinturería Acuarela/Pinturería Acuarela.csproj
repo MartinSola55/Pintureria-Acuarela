@@ -247,6 +247,7 @@
     <Content Include="Views\Product_Business\StockAlertProducts.cshtml" />
     <Content Include="Views\Sells\Create.cshtml" />
     <Content Include="Views\Sells\Stats.cshtml" />
+    <Content Include="Views\Sells\Details.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
