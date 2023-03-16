@@ -378,20 +378,22 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         [HttpGet]
-        public ActionResult Details(int? id)
+        public ActionResult Details()
         {
             try
             {
-                if(id != null)
-                {
-                    var sales = db.Sell.Where(p => p.User.id_business.Equals(id.Value) && p.date<=DateTime.UtcNow.AddHours(-3) && p.date > DateTime.UtcNow.AddHours(-3).AddDays(-30)).ToList();
-                    return View(sales);
-                }
-                return View();
+                User user = Session["User"] as User;
+                DateTime today = DateTime.UtcNow.AddHours(-3);
+                DateTime month_ago = DateTime.UtcNow.AddHours(-3).AddDays(-30);
+
+                List<Sell> sales = db.Sell.Where(s => s.User.id.Equals(user.id) && s.date <= today && s.date > month_ago).OrderByDescending(s => s.date).ToList();
+                return View(sales);
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                return HttpNotFound();
+                TempData["Error"] = 2;
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se puede visualizar el historial de ventas";
+                return RedirectToAction("Create");
             }
         }
 

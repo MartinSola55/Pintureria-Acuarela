@@ -63,11 +63,17 @@ function createTable(data) {
         content += "<td>";
         content += "<div class='d-flex flex-row justify-content-center'>";
         content += `<button type='button' style='background-color: #6c7ae0; border: none' onclick = 'OpenModal(` + data[i].product_id + `, "` + data[i].description + `", ` + data[i].stock + `, ` + data[i].minimum_stock + `);' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#exampleModal'>Seleccionar</button>`;
+        content += `<button type="button" onclick="setDeleteID(` + data[i].product_id + `)" class="btn ms-3" style="background-color: crimson; color: white" data-bs-toggle="modal" data-bs-target="#modalConfirmation"><i class="bi bi-trash3"></i></button>`;
         content += "</div>";
         content += "</td>";
         content += "</tr>";
     }
     $("#contentTable").html(content);
+}
+
+function setDeleteID(id) {
+    $("#id_product_delete").val(id);
+    console.log($("#id_product_delete").val())
 }
 
 function increaseValue(id) {

@@ -147,19 +147,26 @@ namespace Pinturería_Acuarela.Controllers
         // POST: Product_Business/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id_product_delete, int id_business_delete)
         {
             try
             {
-                Product_Business product_Business = db.Product_Business.Find(id);
-                product_Business.deleted_at = DateTime.UtcNow.AddHours(-3);
-                db.SaveChanges();
-                TempData["Message"] = "Producto eliminado correctamente";
-                return RedirectToAction("Index", new { id = product_Business.id_business });
+                Product_Business product_Business = db.Product_Business.Where(pb => pb.id_product.Equals(id_product_delete) && pb.id_business.Equals(id_business_delete)).FirstOrDefault();
+                if (product_Business != null)
+                {
+                    product_Business.deleted_at = DateTime.UtcNow.AddHours(-3);
+                    db.SaveChanges();
+                    TempData["Message"] = "Producto desasociado correctamente";
+                    return RedirectToAction("Index", new { id = product_Business.id_business });
+                }
+                TempData["Error"] = 1;
+                TempData["Message"] = "Ha ocurrido un error. No se ha podido encontrar el producto";
+                return RedirectToAction("Index", new { id = id_business_delete });
+
             }
             catch (Exception)
             {
-                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido eliminar el producto";
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se ha podido desasociar el producto";
                 TempData["Error"] = 2;
                 return RedirectToAction(Session["User"].ToString() == "1" ? "AdminIndex" : "Index", "Home");
             }
@@ -301,7 +308,7 @@ namespace Pinturería_Acuarela.Controllers
 
                 var products = db.Product
                             .Where(p =>
-                            p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)) &&
+                            p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value) && pb.deleted_at.Equals(null)) &&
                             p.id_brand.ToString().Contains(id_brand) &&
                             p.id_category.ToString().Contains(id_category) &&
                             p.id_subcategory.ToString().Contains(id_subcategory) &&
@@ -348,7 +355,7 @@ namespace Pinturería_Acuarela.Controllers
 
                 var products = db.Product
                         .Where(p =>
-                        p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value)) &&
+                        p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business.Value) && pb.deleted_at.Equals(null)) &&
                         (p.description.Contains(name) ||
                         p.internal_code.ToString().Contains(name)) &&
                         p.Brand.deleted_at.Equals(null) &&
@@ -396,7 +403,7 @@ namespace Pinturería_Acuarela.Controllers
                 ViewBag.id_color = new SelectList(db.Color, "id", "name");
                 ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
 
-                List<Product_Business> products = db.Product_Business.Where(pb => pb.id_business.Equals(id.Value) && pb.stock == 0).ToList();
+                List<Product_Business> products = db.Product_Business.Where(pb => pb.id_business.Equals(id.Value) && pb.stock == 0 && pb.deleted_at.Equals(null)).ToList();
                 return View(products);
             }
             catch (Exception)
@@ -425,7 +432,7 @@ namespace Pinturería_Acuarela.Controllers
                 ViewBag.id_color = new SelectList(db.Color, "id", "name");
                 ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
 
-                List<Product_Business> products = db.Product_Business.Where(pb => pb.id_business.Equals(id.Value) && pb.stock < pb.minimum_stock).ToList();
+                List<Product_Business> products = db.Product_Business.Where(pb => pb.id_business.Equals(id.Value) && pb.stock < pb.minimum_stock && pb.deleted_at.Equals(null)).ToList();
                 return View(products);
             }
             catch (Exception)

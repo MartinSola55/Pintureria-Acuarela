@@ -20,6 +20,16 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
+                if (TempData.Count == 1)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                else if (TempData.Count == 2)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                    ViewBag.Error = TempData["Error"];
+                }
+
                 int stocklessProducts = db.Product_Business.Where(p => p.stock == 0 && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
                 int stockAlertProducts = db.Product_Business.Where(p => p.stock < p.minimum_stock && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
                 int pendingOrders = db.Order.Where(o => o.status.Equals(false) && o.deleted_at.Equals(null)).Count();
@@ -40,6 +50,16 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
+                if (TempData.Count == 1)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                else if (TempData.Count == 2)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                    ViewBag.Error = TempData["Error"];
+                }
+
                 User user = Session["User"] as User;
                 int stocklessProducts = db.Product_Business.Where(p => p.id_business.Equals(user.id_business.Value) && p.stock == 0 && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
                 int stockAlertProducts = db.Product_Business.Where(p => p.id_business.Equals(user.id_business.Value) && p.stock < p.minimum_stock && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
