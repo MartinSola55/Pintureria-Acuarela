@@ -1,0 +1,67 @@
+﻿@model Pinturería_Acuarela.Sell
+
+@{
+    ViewBag.Title = "Detalle venta";
+    List<Product> prod = Session["ProdSell"] as List<Product>;
+}
+
+
+<div class="d-flex align-items-end">
+    <a class="btn btn-dark py-2" href="../../Sells/Create"><i class="bi bi-arrow-left"></i></a>
+    <div class="d-flex flex-grow-1 justify-content-center me-md-4">
+        <h1 class="text-center">Detalles de la venta</h1>
+    </div>
+</div>
+<hr class="mb-4" />
+
+<div>
+    <table class="table">
+        <tr>
+            <th>
+                Código interno
+            </th>
+            <th>
+                Descripción
+            </th>
+            <th>
+                Marca
+            </th>
+            <th>
+                Categoría
+            </th>
+            <th>
+                Subcategoría
+            </th>
+            <th>
+                Cantidad
+            </th>
+        </tr>
+
+        @if (prod != null)
+        {
+            foreach (var item in prod)
+            {
+            <tr>
+                <td>
+                    @(item.internal_code != null ? item.internal_code.ToString() : "-")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Brand.name)
+                </td>
+                <td>
+                    @(item.id_category != null ? item.Category.description : "-")
+                </td>
+                <td>
+                    @(item.id_subcategory != null ? item.Subcategory.description : "-")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product_Sell.ElementAtOrDefault(0).quantity)
+                </td>
+            </tr>
+            }
+        }
+        </table>
+</div>

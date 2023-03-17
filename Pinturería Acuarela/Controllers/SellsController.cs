@@ -382,39 +382,65 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
-                User user = Session["User"] as User;
-                DateTime today = DateTime.UtcNow.AddHours(-3);
-                DateTime month_ago = DateTime.UtcNow.AddHours(-3).AddDays(-30);
-
-                List<Sell> sales = db.Sell.Where(s => s.User.id.Equals(user.id) && s.date <= today && s.date > month_ago).OrderByDescending(s => s.date).ToList();
-                return View(sales);
+                return View();
             }
             catch(Exception)
             {
-                TempData["Error"] = 2;
-                TempData["Message"] = "Ha ocurrido un error inesperado. No se puede visualizar el historial de ventas";
-                return RedirectToAction("Create");
+                return HttpNotFound();
             }
         }
 
-        public ActionResult DetailsSale(long? id)
+        public JsonResult ShowSales(string dates)
         {
             try
             {
+                string[] dates_formated = dates.Trim().Split(',');
+                DateTime date_from = Convert.ToDateTime(dates_formated[0]);
+                DateTime date_to = Convert.ToDateTime(dates_formated[1]);
+
+                User user = Session["User"] as User;
+
+                var sales = db.Sell.Where(s => s.User.id.Equals(user.id) && s.date <= date_to && s.date > date_from)
+                    .Select(s => new {s.id, date = s.date.ToString()}).OrderByDescending(s => s.date).ToList();
+                return Json(sales,JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                TempData["Error"] = 2;
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se puede visualizar el historial de ventas";
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult DetailsSale(int? id)
+        {
+            try
+            {
+                Session["ProdSell"] = null;
+                List<Product> SessionPro = Session["ProdSell"] as List<Product>;
+                SessionPro = new List<Product>();
                 if (id == null)
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
-                Sell sale = db.Sell.Find(id);
-                if (sale == null)
+                List<Product_Sell> product = db.Product_Sell.Where(p => p.id_sell.Equals(id.Value)).ToList();
+                for(var i = 0; i< product.Count(); i++)
+                {
+                    Product pro = db.Product.Find(product[i].id_product);
+                    pro.Product_Sell.Add(product[i]);
+                    SessionPro.Add(pro);
+                }
+                Session["ProdSell"] = SessionPro;
+                if (product == null)
                 {
                     return HttpNotFound();
                 }
-                return View(sale);
+                
+                return View();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Create");
             }
         }
 

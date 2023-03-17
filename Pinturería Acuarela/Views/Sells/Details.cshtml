@@ -7,6 +7,7 @@
 <link href="~/Content/datatables.css" rel="stylesheet" />
 <link href="~/Content/orders.css" rel="stylesheet" />
 <link href="~/Content/notification.css" rel="stylesheet" />
+<link href="~/Content/daterangepicker.css" rel="stylesheet" />
 
 <div class="d-flex align-items-end">
     <a class="btn btn-dark py-2" href="../../Sells/Create"><i class="bi bi-arrow-left"></i></a>
@@ -16,29 +17,37 @@
 </div>
 <hr class="mb-3" />
 
+@* Input fecha *@
+<div class="sombra p-4 mb-4 mx-auto d-flex justify-content-center" style="border-radius: 20px; max-width: fit-content">
+    <div id="searchContainer" class="d-flex justify-content-center">
+        <div class="d-flex flex-column">
+            <label for="datepicker" class="form-label">Intervalo de fechas:</label>
+            <input type="text" class="form-control py-2" id="datepicker" readonly placeholder="dd/mm/aaaa" />
+        </div>
+    </div>
+</div>
+
 @* Tabla *@
 <table id="dataTable" class="container table table-striped table-bordered table-hover pt-4">
-    <thead class='table-dark'>
-        <tr class="fw-bold text-center">
-            <td>
-                Fecha venta
-            </td>
-        </tr>
-    </thead>
-
-    @if (Model != null)
-    {
-        foreach (var item in Model)
-        {
-            <tr class='clickable-row text-center' data-href='/Sells/DetailsSale/@item.id'>
-                <td>
-                    Día: @(item.date.ToShortDateString())
-                    <br>
-                    Hora: @(item.date.ToShortTimeString())
-                </td>
-            </tr>
-        }
-    }
 
 </table>
-</div>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/moment-with-locales.js"></script>
+<script src="~/Scripts/daterangepicker.js"></script>
+<script src="~/Scripts/notification.js"></script>
+<script src="~/Scripts/saledetails.js"></script>
+<script src="~/Scripts/datatables.js"></script>
+
+<script>
+    $(".clickable-row").click(function () {
+        window.location = $(this).data("href");
+    });
+</script>
+
+<style>
+    .clickable-row:hover {
+        cursor: pointer;
+        background-color: aliceblue;
+    }
+</style>

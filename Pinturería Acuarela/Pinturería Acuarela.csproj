@@ -136,6 +136,7 @@
     <None Include="Scripts\jquery-3.6.3.intellisense.js" />
     <Content Include="Scripts\datatables.js" />
     <Content Include="Scripts\daterangepicker.js" />
+    <Content Include="Scripts\saledetails.js" />
     <Content Include="Scripts\stats.js" />
     <Content Include="Scripts\jquery-3.6.3.js" />
     <Content Include="Scripts\jquery-3.6.3.min.js" />
@@ -248,6 +249,7 @@
     <Content Include="Views\Sells\Create.cshtml" />
     <Content Include="Views\Sells\Stats.cshtml" />
     <Content Include="Views\Sells\Details.cshtml" />
+    <Content Include="Views\Sells\DetailsSale.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
