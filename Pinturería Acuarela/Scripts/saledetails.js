@@ -2,13 +2,9 @@
     return moment(date).format("DD/MM/YYYY").toUpperCase()
 }
 
-let hoy = new Date();
-let dd = String(hoy.getDate()).padStart(2, '0');
-let mm = String(hoy.getMonth() + 1).padStart(2, '0');
-let yyyy = hoy.getFullYear();
-hoy = dd + '/' + mm + '/' + yyyy;
-$("#date").removeAttr("data-val-date");
-
+function parseTime(time) {
+    return moment(time).format("HH:mm").toUpperCase()
+}
 
 $("#datepicker").on("apply.daterangepicker", function (ev, picker) {
     let date_from = picker.startDate.format('YYYY-MM-DD');
@@ -23,24 +19,51 @@ $("#datepicker").on("apply.daterangepicker", function (ev, picker) {
 function createTable(data) {
     let content = "";
     content += `
-        <thead class='table-dark'>
-            <tr class="fw-bold text-center">
-                <td>
-                    Fecha venta
-                </td>
-            </tr>
-        </thead>`;
+        <table id="dataTable" class="container table table-striped table-bordered table-hover pt-3">
+            <thead class='table-dark'>
+                <tr class="fw-bold text-center">
+                    <td>
+                        Fecha venta
+                    </td>
+                </tr>
+            </thead>
+            <tbody>`;
     for (let i = 0; i < data.length; i++) {
         content += `
-                    <tr class='clickable-row text-center' data-href='/Sells/DetailsSale/`+ data[i].id +`'>
-                        <td>
-                            Día: `+ data[i].date+`
+                    <tr>
+                        <td class='clickable-row text-center' data-href='/Sells/DetailsSale/`+ data[i].id +`'>
+                            Día: `+ parseDate(data[i].date) +`
                             <br>
-                            Hora: `+ data[i].date +`
+                            Hora: `+ parseTime(data[i].date) +`
                         </td>
                    </tr>`;
     }
-    $("#dataTable").append(content);
+    content += "</tbody>";
+    content += "</table>";
+    $("#tableContainer").html(content);
+
+    $(".clickable-row").on("click", function () {
+        window.location = $(this).data("href");
+    });
+
+    $('#dataTable').DataTable(
+        {
+            searching: false,
+            "language": {
+                paginate: {
+                    "first": "Primera",
+                    "last": "Última",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                },
+                emptyTable: "No existen ventas que coincidan con la búsqueda",
+                info: "Mostrando _START_ a _END_ de _TOTAL_ ventas",
+                infoEmpty: "Mostrando 0 ventas",
+                lengthMenu: "Mostrar _MENU_ ventas",
+            },
+            order: [[0, 'desc']],
+        }
+    )
 }
 
 moment.locale('es');

@@ -325,6 +325,7 @@ namespace Pinturería_Acuarela.Controllers
 
         // GET: Stats page
         [Admin]
+        [HttpGet]
         public ActionResult Stats()
         {
             return View();
@@ -332,6 +333,7 @@ namespace Pinturería_Acuarela.Controllers
 
         // GET: Top 10 most sold products
         [Admin]
+        [HttpGet]
         public JsonResult MostSoldProducts(string dates, int id_business)
         {
             try
@@ -365,6 +367,7 @@ namespace Pinturería_Acuarela.Controllers
 
         // GET: All business ids
         [Admin]
+        [HttpGet]
         public JsonResult GetBusinessIDS()
         {
             try
@@ -382,14 +385,26 @@ namespace Pinturería_Acuarela.Controllers
         {
             try
             {
+                if (TempData.Count == 1)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                else if (TempData.Count == 2)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                    ViewBag.Error = TempData["Error"];
+                }
                 return View();
             }
             catch(Exception)
             {
-                return HttpNotFound();
+                TempData["Error"] = 2;
+                TempData["Message"] = "Ha ocurrido un error inesperado al intentar ver las ventas";
+                return RedirectToAction("Create");
             }
         }
 
+        [HttpGet]
         public JsonResult ShowSales(string dates)
         {
             try
@@ -401,10 +416,10 @@ namespace Pinturería_Acuarela.Controllers
                 User user = Session["User"] as User;
 
                 var sales = db.Sell.Where(s => s.User.id.Equals(user.id) && s.date <= date_to && s.date > date_from)
-                    .Select(s => new {s.id, date = s.date.ToString()}).OrderByDescending(s => s.date).ToList();
+                    .Select(s => new {s.id, s.date }).OrderByDescending(s => s.date).ToList();
                 return Json(sales,JsonRequestBehavior.AllowGet);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 TempData["Error"] = 2;
                 TempData["Message"] = "Ha ocurrido un error inesperado. No se puede visualizar el historial de ventas";
@@ -412,35 +427,32 @@ namespace Pinturería_Acuarela.Controllers
             }
         }
 
+        [HttpGet]
         public ActionResult DetailsSale(int? id)
         {
             try
             {
-                Session["ProdSell"] = null;
-                List<Product> SessionPro = Session["ProdSell"] as List<Product>;
-                SessionPro = new List<Product>();
-                if (id == null)
+
+                List<Product_Sell> products = db.Product_Sell
+                    .Where(p => p.id_sell.Equals(id.Value))
+                    .Include(p => p.Product)
+                    .OrderByDescending(p => p.quantity)
+                    .ToList();
+
+                if (products.Count == 0)
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
-                List<Product_Sell> product = db.Product_Sell.Where(p => p.id_sell.Equals(id.Value)).ToList();
-                for(var i = 0; i< product.Count(); i++)
-                {
-                    Product pro = db.Product.Find(product[i].id_product);
-                    pro.Product_Sell.Add(product[i]);
-                    SessionPro.Add(pro);
-                }
-                Session["ProdSell"] = SessionPro;
-                if (product == null)
-                {
-                    return HttpNotFound();
+                    TempData["Error"] = 1;
+                    TempData["Message"] = "La venta ingresada no existe o no cuenta con productos";
+                    return RedirectToAction("Details");
                 }
                 
-                return View();
+                return View(products);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return RedirectToAction("Create");
+                TempData["Error"] = 2;
+                TempData["Message"] = "Ha ocurrido un error inesperado. No se puede visualizar el detalle de la venta";
+                return RedirectToAction("Details");
             }
         }
 

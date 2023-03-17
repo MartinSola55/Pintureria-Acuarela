@@ -1,13 +1,12 @@
-﻿@model Pinturería_Acuarela.Sell
+﻿@model List<Product_Sell>
 
 @{
     ViewBag.Title = "Detalle venta";
-    List<Product> prod = Session["ProdSell"] as List<Product>;
 }
 
 
 <div class="d-flex align-items-end">
-    <a class="btn btn-dark py-2" href="../../Sells/Create"><i class="bi bi-arrow-left"></i></a>
+    <a class="btn btn-dark py-2" href="../../Sells/Details"><i class="bi bi-arrow-left"></i></a>
     <div class="d-flex flex-grow-1 justify-content-center me-md-4">
         <h1 class="text-center">Detalles de la venta</h1>
     </div>
@@ -36,32 +35,28 @@
                 Cantidad
             </th>
         </tr>
-
-        @if (prod != null)
-        {
-            foreach (var item in prod)
+            @foreach (Product_Sell item in Model)
             {
             <tr>
                 <td>
-                    @(item.internal_code != null ? item.internal_code.ToString() : "-")
+                    @(item.Product.internal_code != null ? item.Product.internal_code.ToString() : "-")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.description)
+                    @Html.DisplayFor(modelItem => item.Product.description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Brand.name)
+                    @Html.DisplayFor(modelItem => item.Product.Brand.name)
                 </td>
                 <td>
-                    @(item.id_category != null ? item.Category.description : "-")
+                    @(item.Product.id_category != null ? item.Product.Category.description : "-")
                 </td>
                 <td>
-                    @(item.id_subcategory != null ? item.Subcategory.description : "-")
+                    @(item.Product.id_subcategory != null ? item.Product.Subcategory.description : "-")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product_Sell.ElementAtOrDefault(0).quantity)
+                    @Html.DisplayFor(modelItem => item.quantity)
                 </td>
             </tr>
             }
-        }
         </table>
 </div>
