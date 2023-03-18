@@ -193,7 +193,7 @@ namespace Pinturería_Acuarela.Controllers
                 
                 var products = db.Product
                     .Where(p =>
-                    p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business)) &&
+                    p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business) && pb.deleted_at.Equals(null)) &&
                     p.id_brand.ToString().Contains(id_brand) &&
                     p.id_category.ToString().Contains(id_category) &&
                     p.id_subcategory.ToString().Contains(id_subcategory) &&
@@ -234,7 +234,7 @@ namespace Pinturería_Acuarela.Controllers
 
                 var products = db.Product
                         .Where(p =>
-                        p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business)) &&
+                        p.Product_Business.Any(pb => pb.id_product.Equals(p.id) && pb.id_business.Equals(id_business) && pb.deleted_at.Equals(null)) &&
                         (p.description.Contains(name) ||
                         p.internal_code.ToString().Contains(name)) &&
                         p.Brand.deleted_at.Equals(null) &&
