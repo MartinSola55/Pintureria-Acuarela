@@ -70,17 +70,6 @@ namespace Pinturería_Acuarela.Controllers
                         ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
                         return View(product);
                     }
-                    else if (db.Product.Where(p => p.description.Equals(product.description)).ToList().Count > 0)
-                    {
-                        ViewBag.Message = "Ya existe un producto con la misma descripción";
-                        ViewBag.Error = 1;
-                        ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name");
-                        ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description");
-                        ViewBag.id_category = new SelectList(db.Category, "id", "description");
-                        ViewBag.id_color = new SelectList(db.Color, "id", "name");
-                        ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
-                        return View(product);
-                    }
                     product.created_at= DateTime.UtcNow.AddHours(-3);
                     db.Product.Add(product);
                     db.SaveChanges();
@@ -162,23 +151,12 @@ namespace Pinturería_Acuarela.Controllers
                         ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
                         return View(product_edited);
                     }
-                    else if (db.Product.Where(p => p.description.Equals(product_edited.description) && !p.id.Equals(product_edited.id)).ToList().Count > 0)
-                    {
-                        ViewBag.Message = "Ya existe un producto con la misma descripción";
-                        ViewBag.Error = 1;
-                        ViewBag.id_brand = new SelectList(db.Brand.Where(b => b.deleted_at.Equals(null)).OrderBy(b => b.name), "id", "name");
-                        ViewBag.id_capacity = new SelectList(db.Capacity.OrderByDescending(c => c.capacity), "id", "description");
-                        ViewBag.id_category = new SelectList(db.Category, "id", "description");
-                        ViewBag.id_color = new SelectList(db.Color, "id", "name");
-                        ViewBag.id_subcategory = new SelectList(db.Subcategory, "id", "description");
-                        return View(product_edited);
-                    }
 
                     Product product = db.Product.Find(product_edited.id);
                     product.description = product_edited.description;
                     product.id_brand = product_edited.id_brand;
                     product.id_category = product_edited.id_category;
-                    product.id_subcategory = product_edited.id_category;
+                    product.id_subcategory = product_edited.id_subcategory;
                     product.id_capacity = product_edited.id_capacity;
                     product.id_color = product_edited.id_color;
                     product.internal_code = product_edited.internal_code;                   
