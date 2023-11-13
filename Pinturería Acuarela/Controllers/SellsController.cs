@@ -82,7 +82,7 @@ namespace Pinturería_Acuarela.Controllers
                     p.deleted_at.Equals(null))
                     .Select(p => new
                     {
-                        internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
+                        p.internal_code,
                         product_id = p.id.ToString(),
                         p.description,
                         brand = p.Brand.name,
@@ -120,7 +120,7 @@ namespace Pinturería_Acuarela.Controllers
                         p.deleted_at.Equals(null))
                         .Select(p => new
                         {
-                            internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
+                            p.internal_code,
                             product_id = p.id.ToString(),
                             p.description,
                             brand = p.Brand.name,

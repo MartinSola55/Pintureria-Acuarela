@@ -219,7 +219,7 @@ namespace Pinturería_Acuarela.Controllers
 
                 var response = products_not_in_business.Select(p => new
                 {
-                    internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
+                    p.internal_code,
                     product_id = p.id.ToString(),
                     p.description,
                     brand = p.Brand.name,
@@ -268,7 +268,7 @@ namespace Pinturería_Acuarela.Controllers
 
                     var response = products_not_in_business.Select(p => new
                     {
-                        internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
+                        p.internal_code,
                         product_id = p.id.ToString(),
                         p.description,
                         brand = p.Brand.name,
@@ -318,7 +318,7 @@ namespace Pinturería_Acuarela.Controllers
                             p.deleted_at.Equals(null))
                             .Select(p => new
                             {
-                                internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
+                                p.internal_code,
                                 product_id = p.id.ToString(),
                                 p.description,
                                 brand = p.Brand.name,
@@ -362,7 +362,7 @@ namespace Pinturería_Acuarela.Controllers
                         p.deleted_at.Equals(null))
                         .Select(p => new
                         {
-                            internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
+                            p.internal_code,
                             product_id = p.id.ToString(),
                             p.description,
                             brand = p.Brand.name,
@@ -492,7 +492,7 @@ namespace Pinturería_Acuarela.Controllers
                 var response = products
                         .Select(p => new
                         {
-                            internal_code = p.Product.internal_code != null ? p.Product.internal_code.Value.ToString() : null,
+                            p.Product.internal_code,
                             product_id = p.Product.id.ToString(),
                             p.Product.description,
                             brand = p.Product.Brand.name,
@@ -536,7 +536,7 @@ namespace Pinturería_Acuarela.Controllers
                         pb.deleted_at.Equals(null))
                         .Select(p => new
                         {
-                            internal_code = p.Product.internal_code != null ? p.Product.internal_code.Value.ToString() : null,
+                            p.Product.internal_code,
                             product_id = p.Product.id.ToString(),
                             p.Product.description,
                             brand = p.Product.Brand.name,
@@ -606,7 +606,7 @@ namespace Pinturería_Acuarela.Controllers
                 var response = products
                         .Select(p => new
                         {
-                            internal_code = p.Product.internal_code != null ? p.Product.internal_code.Value.ToString() : null,
+                            p.Product.internal_code,
                             product_id = p.Product.id.ToString(),
                             p.Product.description,
                             brand = p.Product.Brand.name,
@@ -652,7 +652,7 @@ namespace Pinturería_Acuarela.Controllers
                         pb.deleted_at.Equals(null))
                         .Select(p => new
                         {
-                            internal_code = p.Product.internal_code != null ? p.Product.internal_code.Value.ToString() : null,
+                            p.Product.internal_code,
                             product_id = p.Product.id.ToString(),
                             p.Product.description,
                             brand = p.Product.Brand.name,

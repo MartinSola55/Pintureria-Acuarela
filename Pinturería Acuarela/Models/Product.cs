@@ -34,9 +34,8 @@ namespace Pinturería_Acuarela
 
         public int? id_color { get; set; }
 
-        [RegularExpression(@"^[0-9]+$", ErrorMessage = "Por favor, escriba solamente números")]
-        [Range(1, 20000, ErrorMessage = "Debes ingresar un código entre 1 y 20.000")]
-        public int? internal_code { get; set; }
+        [StringLength(50, ErrorMessage = "Ingresa un código de menos de 50 caracteres")]
+        public string internal_code { get; set; }
 
         public DateTime created_at { get; set; }
 

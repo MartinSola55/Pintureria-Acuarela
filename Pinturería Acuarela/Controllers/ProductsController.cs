@@ -59,7 +59,7 @@ namespace Pinturería_Acuarela.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (db.Product.Where(p => p.internal_code.Value.Equals(product.internal_code.Value)).ToList().Count > 0)
+                    if (db.Product.Where(p => p.internal_code.Equals(product.internal_code)).ToList().Count > 0)
                     {
                         ViewBag.Message = "Ya existe un producto con el mismo código interno";
                         ViewBag.Error = 1;
@@ -140,7 +140,7 @@ namespace Pinturería_Acuarela.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (db.Product.Where(p => p.internal_code.Value.Equals(product_edited.internal_code.Value) && !p.id.Equals(product_edited.id)).ToList().Count > 0)
+                    if (db.Product.Where(p => p.internal_code.Equals(product_edited.internal_code) && !p.id.Equals(product_edited.id)).ToList().Count > 0)
                     {
                         ViewBag.Message = "Ya existe un producto con el mismo código interno";
                         ViewBag.Error = 1;
@@ -235,7 +235,7 @@ namespace Pinturería_Acuarela.Controllers
                         p.deleted_at.Equals(null))
                         .Select(p => new
                         {
-                            internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
+                            p.internal_code,
                             product_id = p.id.ToString(),
                             p.description,
                             brand = p.Brand.name,
@@ -276,7 +276,7 @@ namespace Pinturería_Acuarela.Controllers
                             p.deleted_at.Equals(null))
                             .Select(p => new
                             {
-                                internal_code = p.internal_code != null ? p.internal_code.Value.ToString() : null,
+                                p.internal_code,
                                 product_id = p.id.ToString(),
                                 p.description,
                                 brand = p.Brand.name,
